@@ -1,0 +1,22 @@
+[Unit]
+Description=aced's distributed currency daemon
+After=network.target
+
+[Service]
+User=acedcore
+Group=acedcore
+
+Type=forking
+PIDFile=/var/lib/acedd/acedd.pid
+ExecStart=/usr/bin/acedd -daemon -pid=/var/lib/acedd/acedd.pid \
+-conf=/etc/acedcore/aced.conf -datadir=/var/lib/acedd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
