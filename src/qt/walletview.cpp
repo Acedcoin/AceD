@@ -80,8 +80,9 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-
+    //addWidget(masternodestab);
     QSettings settings;
+    //settings.setValue("fShowMasternodesTab", 1);
     if (!fLiteMode && settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage = new MasternodeList(platformStyle);
         addWidget(masternodeListPage);

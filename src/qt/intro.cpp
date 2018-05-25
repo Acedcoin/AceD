@@ -175,6 +175,8 @@ bool Intro::pickDataDirectory()
 {
     namespace fs = boost::filesystem;
     QSettings settings;
+    settings.setValue("fShowMasternodesTab", 1);
+
     /* If data directory provided on command line, no need to look at settings
        or show a picking dialog */
     if(!GetArg("-datadir", "").empty())

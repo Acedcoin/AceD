@@ -132,7 +132,7 @@ public:
         consensus.nBudgetPaymentsStartBlock = 32800; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nSuperblockStartBlock = 66464; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nSuperblockStartBlock = 6646384784; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nSuperblockStartHash = uint256S("0000000000000a7d13390bb29ac6d4466afb16358aeb3cd0656215392ed2468d");
         consensus.nGovernanceMinQuorum = 10;
@@ -230,7 +230,7 @@ public:
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
 
-        strSporkAddress = "AcJGaB6aTik1D48UzkEFKrxh6fKmWo8GBR";
+        strSporkAddress = "Acn9hkWdgmhNMxSRDuqS5ZBrSP7CCQ2mUk";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of

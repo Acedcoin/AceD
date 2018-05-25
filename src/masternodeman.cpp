@@ -114,7 +114,7 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
     }
     mWeAskedForMasternodeListEntry[outpoint][addrSquashed] = GetTime() + DSEG_UPDATE_SECONDS;
 
-    if (pnode->GetSendVersion() == 70208) {
+    if (pnode->GetSendVersion() == 70209) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn(outpoint)));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, outpoint));
@@ -430,7 +430,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
         }
     }
 
-    if (pnode->GetSendVersion() == 70208) {
+    if (pnode->GetSendVersion() == 70209) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn()));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, COutPoint()));
@@ -884,7 +884,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
 
         COutPoint masternodeOutpoint;
 
-        if (pfrom->nVersion == 70208) {
+        if (pfrom->nVersion == 70209) {
             CTxIn vin;
             vRecv >> vin;
             masternodeOutpoint = vin.prevout;

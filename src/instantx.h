@@ -30,7 +30,7 @@ static const int MIN_INSTANTSEND_DEPTH              = 0;
 static const int MAX_INSTANTSEND_DEPTH              = 60;
 static const int DEFAULT_INSTANTSEND_DEPTH          = 5;
 
-static const int MIN_INSTANTSEND_PROTO_VERSION      = 70208;
+static const int MIN_INSTANTSEND_PROTO_VERSION      = 70209;
 
 // For how long we are going to accept votes/locks
 // after we saw the first one for a specific transaction

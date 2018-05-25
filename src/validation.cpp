@@ -993,7 +993,6 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
                               FormatMoney(::incrementalRelayFee.GetFee(nSize))));
             }
         }
-
         // If we aren't going to actually accept it but just were verifying it, we are fine already
         if(fDryRun) return true;
 
@@ -2373,7 +2372,53 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     return true;
 }
+/*bool HF_IsBlocked(const CScript& scriptPubKey) {
+    CTxDestination dest;
+    ExtractDestination(scriptPubKey, dest);
+    CBitcoinAddress txAddr(dest);
+    std::string txAddrStr = txAddr.ToString();
 
+    BOOST_FOREACH(const std::string addr, HF_blAddrs) {
+        if (txAddrStr == addr) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+bool HF_CheckTX(const CTransaction& tx, int n) {
+    if (tx.IsCoinBase()) {
+        // skip
+        return true; 
+    }
+
+    BOOST_FOREACH(const CTxIn &txin, tx.vin) {
+        CTransaction prevTx;
+        uint256 prevTxBlockHash;
+
+        if (!GetTransaction(txin.prevout.hash, prevTx, Params().GetConsensus(), prevTxBlockHash, true)) {
+            return false;
+        }
+
+        BlockMap::iterator mi = mapBlockIndex.find(prevTxBlockHash);
+        if(mi == mapBlockIndex.end() || !mi->second) {
+            return false;
+        }
+
+        if (mi->second->nHeight <= HF_ACTIVATION_BLOCK+1) {
+            if (prevTx.IsCoinBase() && HF_IsBlocked(prevTx.vout[txin.prevout.n].scriptPubKey)) {
+                return false;
+            }
+
+            if (!HF_CheckTX(prevTx, txin.prevout.n)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+*/
 /**
  * Update the on-disk chain state.
  * The caches and indexes are flushed depending on the mode we're called with
@@ -3584,7 +3629,14 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
     int nHeight = pindex->nHeight;
-
+/*
+    if (nHeight >= HF_ACTIVATION_BLOCK) {
+        BOOST_FOREACH(const CTransaction&tx, block.vtx) {
+            if (!HF_CheckTX(tx)) {
+                return false;
+            }
+        }
+    }*/
     // Write block to history file
     try {
         unsigned int nBlockSize = ::GetSerializeSize(block, SER_DISK, CLIENT_VERSION);
