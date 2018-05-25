@@ -1208,7 +1208,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             pfrom->fDisconnect = true;
             return false;
         }
-	if (nTime > 1527292800) { //friday may 25 00:00:00 GMT
+	//if (nTime > 1527292800) { //friday may 25 00:00:00 GMT
         if (nVersion < MIN_PEER_PROTO_VERSION)
         {
             // disconnect from peers older than this proto version
@@ -1218,7 +1218,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             pfrom->fDisconnect = true;
             return false;
         }
-	}
+	//}
 
         if (nVersion == 10300)
             nVersion = 300;
