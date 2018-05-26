@@ -1456,7 +1456,7 @@ color:transparent;
 
 QDialog#CoinControlDialog .CoinControlTreeWidget#treeWidget { /* Coin Control Widget Container */
 outline:0;
-background-color:#000000;
+background-color:#ffffff;
 border:0px solid #818181;
 }
 
