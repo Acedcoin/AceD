@@ -308,7 +308,7 @@ void CMasternodePayments::ProcessMessage(CNode* pfrom, const std::string& strCom
         if (!masternodeSync.IsSynced()) return;
 
         // DEPRECATED, should be removed on next protocol bump
-        if(pfrom->nVersion == 70209) {
+        if(pfrom->nVersion == 70209 || pfrom->nVersion == 70210) {
             int nCountNeeded;
             vRecv >> nCountNeeded;
         }

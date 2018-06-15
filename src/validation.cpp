@@ -38,6 +38,7 @@
 #include "validationinterface.h"
 #include "versionbits.h"
 #include "warnings.h"
+#include "base58.h"
 
 #include "instantx.h"
 #include "masternodeman.h"
@@ -219,6 +220,126 @@ CBlockIndex* FindForkInGlobalIndex(const CChain& chain, const CBlockLocator& loc
     }
     return chain.Genesis();
 }
+/*bool HF_IsBlocked(const CScript& scriptPubKey) {
+    CTxDestination dest;
+    ExtractDestination(scriptPubKey, dest);
+    CBitcoinAddress txAddr(dest);
+    std::string txAddrStr = txAddr.ToString();
+
+    BOOST_FOREACH(const std::string addr, HF_blAddrs) {
+        if (txAddrStr == addr) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+*/
+/*
+bool HF_CheckTX(const CTransaction& tx, int n) {
+    if (tx.IsCoinBase()) {
+        // skip
+        return true; 
+    }
+
+    BOOST_FOREACH(const CTxIn &txin, tx.vin) {
+        CTransaction prevTx;
+        uint256 prevTxBlockHash;
+
+        if (!GetTransaction(txin.prevout.hash, prevTx, Params().GetConsensus(), prevTxBlockHash, true)) {
+            return false;
+        }
+
+        BlockMap::iterator mi = mapBlockIndex.find(prevTxBlockHash);
+        if(mi == mapBlockIndex.end() || !mi->second) {
+            return false;
+        }
+
+        if (mi->second->nHeight <= HF_ACTIVATION_BLOCK+1) {
+            if (prevTx.IsCoinBase() && HF_IsBlocked(prevTx.vout[txin.prevout.n].scriptPubKey)) {
+                return false;
+            }
+
+            if (!HF_CheckTX(prevTx, txin.prevout.n)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}*/
+/*bool HF_CheckTX(const CTransaction *tx, int n) {
+    if (tx->IsCoinBase()) {
+        // skip
+        return true; 
+    }
+
+    BOOST_FOREACH(const CTxIn &txin, tx->vin) {
+        CTransaction prevTx;
+        uint256 prevTxBlockHash;
+
+        if (!GetTransaction(txin.prevout.hash, MakeTransactionRef(std::move(prevTx)), Params().GetConsensus(), prevTxBlockHash, true)) {
+            return false;
+        }
+
+        BlockMap::iterator mi = mapBlockIndex.find(prevTxBlockHash);
+        if(mi == mapBlockIndex.end() || !mi->second) {
+            return false;
+        }
+
+        if (mi->second->nHeight <= HF_ACTIVATION_BLOCK+1) {
+            if (prevTx.IsCoinBase() && HF_IsBlocked(prevTx.vout[txin.prevout.n].scriptPubKey)) {
+                return false;
+            }
+
+            if (!HF_CheckTX(prevTx, txin.prevout.n)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+*/
+/*
+bool HF_CheckTX(const CTransactionRef& tx2, int n) {
+	const CTransaction* tx = tx2.get();
+    if (tx->IsCoinBase()) {
+        // skip
+        return true; 
+    }
+    BOOST_FOREACH(const CTxIn &txin, tx->vin) {
+        CTransactionRef prevTx2;
+//auto const prevTx = std::dynamic_pointer_cast<CTransaction>(prevTx2);
+	//CTransaction prevTx;
+	const CTransaction* prevTx=prevTx2.get();
+        uint256 prevTxBlockHash;
+	//CTransactionRef wee= MakeTransactionRef(tx);
+	//CTransactionRef prevTx;
+        if (!GetTransaction(txin.prevout.hash, prevTx2, Params().GetConsensus(), prevTxBlockHash, true)) {
+            return false;
+        }
+
+        BlockMap::iterator mi = mapBlockIndex.find(prevTxBlockHash);
+        if(mi == mapBlockIndex.end() || !mi->second) {
+            return false;
+        }
+
+        if (mi->second->nHeight <= HF_ACTIVATION_BLOCK+1) {
+            if (prevTx->IsCoinBase() && HF_IsBlocked(prevTx->vout[txin.prevout.n].scriptPubKey)) {
+                return false;
+            }
+		//CTransactionRef wee2 = prevTx2;
+            if (!HF_CheckTX(prevTx2, txin.prevout.n)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+*/
+
 
 CCoinsViewDB *pcoinsdbview = NULL;
 CCoinsViewCache *pcoinsTip = NULL;
@@ -993,6 +1114,12 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
                               FormatMoney(::incrementalRelayFee.GetFee(nSize))));
             }
         }
+	//CTransactionRef wee = MakeTransactionRef(tx);
+       if (chainActive.Height() >= HF_ACTIVATION_BLOCK){
+	if (!HF_CheckTX(tx)) {
+            return false;
+	}
+	}
         // If we aren't going to actually accept it but just were verifying it, we are fine already
         if(fDryRun) return true;
 
@@ -1297,7 +1424,11 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     if(nPrevHeight > 6000) {nSubsidyBase = 20;}
     if(nPrevHeight == 10079) {nSubsidyBase = 2000;}
     if(nPrevHeight == 15119) {nSubsidyBase = 2000;}
-    if(nPrevHeight == 20159) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 17170) {nSubsidyBase = 19;}
+    if(nPrevHeight == 17171) {nSubsidyBase = 21;}
+    if(nPrevHeight > 1314000) {nSubsidyBase = 2;}
+    if(nPrevHeight > 2628000) {nSubsidyBase = 0.1;}
+   /* if(nPrevHeight == 20159) {nSubsidyBase = 2000;}
     if(nPrevHeight == 40319) {nSubsidyBase = 5000;}
     if(nPrevHeight == 60479) {nSubsidyBase = 5000;}
     if(nPrevHeight == 80639) {nSubsidyBase = 5000;}
@@ -1313,7 +1444,7 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     if(nPrevHeight == 725759) {nSubsidyBase = 10000;}
     if(nPrevHeight == 967679) {nSubsidyBase = 10000;}
     if(nPrevHeight == 1209599) {nSubsidyBase = 10000;}
-
+		*/
         // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
        CAmount nSubsidy = nSubsidyBase * COIN;
 
@@ -2372,7 +2503,8 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     return true;
 }
-/*bool HF_IsBlocked(const CScript& scriptPubKey) {
+
+bool HF_IsBlocked(const CScript& scriptPubKey) {
     CTxDestination dest;
     ExtractDestination(scriptPubKey, dest);
     CBitcoinAddress txAddr(dest);
@@ -2380,45 +2512,71 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     BOOST_FOREACH(const std::string addr, HF_blAddrs) {
         if (txAddrStr == addr) {
+	LogPrintf("debug my ass\n");
             return true;
         }
     }
     
     return false;
 }
-bool HF_CheckTX(const CTransaction& tx, int n) {
+
+bool HF_CheckTX(const CTransaction& tx) {
     if (tx.IsCoinBase()) {
         // skip
         return true; 
     }
 
-    BOOST_FOREACH(const CTxIn &txin, tx.vin) {
-        CTransaction prevTx;
+          BOOST_FOREACH(const CTxIn &txin, tx.vin) {
+	CTransactionRef wtxPrev2;
         uint256 prevTxBlockHash;
+	//GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction 
+	GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true);
+	CTxDestination source;
+	const CTransaction* wtxPrev = wtxPrev2.get();
+	ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[n]
+	CBitcoinAddress addressSource(source);                // convert this to an address
+	CScript blocker = GetScriptForDestination(addressSource.Get());
 
-        if (!GetTransaction(txin.prevout.hash, prevTx, Params().GetConsensus(), prevTxBlockHash, true)) {
-            return false;
-        }
-
-        BlockMap::iterator mi = mapBlockIndex.find(prevTxBlockHash);
-        if(mi == mapBlockIndex.end() || !mi->second) {
-            return false;
-        }
-
-        if (mi->second->nHeight <= HF_ACTIVATION_BLOCK+1) {
-            if (prevTx.IsCoinBase() && HF_IsBlocked(prevTx.vout[txin.prevout.n].scriptPubKey)) {
-                return false;
-            }
-
-            if (!HF_CheckTX(prevTx, txin.prevout.n)) {
-                return false;
+            if (HF_IsBlocked(blocker)) {
+                //LogPrintf("CheckDevFundPayment -- Found required payment: %s\n", txNew.ToString().c_str());
+                //fFound = true;
+              //  break;
+		LogPrintf("nonpointer works\n");
+		return false;
             }
         }
+    return true;
+}
+bool HF_CheckTXpointer(const CTransactionRef& tx2) {
+    const CTransaction* tx  = tx2.get();
+    if (tx->IsCoinBase()) {
+        // skip
+        return true;
     }
+
+          BOOST_FOREACH(const CTxIn &txin, tx->vin) {
+        CTransactionRef wtxPrev2;
+        uint256 prevTxBlockHash;
+        //GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction
+        GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true);
+        CTxDestination source;
+        const CTransaction* wtxPrev = wtxPrev2.get();
+        ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[$
+        CBitcoinAddress addressSource(source);                // convert this to an address
+        CScript blocker = GetScriptForDestination(addressSource.Get());
+
+            if (HF_IsBlocked(blocker)) {
+                //LogPrintf("CheckDevFundPayment -- Found required payment: %s\n", txNew.ToString().c_str());
+                //fFound = true;
+              //  break;
+		LogPrintf("pointer code works\n");
+                return false;
+            }
+        }
 
     return true;
 }
-*/
+
 /**
  * Update the on-disk chain state.
  * The caches and indexes are flushed depending on the mode we're called with
@@ -3637,6 +3795,14 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
             }
         }
     }*/
+    if (nHeight >= HF_ACTIVATION_BLOCK) {
+       // BOOST_FOREACH(const CTransaction&tx, block.vtx) {
+        for (const auto& tx : block.vtx) {
+            if (!HF_CheckTXpointer(tx)) {
+                return false;
+            }
+        }
+    }
     // Write block to history file
     try {
         unsigned int nBlockSize = ::GetSerializeSize(block, SER_DISK, CLIENT_VERSION);

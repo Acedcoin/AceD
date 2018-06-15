@@ -57,10 +57,17 @@ void CInstantSend::ProcessMessage(CNode* pfrom, const std::string& strCommand, C
 
     if (strCommand == NetMsgType::TXLOCKVOTE) // InstantSend Transaction Lock Consensus Votes
     {
-        if(pfrom->nVersion < MIN_INSTANTSEND_PROTO_VERSION) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
+
+        if(pfrom->nVersion < catcher) {
             LogPrint("instantsend", "TXLOCKVOTE -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_INSTANTSEND_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
@@ -233,7 +240,14 @@ void CInstantSend::Vote(CTxLockCandidate& txLockCandidate, CConnman& connman)
         int nLockInputHeight = nPrevoutHeight + Params().GetConsensus().nInstantSendConfirmationsRequired - 2;
 
         int nRank;
-        if(!mnodeman.GetMasternodeRank(activeMasternode.outpoint, nRank, nLockInputHeight, MIN_INSTANTSEND_PROTO_VERSION)) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
+
+        if(!mnodeman.GetMasternodeRank(activeMasternode.outpoint, nRank, nLockInputHeight, catcher)) {
             LogPrint("instantsend", "CInstantSend::Vote -- Can't calculate rank for masternode %s\n", activeMasternode.outpoint.ToStringShort());
             ++itOutpointLock;
             continue;
@@ -1041,7 +1055,14 @@ bool CTxLockVote::IsValid(CNode* pnode, CConnman& connman) const
     int nLockInputHeight = coin.nHeight + Params().GetConsensus().nInstantSendConfirmationsRequired - 2;
 
     int nRank;
-    if(!mnodeman.GetMasternodeRank(outpointMasternode, nRank, nLockInputHeight, MIN_INSTANTSEND_PROTO_VERSION)) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
+
+    if(!mnodeman.GetMasternodeRank(outpointMasternode, nRank, nLockInputHeight, catcher)) {
         //can be caused by past versions trying to vote with an invalid protocol
         LogPrint("instantsend", "CTxLockVote::IsValid -- Can't calculate rank for masternode %s\n", outpointMasternode.ToStringShort());
         return false;

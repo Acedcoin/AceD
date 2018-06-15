@@ -196,7 +196,13 @@ UniValue masternode(const JSONRPCRequest& request)
         mnodeman.GetNextMasternodeInQueueForPayment(true, nCount, mnInfo);
 
         int total = mnodeman.size();
-        int ps = mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION);
+	int catcher;
+	if (chainActive.Height() < 17170){
+		catcher=70209;
+	} else {
+		catcher=70210;
+	}
+        int ps = mnodeman.CountEnabled(catcher);
         int enabled = mnodeman.CountEnabled();
 
         if (request.params.size() == 1) {

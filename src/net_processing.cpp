@@ -1208,13 +1208,18 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             pfrom->fDisconnect = true;
             return false;
         }
-	//if (nTime > 1527292800) { //friday may 25 00:00:00 GMT
-        if (nVersion < MIN_PEER_PROTO_VERSION)
+	int minproto;
+	if (chainActive.Height() < 17170) { //friday may 25 00:00:00 GMT
+	minproto=70209;
+	} else {
+	minproto=70210;
+	}
+        if (nVersion < minproto)
         {
             // disconnect from peers older than this proto version
             LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", minproto)));
             pfrom->fDisconnect = true;
             return false;
         }

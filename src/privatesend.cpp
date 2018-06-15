@@ -266,8 +266,13 @@ bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
 
     for (const auto& txout : txCollateral.vout) {
         nValueOut += txout.nValue;
-
-        bool fAllowData = mnpayments.GetMinMasternodePaymentsProto() > 70209;
+	int catcher;
+	if (chainActive.Height() < 17170){
+	catcher=70209;
+	}else {
+	catcher=70210;
+	}
+        bool fAllowData = mnpayments.GetMinMasternodePaymentsProto() > catcher;
         if(!txout.scriptPubKey.IsPayToPublicKeyHash() && !(fAllowData && txout.scriptPubKey.IsUnspendable())) {
             LogPrintf ("CPrivateSend::IsCollateralValid -- Invalid Script, txCollateral=%s", txCollateral.ToString());
             return false;
@@ -305,7 +310,15 @@ bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
 
 bool CPrivateSend::IsCollateralAmount(CAmount nInputAmount)
 {
-    if (mnpayments.GetMinMasternodePaymentsProto() > 70209) {
+
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
+
+    if (mnpayments.GetMinMasternodePaymentsProto() > catcher) {
         // collateral input can be anything between 1x and "max" (including both)
         return (nInputAmount >= GetCollateralAmount() && nInputAmount <= GetMaxCollateralAmount());
     } else { // <= 70208

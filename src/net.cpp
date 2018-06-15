@@ -2612,8 +2612,14 @@ void CConnman::RelayTransaction(const CTransaction& tx)
 
 void CConnman::RelayInv(CInv &inv, const int minProtoVersion) {
     LOCK(cs_vNodes);
+    int minproto;
+    if (chainActive.Height() < 17170) {
+	minproto = 70209;
+   } else {
+	minproto = 70210;
+	}
     for (const auto& pnode : vNodes)
-        if(pnode->nVersion >= minProtoVersion)
+        if(pnode->nVersion >= minproto)
             pnode->PushInventory(inv);
 }
 

@@ -132,7 +132,7 @@ public:
         consensus.nBudgetPaymentsStartBlock = 32800; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nSuperblockStartBlock = 6646384784; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nSuperblockStartBlock = 66384784; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nSuperblockStartHash = uint256S("0000000000000a7d13390bb29ac6d4466afb16358aeb3cd0656215392ed2468d");
         consensus.nGovernanceMinQuorum = 10;
@@ -144,6 +144,8 @@ public:
         consensus.BIP66Height = 245817; // 00000000000b1fa2dfa312863570e13fae9ca7b5566cb27e55422620b469aefa
         consensus.DIP0001Height = 782208;
         consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+        //consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
+
         consensus.nPowTargetTimespan = 120; // aced: 120 seconds
         consensus.nPowTargetSpacing = 120 ; // aced: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = false;
@@ -220,7 +222,7 @@ public:
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
-        fMiningRequiresPeers = true;
+        fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fMineBlocksOnDemand = false;

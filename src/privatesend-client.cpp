@@ -30,11 +30,17 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
     if(strCommand == NetMsgType::DSQUEUE) {
         TRY_LOCK(cs_darksend, lockRecv);
         if(!lockRecv) return;
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSQUEUE -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
@@ -82,8 +88,14 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
                     return;
                 }
             }
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-            int nThreshold = infoMn.nLastDsq + mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION)/5;
+            int nThreshold = infoMn.nLastDsq + mnodeman.CountEnabled(catcher)/5;
             LogPrint("privatesend", "DSQUEUE -- nLastDsq: %d  threshold: %d  nDsqCount: %d\n", infoMn.nLastDsq, nThreshold, mnodeman.nDsqCount);
             //don't allow a few nodes to dominate the queuing process
             if(infoMn.nLastDsq != 0 && nThreshold > mnodeman.nDsqCount) {
@@ -102,11 +114,17 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
         }
 
     } else if(strCommand == NetMsgType::DSSTATUSUPDATE) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSSTATUSUPDATE -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
@@ -146,11 +164,17 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
         }
 
     } else if(strCommand == NetMsgType::DSFINALTX) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSFINALTX -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
@@ -175,11 +199,17 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
         SignFinalTransaction(txNew, pfrom, connman);
 
     } else if(strCommand == NetMsgType::DSCOMPLETE) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSCOMPLETE -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
@@ -802,8 +832,14 @@ bool CPrivateSendClient::DoAutomaticDenominating(CConnman& connman, bool fDryRun
             }
         }
     }
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-    int nMnCountEnabled = mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION);
+    int nMnCountEnabled = mnodeman.CountEnabled(catcher);
 
     // If we've used 90% of the Masternode list then drop the oldest first ~30%
     int nThreshold_high = nMnCountEnabled * 0.9;
@@ -847,8 +883,14 @@ bool CPrivateSendClient::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, CCon
             LogPrintf("CPrivateSendClient::JoinExistingQueue -- dsq masternode is not in masternode list, masternode=%s\n", dsq.masternodeOutpoint.ToStringShort());
             continue;
         }
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
-        if(infoMn.nProtocolVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) continue;
+        if(infoMn.nProtocolVersion < catcher) continue;
 
         // skip next mn payments winners
         if (mnpayments.IsScheduled(infoMn, 0)) {
@@ -889,7 +931,7 @@ bool CPrivateSendClient::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, CCon
         infoMixingMasternode = infoMn;
         pendingDsaRequest = CPendingDsaRequest(infoMn.addr, CDarksendAccept(nSessionDenom, txMyCollateral));
         connman.AddPendingMasternode(infoMn.addr);
-        // TODO: add new state POOL_STATE_CONNECTING and bump MIN_PRIVATESEND_PEER_PROTO_VERSION
+        // TODO: add new state POOL_STATE_CONNECTING and bump catcher
         SetState(POOL_STATE_QUEUE);
         nTimeLastSuccessfulStep = GetTime();
         LogPrintf("CPrivateSendClient::JoinExistingQueue -- pending connection (from queue): nSessionDenom: %d (%s), addr=%s\n",
@@ -904,7 +946,14 @@ bool CPrivateSendClient::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, CCon
 bool CPrivateSendClient::StartNewQueue(CAmount nValueMin, CAmount nBalanceNeedsAnonymized, CConnman& connman)
 {
     int nTries = 0;
-    int nMnCountEnabled = mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION);
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
+
+    int nMnCountEnabled = mnodeman.CountEnabled(catcher);
 
     // ** find the coins we'll use
     std::vector<CTxIn> vecTxIn;
@@ -915,10 +964,16 @@ bool CPrivateSendClient::StartNewQueue(CAmount nValueMin, CAmount nBalanceNeedsA
         strAutoDenomResult = _("Can't mix: no compatible inputs found!");
         return false;
     }
+//        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+        }else {
+        catcher=70210;
+        }
 
     // otherwise, try one randomly
     while(nTries < 10) {
-        masternode_info_t infoMn = mnodeman.FindRandomNotInVec(vecMasternodesUsed, MIN_PRIVATESEND_PEER_PROTO_VERSION);
+        masternode_info_t infoMn = mnodeman.FindRandomNotInVec(vecMasternodesUsed, catcher);
 
         if(!infoMn.fInfoValid) {
             LogPrintf("CPrivateSendClient::StartNewQueue -- Can't find random masternode!\n");
@@ -962,7 +1017,7 @@ bool CPrivateSendClient::StartNewQueue(CAmount nValueMin, CAmount nBalanceNeedsA
         infoMixingMasternode = infoMn;
         connman.AddPendingMasternode(infoMn.addr);
         pendingDsaRequest = CPendingDsaRequest(infoMn.addr, CDarksendAccept(nSessionDenom, txMyCollateral));
-        // TODO: add new state POOL_STATE_CONNECTING and bump MIN_PRIVATESEND_PEER_PROTO_VERSION
+        // TODO: add new state POOL_STATE_CONNECTING and bump catcher
         SetState(POOL_STATE_QUEUE);
         nTimeLastSuccessfulStep = GetTime();
         LogPrintf("CPrivateSendClient::StartNewQueue -- pending connection, nSessionDenom: %d (%s), addr=%s\n",
@@ -981,7 +1036,7 @@ void CPrivateSendClient::ProcessPendingDsaRequest(CConnman& connman)
     bool fDone = connman.ForNode(pendingDsaRequest.GetAddr(), [&](CNode* pnode) {
         LogPrint("privatesend", "-- processing dsa queue for addr=%s\n", pnode->addr.ToString());
         nTimeLastSuccessfulStep = GetTime();
-        // TODO: this vvvv should be here after new state POOL_STATE_CONNECTING is added and MIN_PRIVATESEND_PEER_PROTO_VERSION is bumped
+        // TODO: this vvvv should be here after new state POOL_STATE_CONNECTING is added and catcher is bumped
         // SetState(POOL_STATE_QUEUE);
         strAutoDenomResult = _("Mixing in progress...");
         CNetMsgMaker msgMaker(pnode->GetSendVersion());

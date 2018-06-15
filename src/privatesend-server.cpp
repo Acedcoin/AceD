@@ -25,11 +25,17 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
     if(!masternodeSync.IsBlockchainSynced()) return;
 
     if(strCommand == NetMsgType::DSACCEPT) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+       } else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSACCEPT -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             PushStatus(pfrom, STATUS_REJECTED, ERR_VERSION, connman);
             return;
         }
@@ -51,9 +57,15 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
             PushStatus(pfrom, STATUS_REJECTED, ERR_MN_LIST, connman);
             return;
         }
+//        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+       } else {
+        catcher=70210;
+        }
 
         if(vecSessionCollaterals.size() == 0 && mnInfo.nLastDsq != 0 &&
-            mnInfo.nLastDsq + mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION)/5 > mnodeman.nDsqCount)
+            mnInfo.nLastDsq + mnodeman.CountEnabled(catcher)/5 > mnodeman.nDsqCount)
         {
             LogPrintf("DSACCEPT -- last dsq too recent, must wait: addr=%s\n", pfrom->addr.ToString());
             PushStatus(pfrom, STATUS_REJECTED, ERR_RECENT, connman);
@@ -77,11 +89,17 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
     } else if(strCommand == NetMsgType::DSQUEUE) {
         TRY_LOCK(cs_darksend, lockRecv);
         if(!lockRecv) return;
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+       } else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSQUEUE -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
@@ -117,8 +135,14 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
                     return;
                 }
             }
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+       } else {
+        catcher=70210;
+        }
 
-            int nThreshold = mnInfo.nLastDsq + mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION)/5;
+            int nThreshold = mnInfo.nLastDsq + mnodeman.CountEnabled(catcher)/5;
             LogPrint("privatesend", "DSQUEUE -- nLastDsq: %d  threshold: %d  nDsqCount: %d\n", mnInfo.nLastDsq, nThreshold, mnodeman.nDsqCount);
             //don't allow a few nodes to dominate the queuing process
             if(mnInfo.nLastDsq != 0 && nThreshold > mnodeman.nDsqCount) {
@@ -133,11 +157,17 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
         }
 
     } else if(strCommand == NetMsgType::DSVIN) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+       } else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSVIN -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             PushStatus(pfrom, STATUS_REJECTED, ERR_VERSION, connman);
             return;
         }
@@ -233,11 +263,17 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
         }
 
     } else if(strCommand == NetMsgType::DSSIGNFINALTX) {
+        int catcher;
+        if (chainActive.Height() < 17170){
+        catcher=70209;
+       } else {
+        catcher=70210;
+        }
 
-        if(pfrom->nVersion < MIN_PRIVATESEND_PEER_PROTO_VERSION) {
+        if(pfrom->nVersion < catcher) {
             LogPrint("privatesend", "DSSIGNFINALTX -- peer=%d using obsolete version %i\n", pfrom->id, pfrom->nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(pfrom->GetSendVersion()).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PRIVATESEND_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", catcher)));
             return;
         }
 
