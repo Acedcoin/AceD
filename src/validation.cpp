@@ -2558,7 +2558,7 @@ bool HF_CheckTXpointer(const CTransactionRef& tx2) {
         CTransactionRef wtxPrev2;
         uint256 prevTxBlockHash;
         //GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction
-        GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true);
+        if(GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true)){
         CTxDestination source;
         const CTransaction* wtxPrev = wtxPrev2.get();
         ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[$
@@ -2573,7 +2573,7 @@ bool HF_CheckTXpointer(const CTransactionRef& tx2) {
                 return false;
             }
         }
-
+	}
     return true;
 }
 
