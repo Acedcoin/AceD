@@ -203,8 +203,10 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x0000041cabdf1c1929ae937a6041b6f215c0eb85753ce077003f521d3f9fdf6c"));
 
 
-        vSeeds.push_back(CDNSSeedData("N1", "node1.acedcoin.com"));
-        vSeeds.push_back(CDNSSeedData("N2", "node2.acedcoin.com"));
+        vSeeds.push_back(CDNSSeedData("N1", "207.246.82.102"));
+        vSeeds.push_back(CDNSSeedData("N2", "149.28.60.139"));
+        vSeeds.push_back(CDNSSeedData("149.28.198.125", "149.28.198.125"));
+
 
         // aced addresses start with 'A'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,23);
