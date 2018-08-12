@@ -197,10 +197,10 @@ UniValue masternode(const JSONRPCRequest& request)
 
         int total = mnodeman.size();
 	int catcher;
-	if (chainActive.Height() < 17170){
-		catcher=70209;
-	} else {
+	if (chainActive.Height() < 57615){
 		catcher=70210;
+	} else {
+		catcher=70211;
 	}
         int ps = mnodeman.CountEnabled(catcher);
         int enabled = mnodeman.CountEnabled();

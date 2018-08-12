@@ -114,7 +114,7 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
     }
     mWeAskedForMasternodeListEntry[outpoint][addrSquashed] = GetTime() + DSEG_UPDATE_SECONDS;
 
-    if (pnode->GetSendVersion() == 70209 || pnode->GetSendVersion() == 70210) {
+    if (pnode->GetSendVersion() == 70210 || pnode->GetSendVersion() == 70211) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn(outpoint)));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, outpoint));
@@ -430,7 +430,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
         }
     }
 
-    if (pnode->GetSendVersion() == 70209 || pnode->GetSendVersion() == 70210) {
+    if (pnode->GetSendVersion() == 70210 || pnode->GetSendVersion() == 70211) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn()));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, COutPoint()));
@@ -531,7 +531,7 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
     */
 
     int nMnCount = CountMasternodes();
-   if (((nBlockHeight - 1 ) % 100) == 0 && chainActive.Height >= 57799) {
+   if (((nBlockHeight - 1 ) % 100) == 0 && chainActive.Height() >= 57799) {
     for (const auto& mnpair : mapMasternodes)
     {        CBitcoinAddress address(mnpair.second.pubKeyCollateralAddress.GetID());
         std::string strPayee = address.ToString(); 
@@ -680,7 +680,7 @@ bool CMasternodeMan::GetMasternodeRank(const COutPoint& outpoint, int& nRankRet,
     }
 
     LOCK(cs);
-  if (((nBlockHeight - 1 ) % 100) == 0 && chainActive.Height >= 57799) {
+  if (((nBlockHeight - 1 ) % 100) == 0 && chainActive.Height() >= 57799) {
     for (const auto& mnpair : mapMasternodes)
     {
         CBitcoinAddress address(mnpair.second.pubKeyCollateralAddress.GetID());
@@ -913,7 +913,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
 
         COutPoint masternodeOutpoint;
 
-        if (pfrom->nVersion == 70209 || pfrom->nVersion == 70210) {
+        if (pfrom->nVersion == 70210 || pfrom->nVersion == 70211) {
             CTxIn vin;
             vRecv >> vin;
             masternodeOutpoint = vin.prevout;

@@ -267,10 +267,10 @@ bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
     for (const auto& txout : txCollateral.vout) {
         nValueOut += txout.nValue;
 	int catcher;
-	if (chainActive.Height() < 17170){
-	catcher=70209;
-	}else {
+	if (chainActive.Height() < 57615){
 	catcher=70210;
+	}else {
+	catcher=70211;
 	}
         bool fAllowData = mnpayments.GetMinMasternodePaymentsProto() > catcher;
         if(!txout.scriptPubKey.IsPayToPublicKeyHash() && !(fAllowData && txout.scriptPubKey.IsUnspendable())) {
@@ -312,10 +312,10 @@ bool CPrivateSend::IsCollateralAmount(CAmount nInputAmount)
 {
 
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
     if (mnpayments.GetMinMasternodePaymentsProto() > catcher) {

@@ -271,6 +271,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
         CBitcoinAddress VfundAddress("AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn");
         payee = GetScriptForDestination(VfundAddress.Get());
 	}
+}
 
     // GET MASTERNODE PAYMENT VARIABLES SETUP
     CAmount masternodePayment = GetMasternodePayment(nBlockHeight, blockReward);
@@ -313,7 +314,7 @@ void CMasternodePayments::ProcessMessage(CNode* pfrom, const std::string& strCom
         if (!masternodeSync.IsSynced()) return;
 
         // DEPRECATED, should be removed on next protocol bump
-        if(pfrom->nVersion == 70209 || pfrom->nVersion == 70210) {
+        if(pfrom->nVersion == 70210 || pfrom->nVersion == 70211) {
             int nCountNeeded;
             vRecv >> nCountNeeded;
         }

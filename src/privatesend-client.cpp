@@ -31,10 +31,10 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
         TRY_LOCK(cs_darksend, lockRecv);
         if(!lockRecv) return;
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -89,10 +89,10 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
                 }
             }
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
             int nThreshold = infoMn.nLastDsq + mnodeman.CountEnabled(catcher)/5;
@@ -115,10 +115,10 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
 
     } else if(strCommand == NetMsgType::DSSTATUSUPDATE) {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -165,10 +165,10 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
 
     } else if(strCommand == NetMsgType::DSFINALTX) {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -200,10 +200,10 @@ void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strComm
 
     } else if(strCommand == NetMsgType::DSCOMPLETE) {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -833,10 +833,10 @@ bool CPrivateSendClient::DoAutomaticDenominating(CConnman& connman, bool fDryRun
         }
     }
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
     int nMnCountEnabled = mnodeman.CountEnabled(catcher);
@@ -884,10 +884,10 @@ bool CPrivateSendClient::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, CCon
             continue;
         }
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(infoMn.nProtocolVersion < catcher) continue;
@@ -947,10 +947,10 @@ bool CPrivateSendClient::StartNewQueue(CAmount nValueMin, CAmount nBalanceNeedsA
 {
     int nTries = 0;
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
     int nMnCountEnabled = mnodeman.CountEnabled(catcher);
@@ -965,10 +965,10 @@ bool CPrivateSendClient::StartNewQueue(CAmount nValueMin, CAmount nBalanceNeedsA
         return false;
     }
 //        int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
     // otherwise, try one randomly

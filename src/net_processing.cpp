@@ -1209,10 +1209,10 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             return false;
         }
 	int minproto;
-	if (chainActive.Height() < 17170) { //friday may 25 00:00:00 GMT
-	minproto=70209;
-	} else {
+	if (chainActive.Height() < 57615) { //friday may 25 00:00:00 GMT
 	minproto=70210;
+	} else {
+	minproto=70211;
 	}
         if (nVersion < minproto)
         {

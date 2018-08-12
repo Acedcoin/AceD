@@ -26,10 +26,10 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
 
     if(strCommand == NetMsgType::DSACCEPT) {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-       } else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+       } else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -58,10 +58,10 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
             return;
         }
 //        int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-       } else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+       } else {
+        catcher=70211;
         }
 
         if(vecSessionCollaterals.size() == 0 && mnInfo.nLastDsq != 0 &&
@@ -90,10 +90,10 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
         TRY_LOCK(cs_darksend, lockRecv);
         if(!lockRecv) return;
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-       } else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+       } else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -136,10 +136,10 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
                 }
             }
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-       } else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+       } else {
+        catcher=70211;
         }
 
             int nThreshold = mnInfo.nLastDsq + mnodeman.CountEnabled(catcher)/5;
@@ -158,10 +158,10 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
 
     } else if(strCommand == NetMsgType::DSVIN) {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-       } else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+       } else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -264,10 +264,10 @@ void CPrivateSendServer::ProcessMessage(CNode* pfrom, const std::string& strComm
 
     } else if(strCommand == NetMsgType::DSSIGNFINALTX) {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-       } else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+       } else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {

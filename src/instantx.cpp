@@ -58,10 +58,10 @@ void CInstantSend::ProcessMessage(CNode* pfrom, const std::string& strCommand, C
     if (strCommand == NetMsgType::TXLOCKVOTE) // InstantSend Transaction Lock Consensus Votes
     {
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(pfrom->nVersion < catcher) {
@@ -241,10 +241,10 @@ void CInstantSend::Vote(CTxLockCandidate& txLockCandidate, CConnman& connman)
 
         int nRank;
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
         if(!mnodeman.GetMasternodeRank(activeMasternode.outpoint, nRank, nLockInputHeight, catcher)) {
@@ -1056,10 +1056,10 @@ bool CTxLockVote::IsValid(CNode* pnode, CConnman& connman) const
 
     int nRank;
         int catcher;
-        if (chainActive.Height() < 17170){
-        catcher=70209;
-        }else {
+        if (chainActive.Height() < 57615){
         catcher=70210;
+        }else {
+        catcher=70211;
         }
 
     if(!mnodeman.GetMasternodeRank(outpointMasternode, nRank, nLockInputHeight, catcher)) {
