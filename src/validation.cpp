@@ -1426,6 +1426,7 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     if(nPrevHeight == 15119) {nSubsidyBase = 2000;}
     if(nPrevHeight == 17170) {nSubsidyBase = 19;}
     if(nPrevHeight == 17171) {nSubsidyBase = 21;}
+    if(nPrevHeight >= 32801) {nSubsidyBase = 18;}
     if(nPrevHeight > 1314000) {nSubsidyBase = 2;}
     if(nPrevHeight > 2628000) {nSubsidyBase = 0.1;}
    /* if(nPrevHeight == 20159) {nSubsidyBase = 2000;}
@@ -1449,19 +1450,25 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
        CAmount nSubsidy = nSubsidyBase * COIN;
 
       // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
-      for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
-          nSubsidy -= nSubsidy/14;
-      }
+      //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+        //  nSubsidy -= nSubsidy/14;
+      //}
 
       // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-      CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+     // CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+   if(((nPrevHeight) % 100 == 0) && nPrevHeight >= 57798) {
+        nSubsidy = (((nSubsidy/0.9) * .1) * 100)+(nSubsidy*.2);
+	}
 
-       return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
+       return nSubsidy;
    }
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     {
        CAmount ret = blockValue/4; // start at 20%
        if(nHeight > 7000) ret = blockValue / 1.25;
+    if ((nHeight-1) % 100 == 0 && nHeight >= 57799){
+	return blockValue * .982318;
+	}
        return ret;
    }
 
