@@ -2516,20 +2516,11 @@ bool HF_IsBlocked(const CScript& scriptPubKey) {
     ExtractDestination(scriptPubKey, dest);
     CBitcoinAddress txAddr(dest);
     std::string txAddrStr = txAddr.ToString();
-if(chainActive.Height() < 57615) {
-    BOOST_FOREACH(const std::string addr, HF_blAddrs_old) {
+    BOOST_FOREACH(const std::string addr, HF_blAddrs) {
         if (txAddrStr == addr) {
 	LogPrintf("debug my ass\n");
             return true;
-        }
-    }
-} else {
-    BOOST_FOREACH(const std::string addr, HF_blAddrs) {
-        if (txAddrStr == addr) {
-        LogPrintf("debug my ass\n");
-            return true;
-        }
-    }
+    	}
 }
     return false;
 }
