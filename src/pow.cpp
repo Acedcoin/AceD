@@ -85,7 +85,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
-    if (!pindexLast || pindexLast->nHeight < nPastBlocks || pindexLast->nHeight < 57460) {
+    if (!pindexLast || pindexLast->nHeight < nPastBlocks || (pindexLast->nHeight >= 57450 && pindexLast->nHeight < 57460)) {
         return bnPowLimit.GetCompact();
     }
      //    if (pindexLast->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2){
