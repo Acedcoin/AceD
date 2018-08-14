@@ -55,7 +55,7 @@
 
 static const int CLIENT_VERSION =
                            1000000 * CLIENT_VERSION_MAJOR
-                         +   10000 * 6
+                         +   10000 * 7
                          +     100 * 0
                          +       1 * 0;
 

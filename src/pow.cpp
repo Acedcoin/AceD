@@ -85,9 +85,12 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
-    if (!pindexLast || pindexLast->nHeight < nPastBlocks) {
+    if (!pindexLast || pindexLast->nHeight < nPastBlocks || pindexLast->nHeight < 57460) {
         return bnPowLimit.GetCompact();
     }
+     //    if (pindexLast->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2){
+       //         return bnPowLimit.GetCompact();
+//	}
 
     const CBlockIndex *pindex = pindexLast;
     arith_uint256 bnPastTargetAvg;
@@ -134,13 +137,13 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
 
     // Genesis block
-    if (pindexLast == NULL)
+    if (pindexLast == NULL || pindexLast->nHeight+1 < 57460)
         return nProofOfWorkLimit;
 
     // Only change once per interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
     {
-        if (params.fPowAllowMinDifficultyBlocks)
+        if (5==5)
         {
             // Special difficulty rule for testnet:
             // If the new block's timestamp is more than 2* 2.5 minutes
