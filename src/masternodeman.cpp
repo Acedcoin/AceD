@@ -538,6 +538,7 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
 
 	if (strPayee == "AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn")
 	{
+	mnInfoRet = mnpair.second.GetInfo();
 	LogPrintf("dev MN selected\n");
 	return true;
 	}
