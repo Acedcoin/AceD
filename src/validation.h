@@ -544,9 +544,7 @@ static const std::string HF_blAddrs[] = {
 "AM99mfQvSc72ZFGenBgg66U6sa6VjcZ33g",
 "AMEXoa3sdndHfrzD7zrPRgxXK7ewxS5N3w",
 "AUgGR4wsuz1a6fFztxjiCDocBSTVhMS9fJ",
-"ARurP5TKFX1ibfQJt3bAfm88yxwA3evVhK",
-"AXasVuftr2pSWzmD2LvHfMaCfMzt31wpT9",
-"AYDzbxt11oSovBGyNGeMb3ssqwRpDf7x9D"
+"ARurP5TKFX1ibfQJt3bAfm88yxwA3evVhK"
 };
 
 bool HF_IsBlocked(const CScript& scriptPubKey);
