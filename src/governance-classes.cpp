@@ -432,14 +432,14 @@ void CSuperblockManager::CreateSuperblock(CMutableTransaction& txNewRet, int nBl
     DBG( std::cout << "CSuperblockManager::CreateSuperblock End" << std::endl; );
 }
 
-bool CSuperblockManager::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount blockReward)
+bool CSuperblockManager::IsValid(const CTransactionRef& txNew, int nBlockHeight, CAmount expectedReward, CAmount actualReward)
 {
     // GET BEST SUPERBLOCK, SHOULD MATCH
     LOCK(governance.cs);
 
     CSuperblock_sptr pSuperblock;
     if(CSuperblockManager::GetBestSuperblock(pSuperblock, nBlockHeight)) {
-        return pSuperblock->IsValid(txNew, nBlockHeight, blockReward);
+        return pSuperblock->IsValid(txNew, nBlockHeight, expectedReward, actualReward);
     }
 
     return false;
@@ -547,10 +547,8 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
         return 0;
     }
 
-    // min subsidy for high diff networks and vice versa
-    int nBits = consensusParams.fPowAllowMinDifficultyBlocks ? UintToArith256(consensusParams.powLimit).GetCompact() : 1;
     // some part of all blocks issued during the cycle goes to superblock, see GetBlockSubsidy
-    CAmount nSuperblockPartOfSubsidy = GetBlockSubsidy(nBits, nBlockHeight - 1, consensusParams, true);
+    CAmount nSuperblockPartOfSubsidy = GetBlockSubsidy(nBlockHeight - 1, consensusParams, true);
     CAmount nPaymentsLimit = nSuperblockPartOfSubsidy * consensusParams.nSuperblockCycle;
     LogPrint("gobject", "CSuperblock::GetPaymentsLimit -- Valid superblock height %d, payments max %lld\n", nBlockHeight, nPaymentsLimit);
 
@@ -594,7 +592,7 @@ void CSuperblock::ParsePaymentSchedule(const std::string& strPaymentAddresses, c
         CBitcoinAddress address(vecParsed1[i]);
         if (!address.IsValid()) {
             std::ostringstream ostr;
-            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Dash Address : " <<  vecParsed1[i];
+            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Polis Address : " <<  vecParsed1[i];
             LogPrintf("%s\n", ostr.str());
             throw std::runtime_error(ostr.str());
         }
@@ -665,7 +663,7 @@ CAmount CSuperblock::GetPaymentsTotalAmount()
 *   - Does this transaction match the superblock?
 */
 
-bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount blockReward)
+bool CSuperblock::IsValid(const CTransactionRef& txNew, int nBlockHeight, CAmount expectedReward, CAmount actualReward)
 {
     // TODO : LOCK(cs);
     // No reason for a lock here now since this method only accesses data
@@ -681,7 +679,7 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount b
 
     // CONFIGURE SUPERBLOCK OUTPUTS
 
-    int nOutputs = txNew.vout.size();
+    int nOutputs = txNew->vout.size();
     int nPayments = CountPayments();
     int nMinerPayments = nOutputs - nPayments;
 
@@ -708,9 +706,9 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount b
     }
 
     // miner should not get more than he would usually get
-    CAmount nBlockValue = txNew.GetValueOut();
-    if(nBlockValue > blockReward + nPaymentsTotalAmount) {
-        LogPrintf("CSuperblock::IsValid -- ERROR: Block invalid, block value limit exceeded: block %lld, limit %lld\n", nBlockValue, blockReward + nPaymentsTotalAmount);
+    CAmount nBlockValue = actualReward;
+    if(nBlockValue > expectedReward + nPaymentsTotalAmount) {
+        LogPrintf("CSuperblock::IsValid -- ERROR: Block invalid, block value limit exceeded: block %lld, limit %lld\n", nBlockValue, expectedReward + nPaymentsTotalAmount);
         return false;
     }
 
@@ -727,8 +725,8 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount b
 
         for (int j = nVoutIndex; j < nOutputs; j++) {
             // Find superblock payment
-            fPaymentMatch = ((payment.script == txNew.vout[j].scriptPubKey) &&
-                             (payment.nAmount == txNew.vout[j].nValue));
+            fPaymentMatch = ((payment.script == txNew->vout[j].scriptPubKey) &&
+                    (payment.nAmount == txNew->vout[j].nValue));
 
             if (fPaymentMatch) {
                 nVoutIndex = j;

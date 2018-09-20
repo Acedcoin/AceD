@@ -3,11 +3,12 @@
 #include "primitives/block.h"
 #include "utilstrencodings.h"
 #include "util.h"
- CBlockSigner::CBlockSigner(CBlock &block, const CKeyStore &keystore) :
+CBlockSigner::CBlockSigner(CBlock &block, const CKeyStore *keystore) :
         refBlock(block),
         refKeystore(keystore)
 {
- }
+
+}
  bool CBlockSigner::SignBlock()
 {
     std::vector<std::vector<unsigned char>> vSolutions;
@@ -29,7 +30,7 @@
             {
                 keyID = CPubKey(vSolutions[0]).GetID();
             }
-             if (!refKeystore.GetKey(keyID, keySecret))
+             if (!refKeystore->GetKey(keyID, keySecret))
                 return false;
         }
     }
@@ -47,7 +48,7 @@
         {
             keyID = CPubKey(vSolutions[0]).GetID();
         }
-         if (!refKeystore.GetKey(keyID, keySecret))
+         if (!refKeystore->GetKey(keyID, keySecret))
             return false;
     }
      return keySecret.SignCompact(refBlock.GetHash(), refBlock.vchBlockSig);
@@ -94,4 +95,4 @@
         }
     }
      return recoveredKey.GetID() == signatureKeyID;
-} 
+}

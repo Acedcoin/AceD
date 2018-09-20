@@ -157,7 +157,7 @@ public:
             consensus.nStakeMinAge = 60 * 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // POS hard fork date
-            consensus.nLastPoWBlock = 186213;
+            consensus.nLastPoWBlock = 188328;
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -230,7 +230,6 @@ public:
             fMiningRequiresPeers = true;
             fDefaultConsistencyChecks = false;
             fRequireStandard = true;
-            fRequireRoutableExternalIP = true;
             fMineBlocksOnDemand = false;
             fAllowMultipleAddressesFromGroup = false;
             fAllowMultiplePorts = false;
@@ -385,7 +384,6 @@ public:
             fMiningRequiresPeers = true;
             fDefaultConsistencyChecks = false;
             fRequireStandard = false;
-            fRequireRoutableExternalIP = true;
             fMineBlocksOnDemand = false;
             fAllowMultipleAddressesFromGroup = false;
             fAllowMultiplePorts = false;
@@ -564,7 +562,7 @@ public:
             consensus.nMasternodePaymentsIncreasePeriod = 10;
             consensus.nInstantSendConfirmationsRequired = 2;
             consensus.nInstantSendKeepLock = 6;
-            consensus.nBudgetPaymentsStartBlock = 1000;
+            consensus.nBudgetPaymentsStartBlock = 25;
             consensus.nBudgetPaymentsCycleBlocks = 50;
             consensus.nBudgetPaymentsWindowBlocks = 10;
             consensus.nSuperblockStartBlock = 1500;
@@ -603,9 +601,9 @@ public:
             // Stake info
             consensus.nPosTargetSpacing = 30; // PoSW: 1 minutes
             consensus.nPosTargetTimespan = 60 * 40;
-            consensus.nStakeMinAge = 2;
+            consensus.nStakeMinAge = 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 15;
+            consensus.nLastPoWBlock = 25;
 
             // The best chain should have at least this much work.
             consensus.nMinimumChainWork = uint256S("0x00");
@@ -632,7 +630,6 @@ public:
             fMiningRequiresPeers = false;
             fDefaultConsistencyChecks = true;
             fRequireStandard = false;
-            fRequireRoutableExternalIP = false;
             fMineBlocksOnDemand = true;
             fAllowMultipleAddressesFromGroup = true;
             fAllowMultiplePorts = true;
@@ -710,4 +707,4 @@ void SelectParams(const std::string& network)
 void UpdateRegtestBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
 {
         regTestParams.UpdateBIP9Parameters(d, nStartTime, nTimeout);
-}s
+}

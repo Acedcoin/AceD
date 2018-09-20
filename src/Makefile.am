@@ -127,6 +127,8 @@ BITCOIN_CORE_H = \
   instantx.h \
   key.h \
   keepass.h \
+  kernel.h \
+  blocksigner.h \
   keystore.h \
   dbwrapper.h \
   limitedmap.h \
@@ -282,7 +284,9 @@ endif
 libpolis_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libpolis_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libpolis_wallet_a_SOURCES = \
+  kernel.cpp \
   keepass.cpp \
+  blocksigner.cpp \
   privatesend-client.cpp \
   privatesend-util.cpp \
   wallet/crypter.cpp \
