@@ -1,5 +1,5 @@
 [Unit]
-Description=Dash's distributed currency daemon
+Description=Polis's distributed currency daemon
 After=network.target
 
 [Service]

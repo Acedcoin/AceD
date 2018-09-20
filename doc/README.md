@@ -1,11 +1,11 @@
-Dash Core 0.12.1
+Polis Core 0.12.1
 =====================
 
-This is the official reference wallet for Dash digital currency and comprises the backbone of the Dash peer-to-peer network. You can [download Dash Core](https://www.polis.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for Polis digital currency and comprises the backbone of the Polis peer-to-peer network. You can [download Polis Core](https://www.polispay.org/downloads/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Dash on your native platform.
+The following are some helpful notes on how to run Polis on your native platform.
 
 ### Unix
 
@@ -20,18 +20,18 @@ Unpack the files into a directory, and then run polis-qt.exe.
 
 ### OS X
 
-Drag Dash-Qt to your applications folder, and then run Dash-Qt.
+Drag Polis-Qt to your applications folder, and then run Polis-Qt.
 
 ### Need Help?
 
-* See the [Dash documentation](https://polispay.atlassian.net/wiki/display/DOC)
+* See the [Polis documentation](https://polispay.atlassian.net/wiki/display/DOC)
 for help and more information.
-* Ask for help on [Dash Nation Discord](http://polischat.org)
-* Ask for help on the [Dash Forum](https://polis.org/forum)
+* Ask for help on [Polis Nation Discord](http://polischat.org)
+* Ask for help on the [Polis Forum](https://polispay.org/forum)
 
 Building
 ---------------------
-The following are developer notes on how to build Dash Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Polis Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -41,7 +41,7 @@ The following are developer notes on how to build Dash Core on your native platf
 
 Development
 ---------------------
-The Dash Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The Polis Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)
@@ -57,8 +57,8 @@ The Dash Core repo's [root README](/README.md) contains relevant information on 
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [Dash Forum](https://polis.org/forum), in the Development & Technical Discussion board.
-* Discuss on [Dash Nation Discord](http://polischat.org)
+* Discuss on the [Polis Forum](https://polispay.org/forum), in the Development & Technical Discussion board.
+* Discuss on [Polis Nation Discord](http://polischat.org)
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)

@@ -89,7 +89,7 @@ You can confirm that remote server is on the correct block by issuing
 
 ```polis-cli getinfo```
 
-and comparing with the official explorer at https://explorer.polis.org/chain/Dash
+and comparing with the official explorer at https://explorer.polispay.org/chain/Polis
 
 ### Local
 

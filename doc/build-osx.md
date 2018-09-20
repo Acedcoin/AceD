@@ -24,15 +24,15 @@ If you want to build the disk image with `make deploy` (.dmg / optional), you ne
 
 NOTE: Building with Qt4 is still supported, however, doing so could result in a broken UI. Therefore, building with Qt5 is recommended.
 
-Build Dash Core
+Build Polis Core
 ------------------------
 
-1. Clone the Dash Core source code and cd into `polis`
+1. Clone the Polis Core source code and cd into `polis`
 
         git clone https://github.com/polispay/polis
         cd polis
 
-2.  Build Dash Core:
+2.  Build Polis Core:
 
     Configure and build the headless polis binaries as well as the GUI (if Qt is found).
 
@@ -53,19 +53,19 @@ Build Dash Core
 Running
 -------
 
-Dash Core is now available at `./src/polisd`
+Polis Core is now available at `./src/polisd`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=polisrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/DashCore/polis.conf"
+    echo -e "rpcuser=polisrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/PolisCore/polis.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/DashCore/polis.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/PolisCore/polis.conf"
 
 The first time you run polisd, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/DashCore/debug.log
+    tail -f $HOME/Library/Application\ Support/PolisCore/debug.log
 
 Other commands:
 -------

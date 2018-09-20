@@ -1,5 +1,5 @@
 ---
-name: "polis-linux-0.12"
+name: "polis-linux-1.4.1"
 enable_cache: true
 suites:
 - "trusty"

@@ -68,9 +68,9 @@ can then be controlled by group membership.
 3b) Mac OS X
 
 Binary:              `/usr/local/bin/polisd`  
-Configuration file:  `~/Library/Application Support/DashCore/polis.conf`  
-Data directory:      `~/Library/Application Support/DashCore`
-Lock file:           `~/Library/Application Support/DashCore/.lock`
+Configuration file:  `~/Library/Application Support/PolisCore/polis.conf`  
+Data directory:      `~/Library/Application Support/PolisCore`
+Lock file:           `~/Library/Application Support/PolisCore/.lock`
 
 4. Installing Service Configuration
 -----------------------------------

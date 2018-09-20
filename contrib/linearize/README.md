@@ -1,10 +1,10 @@
 # Linearize
-Construct a linear, no-fork, best version of the Dash blockchain. The scripts
+Construct a linear, no-fork, best version of the Polis blockchain. The scripts
 run using Python 3 but are compatible with Python 2.
 
-## Step 0: Install polis_hash
+## Step 0: Install dash_hash
 
-https://github.com/polispay/polis_hash
+https://github.com/dashpay/dash_hash
 
 ## Step 1: Download hash list
 

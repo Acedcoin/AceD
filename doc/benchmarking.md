@@ -1,10 +1,10 @@
 Benchmarking
 ============
 
-Dash Core has an internal benchmarking framework, with benchmarks
+Polis Core has an internal benchmarking framework, with benchmarks
 for cryptographic algorithms such as SHA1, SHA256, SHA512 and RIPEMD160. As well as the rolling bloom filter.
 
-After compiling Dash Core, the benchmarks can be run with:
+After compiling Polis Core, the benchmarks can be run with:
 `src/bench/bench_polis`
 
 The output will look similar to:

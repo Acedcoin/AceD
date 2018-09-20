@@ -10,7 +10,7 @@
 
 /**
  * CBaseChainParams defines the base parameters (shared between polis-cli and polisd)
- * of a given instance of the Dash system.
+ * of a given instance of the Polis system.
  */
 class CBaseChainParams
 {
