@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/polis-config.h"
 #endif
 
 #include "bitcoingui.h"
@@ -38,6 +38,7 @@
 #include "util.h"
 #include "masternode-sync.h"
 #include "masternodelist.h"
+#include "miner.h"
 
 #include <iostream>
 
@@ -87,6 +88,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     clientModel(0),
     walletFrame(0),
     unitDisplayControl(0),
+    labelStakingIcon(0),
     labelWalletEncryptionIcon(0),
     labelWalletHDStatusIcon(0),
     labelConnectionsIcon(0),
@@ -98,6 +100,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     overviewAction(0),
     historyAction(0),
     masternodeAction(0),
+    governanceAction(0),
     quitAction(0),
     sendCoinsAction(0),
     sendCoinsMenuAction(0),
@@ -301,7 +304,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(QIcon(":/icons/" + theme + "/send"), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Dash address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a Polis address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -316,7 +319,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
     receiveCoinsAction = new QAction(QIcon(":/icons/" + theme + "/receiving_addresses"), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and dash: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and polis: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -357,6 +360,20 @@ void BitcoinGUI::createActions()
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(gotoMasternodePage()));
     }
+    if (!fLiteMode && settings.value("fShowGovernanceTab").toBool()) {
+        governanceAction = new QAction(QIcon(":/icons/" + theme + "/governance"), tr("&Governance"), this);
+        governanceAction->setStatusTip(tr("Show governance items"));
+        governanceAction->setToolTip(governanceAction->statusTip());
+        governanceAction->setCheckable(true);
+#ifdef Q_OS_MAC
+        governanceAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
+#else
+        governanceAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+#endif
+        tabGroup->addAction(governanceAction);
+        connect(governanceAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+        connect(governanceAction, SIGNAL(triggered()), this, SLOT(gotoGovernancePage()));
+    }
 
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -379,7 +396,7 @@ void BitcoinGUI::createActions()
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     aboutAction = new QAction(QIcon(":/icons/" + theme + "/about"), tr("&About %1").arg(tr(PACKAGE_NAME)), this);
-    aboutAction->setStatusTip(tr("Show information about Dash Core"));
+    aboutAction->setStatusTip(tr("Show information about Polis Core"));
     aboutAction->setMenuRole(QAction::AboutRole);
     aboutAction->setEnabled(false);
     aboutQtAction = new QAction(QIcon(":/icons/" + theme + "/about_qt"), tr("About &Qt"), this);
@@ -403,9 +420,9 @@ void BitcoinGUI::createActions()
     unlockWalletAction->setToolTip(tr("Unlock wallet"));
     lockWalletAction = new QAction(tr("&Lock Wallet"), this);
     signMessageAction = new QAction(QIcon(":/icons/" + theme + "/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Dash addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your Polis addresses to prove you own them"));
     verifyMessageAction = new QAction(QIcon(":/icons/" + theme + "/transaction_0"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Dash addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Polis addresses"));
 
     openInfoAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Information"), this);
     openInfoAction->setStatusTip(tr("Show diagnostic information"));
@@ -436,11 +453,11 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a dash: URI or payment request"));
+    openAction->setStatusTip(tr("Open a polis: URI or payment request"));
 
     showHelpMessageAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Dash command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Polis command-line options").arg(tr(PACKAGE_NAME)));
 
     showPrivateSendHelpAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&PrivateSend information"), this);
     showPrivateSendHelpAction->setMenuRole(QAction::NoRole);
@@ -568,6 +585,10 @@ void BitcoinGUI::createToolBars()
         if (!fLiteMode && settings.value("fShowMasternodesTab").toBool() && masternodeAction)
         {
             toolbar->addAction(masternodeAction);
+        }
+        if (!fLiteMode && settings.value("fShowGovernanceTab").toBool() && governanceAction)
+        {
+            toolbar->addAction(governanceAction);
         }
         toolbar->setMovable(false); // remove unused icon in upper left corner
         overviewAction->setChecked(true);
@@ -716,6 +737,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     QSettings settings;
     if (!fLiteMode && settings.value("fShowMasternodesTab").toBool() && masternodeAction) {
         masternodeAction->setEnabled(enabled);
+    }
+    if (!fLiteMode && settings.value("fShowMasternodesTab").toBool() && governanceAction) {
+        governanceAction->setEnabled(enabled);
     }
     encryptWalletAction->setEnabled(enabled);
     backupWalletAction->setEnabled(enabled);
@@ -892,6 +916,15 @@ void BitcoinGUI::gotoMasternodePage()
     }
 }
 
+void BitcoinGUI::gotoGovernancePage()
+{
+    QSettings settings;
+    if (!fLiteMode && settings.value("fShowGovernanceTab").toBool() && governanceAction) {
+        governanceAction->setChecked(true);
+        if (walletFrame) walletFrame->gotoGovernancePage();
+    }
+}
+
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
     receiveCoinsAction->setChecked(true);
@@ -930,7 +963,7 @@ void BitcoinGUI::updateNetworkState()
     }
 
     if (clientModel->getNetworkActive()) {
-        labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Dash network", "", count));
+        labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Polis network", "", count));
     } else {
         labelConnectionsIcon->setToolTip(tr("Network activity disabled"));
         icon = ":/icons/" + theme + "/network_disabled";
@@ -1027,7 +1060,6 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
         }
     }
 #endif // ENABLE_WALLET
-
     if(!masternodeSync.IsBlockchainSynced())
     {
         QString timeBehindText = GUIUtil::formatNiceTimeOffset(secs);
@@ -1126,7 +1158,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style, bool *ret)
 {
-    QString strTitle = tr("Dash Core"); // default title
+    QString strTitle = tr("Polis Core"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -1152,7 +1184,7 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
             break;
         }
     }
-    // Append title to "Dash Core - "
+    // Append title to "Polis Core - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 
@@ -1306,6 +1338,20 @@ void BitcoinGUI::setHDStatus(int hdEnabled)
 
     // eventually disable the QLabel to set its opacity to 50%
     labelWalletHDStatusIcon->setEnabled(hdEnabled);
+}
+
+void BitcoinGUI::setStakingStatus()
+{
+    QString theme = GUIUtil::getThemeName();
+   // if (nLastCoinStakeSearchInterval) {
+   //     labelStakingIcon->show();
+   //     labelStakingIcon->setPixmap(QIcon(QString(":/icons/%1/staking_active").arg(theme)).pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+   //     labelStakingIcon->setToolTip(tr("Staking is active\n"));
+   // } else {
+   //     labelStakingIcon->show();
+   //     labelStakingIcon->setPixmap(QIcon(QString(":/icons/%1/staking_inactive").arg(theme)).pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+   //     labelStakingIcon->setToolTip(tr("Staking is inactive\n"));
+   //  }
 }
 
 void BitcoinGUI::setEncryptionStatus(int status)

@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/polis-config.h"
 #endif
 
 #include "optionsmodel.h"
@@ -24,6 +24,8 @@
 #include "wallet/walletdb.h"
 
 #include "masternodeconfig.h"
+#include "governance.h"
+
 #include "privatesend-client.h"
 #endif
 
@@ -75,7 +77,7 @@ void OptionsModel::Init(bool resetSettings)
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::DASH);
+        settings.setValue("nDisplayUnit", BitcoinUnits::POLIS);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -95,6 +97,9 @@ void OptionsModel::Init(bool resetSettings)
 
     if (!settings.contains("fShowMasternodesTab"))
         settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
+
+    if (!settings.contains("fShowGovernanceTab"))
+        settings.setValue("fShowGovernanceTab", masternodeConfig.getCount());
 
     // PrivateSend
     if (!settings.contains("fShowAdvancedPSUI"))
@@ -140,10 +145,10 @@ void OptionsModel::Init(bool resetSettings)
 
     if (!settings.contains("nPrivateSendAmount")) {
         // for migration from old settings
-        if (!settings.contains("nAnonymizeDashAmount"))
+        if (!settings.contains("nAnonymizePolisAmount"))
             settings.setValue("nPrivateSendAmount", DEFAULT_PRIVATESEND_AMOUNT);
         else
-            settings.setValue("nPrivateSendAmount", settings.value("nAnonymizeDashAmount").toInt());
+            settings.setValue("nPrivateSendAmount", settings.value("nAnonymizePolisAmount").toInt());
     }
     if (!SoftSetArg("-privatesendamount", settings.value("nPrivateSendAmount").toString().toStdString()))
         addOverriddenOption("-privatesendamount");
@@ -202,7 +207,7 @@ void OptionsModel::Reset()
 
     // Remove all entries from our QSettings object
     settings.clear();
-    resetSettings = true; // Needed in dash.cpp during shotdown to also remove the window positions
+    resetSettings = true; // Needed in polis.cpp during shotdown to also remove the window positions
 
     // default setting for OptionsModel::StartAtStartup - disabled
     if (GUIUtil::GetStartOnSystemStartup())
@@ -270,6 +275,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("bSpendZeroConfChange");
         case ShowMasternodesTab:
             return settings.value("fShowMasternodesTab");
+        case ShowGovernanceTab:
+            return settings.value("fShowGovernanceTab");
         case ShowAdvancedPSUI:
             return fShowAdvancedPSUI;
         case LowKeysWarning:
@@ -414,6 +421,12 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case ShowMasternodesTab:
             if (settings.value("fShowMasternodesTab") != value) {
                 settings.setValue("fShowMasternodesTab", value);
+                setRestartRequired(true);
+            }
+            break;
+        case ShowGovernanceTab:
+            if (settings.value("fShowGovernanceTab") != value) {
+                settings.setValue("fShowGovernanceTab", value);
                 setRestartRequired(true);
             }
             break;

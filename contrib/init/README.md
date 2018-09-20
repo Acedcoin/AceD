@@ -1,11 +1,11 @@
 Sample configuration files for:
 
-SystemD: dashd.service
-Upstart: dashd.conf
-OpenRC:  dashd.openrc
-         dashd.openrcconf
-CentOS:  dashd.init
-OS X:    org.dash.dashd.plist
+SystemD: polisd.service
+Upstart: polisd.conf
+OpenRC:  polisd.openrc
+         polisd.openrcconf
+CentOS:  polisd.init
+OS X:    org.polis.polisd.plist
 
 have been made available to assist packagers in creating node packages here.
 
