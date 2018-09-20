@@ -532,9 +532,9 @@ BOOST_AUTO_TEST_CASE(test_ParseFixedPoint)
     BOOST_CHECK_EQUAL(amount, -1LL);
     BOOST_CHECK(ParseFixedPoint("1000000000.00000001", 8, &amount));
     BOOST_CHECK_EQUAL(amount, 100000000000000001LL);
-    BOOST_CHECK(ParseFixedPoint("241262412699.2412624126", 8, &amount));
+    BOOST_CHECK(ParseFixedPoint("9999999999.99999999", 8, &amount));
     BOOST_CHECK_EQUAL(amount, 9999999999999999999LL);
-    BOOST_CHECK(ParseFixedPoint("-241262412699.2412624126", 8, &amount));
+    BOOST_CHECK(ParseFixedPoint("-9999999999.99999999", 8, &amount));
     BOOST_CHECK_EQUAL(amount, -9999999999999999999LL);
 
     BOOST_CHECK(!ParseFixedPoint("", 8, &amount));
@@ -555,8 +555,8 @@ BOOST_AUTO_TEST_CASE(test_ParseFixedPoint)
     BOOST_CHECK(!ParseFixedPoint("10000000000.00000001", 8, &amount));
     BOOST_CHECK(!ParseFixedPoint("-10000000000.00000009", 8, &amount));
     BOOST_CHECK(!ParseFixedPoint("10000000000.00000009", 8, &amount));
-    BOOST_CHECK(!ParseFixedPoint("-2412624126999.2412624126", 8, &amount));
-    BOOST_CHECK(!ParseFixedPoint("2412699024126.024126999", 8, &amount));
+    BOOST_CHECK(!ParseFixedPoint("-9999999999.99999999", 8, &amount));
+    BOOST_CHECK(!ParseFixedPoint("9999999999.99999999", 8, &amount));
     BOOST_CHECK(!ParseFixedPoint("92233720368.54775807", 8, &amount));
     BOOST_CHECK(!ParseFixedPoint("92233720368.54775808", 8, &amount));
     BOOST_CHECK(!ParseFixedPoint("-92233720368.54775808", 8, &amount));
