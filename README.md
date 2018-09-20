@@ -1,10 +1,15 @@
-Polis Core staging tree 0.12.3
-===============================
+![Polis](https://github.com/polispay/polis/raw/master/src/qt/res/icons/bitcoin.png "Polis")
 
-`master:` [![Build Status](https://travis-ci.org/polispay/polis.svg?branch=master)](https://travis-ci.org/polispay/polis) `develop:` [![Build Status](https://travis-ci.org/polispay/polis.svg?branch=develop)](https://travis-ci.org/polispay/polis/branches)
+POLIS Core integration/staging tree
+=====================================
+[![Build Status](https://travis-ci.org/polispay/polis.svg?branch=master)](https://travis-ci.org/polispay/polis)
 
-https://www.polispay.org
 
+http://www.polispay.org
+
+- Copyright (c) 2009-2015 Bitcoin Developers
+- Copyright (c) 2014-2017 Dash Developers
+- Copyright (c) 2017-2018 Polis Developers
 
 What is Polis?
 ----------------
@@ -16,7 +21,7 @@ are carried out collectively by the network. Polis Core is the name of the open
 source software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Polis Core software, see https://www.polispay.org/get-polis/.
+the Polis Core software, see https://www.polispay.org/Find-polis/.
 
 
 License
