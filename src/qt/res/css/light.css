@@ -689,9 +689,14 @@ margin-right:5px;
 padding-right:5px;
 }
 
-QWidget .QFrame#frame .QLabel#labelWalletStatus { /* Wallet Sync Status */
+QWidget .QFrame#frame .QLabel#labelStatus { /* Wallet Sync Status */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 margin-left:3px;
+}
+
+QWidget .QFrame#frame .QLabel#labelBlocks { /* Wallet Sync Status */
+    qproperty-alignment: 'AlignVCenter | AlignLeft';
+    margin-left:3px;
 }
 
 QWidget .QFrame#frame .QLabel#labelStakeStatus { /* Wallet Sync Status */
@@ -703,6 +708,12 @@ QWidget .QFrame#frame .QLabel#labelStakeInputs { /* Wallet Sync Status */
     qproperty-alignment: 'AlignVCenter | AlignLefts';
     margin-left:3px;
 }
+
+QWidget .QFrame#frame .QLabel#labelStakeBalance { /* Wallet Sync Status */
+    qproperty-alignment: 'AlignVCenter | AlignLefts';
+    margin-left:3px;
+}
+
 
 QWidget .QFrame#frame .QLabel#labelSpendable { /* Spendable Header */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
@@ -752,7 +763,7 @@ QWidget .QFrame#frame .QLabel#labelWalletInfo { /* Available Balance Label */
     min-height:35px;
 }
 
-QWidget .QFrame#frame .QLabel#labelChainInfoText { /* Available Balance Label */
+QWidget .QFrame#frame .QLabel#labelBlockchainInfo { /* Available Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     background-color:#2E4D7C;
@@ -763,6 +774,7 @@ QWidget .QFrame#frame .QLabel#labelChainInfoText { /* Available Balance Label */
     font-weight: bold;
     min-height:35px;
 }
+
 
 QWidget .QFrame#frame .QLabel#labelBalance { /* Available Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
@@ -787,7 +799,7 @@ margin-right:5px;
 padding-right:5px;
 }
 
-QWidget .QFrame#frame .QLabel#labelStakeText { /* Stake Balance Label */
+QWidget .QFrame#frame .QLabel#labelStakeBalanceText { /* Stake Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
@@ -814,7 +826,7 @@ QWidget .QFrame#frame .QLabel#labelStakeInputsText { /* Stake Balance Label */
     padding-right:5px;
 }
 
-QWidget .QFrame#frame .QLabel#labelWalletStatusText { /* Wallet Status Label */
+QWidget .QFrame#frame .QLabel#labelStatusText { /* Wallet Status Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
@@ -832,7 +844,7 @@ QWidget .QFrame#frame .QLabel#labelHeadersText { /* Headers Status Label */
      padding-right:5px;
  }
 
-QWidget .QFrame#frame .QLabel#labelBlocksText { /* Blocks Status Label */
+    QWidget .QFrame#frame .QLabel#labelBlocksText { /* Blocks Status Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;

@@ -88,7 +88,6 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     clientModel(0),
     walletFrame(0),
     unitDisplayControl(0),
-    labelStakingIcon(0),
     labelWalletEncryptionIcon(0),
     labelWalletHDStatusIcon(0),
     labelConnectionsIcon(0),

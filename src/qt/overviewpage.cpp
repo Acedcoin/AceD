@@ -25,10 +25,10 @@
 #include <QSettings>
 #include <QTimer>
 
-#define ICON_OFFSET 16
+#define ICON_OFFSET 12
 #define DECORATION_SIZE 54
-#define NUM_ITEMS 10
-#define NUM_ITEMS_ADV 10
+#define NUM_ITEMS 7
+#define NUM_ITEMS_ADV 7
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -126,6 +126,8 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     walletModel(0),
     currentBalance(-1),
     currentUnconfirmedBalance(-1),
+    currentStakeInputs(-1),
+    currentStakeBalance(-1),
     currentImmatureBalance(-1),
     currentWatchOnlyBalance(-1),
     currentWatchUnconfBalance(-1),
@@ -165,7 +167,7 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance, const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
+void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance, const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance, const CAmount& stakeBalance, const int stakeInputs)
 {
     currentBalance = balance;
     currentUnconfirmedBalance = unconfirmedBalance;
@@ -174,9 +176,13 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchOnlyBalance = watchOnlyBalance;
     currentWatchUnconfBalance = watchUnconfBalance;
     currentWatchImmatureBalance = watchImmatureBalance;
+    currentStakeBalance = stakeBalance;
+    currentStakeInputs = stakeInputs;
     ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelStakeBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, stakeBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelStakeInputs->setText(QString::number(stakeInputs));
     ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance + unconfirmedBalance + immatureBalance, false, BitcoinUnits::separatorAlways));
     ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance, false, BitcoinUnits::separatorAlways));
     ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
@@ -200,6 +206,27 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         cachedTxLocks = nCompleteTXLocks;
         ui->listTransactions->update();
 
+    }
+}
+
+void OverviewPage::setBlockChainInfo(int count, const QDateTime& blockDate, double nVerificationProgress, bool headers)
+{
+
+    // Update staking status each block
+    if (Params().GetConsensus().nLastPoWBlock > count) {
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>Staking hasn't started</font>") );
+    } else if (!masternodeSync.IsSynced()) {
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>Masternode list not synced</font>") );
+    } else if (pwalletMain->IsLocked()){
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>Wallet is locked</font>") );
+    } else if (!pwalletMain->MintableCoins()){
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>No mintable coins</font>") );
+    } else {
+        ui->labelStakeStatus->setText(tr("<font color='darkgreen'>Staking</font>") );
+    }
+
+    if (!headers) {
+        ui->labelBlocks->setText(QString::number(count));
     }
 }
 
@@ -232,6 +259,8 @@ void OverviewPage::setClientModel(ClientModel *model)
         // Show warning if this is a prerelease version
         connect(model, SIGNAL(alertsChanged(QString)), this, SLOT(updateAlerts(QString)));
         updateAlerts(model->getStatusBarWarnings());
+        setBlockChainInfo(model->getNumBlocks(), model->getLastBlockDate(), model->getVerificationProgress(NULL), false);
+        connect(model, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(setBlockChainInfo(int,QDateTime,double,bool)));
     }
 }
 
@@ -244,8 +273,8 @@ void OverviewPage::setWalletModel(WalletModel *model)
         updateDisplayUnit();
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(), model->getAnonymizedBalance(),
-                   model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(CAmount,CAmount,CAmount,CAmount,CAmount,CAmount,CAmount)), this, SLOT(setBalance(CAmount,CAmount,CAmount,CAmount,CAmount,CAmount,CAmount)));
+                   model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance(), model->getStakeBalance(), model->getStakeInputs());
+        connect(model, SIGNAL(balanceChanged(CAmount,CAmount,CAmount,CAmount,CAmount,CAmount,CAmount, CAmount, int)), this, SLOT(setBalance(CAmount,CAmount,CAmount,CAmount,CAmount,CAmount,CAmount, CAmount, int)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
@@ -261,12 +290,19 @@ void OverviewPage::updateDisplayUnit()
         nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
         if(currentBalance != -1)
             setBalance(currentBalance, currentUnconfirmedBalance, currentImmatureBalance, currentAnonymizedBalance,
-                       currentWatchOnlyBalance, currentWatchUnconfBalance, currentWatchImmatureBalance);
+                       currentWatchOnlyBalance, currentWatchUnconfBalance, currentWatchImmatureBalance, currentStakeBalance, currentStakeInputs);
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = nDisplayUnit;
 
         ui->listTransactions->update();
+
+        ui->labelStatus->setText(tr("<font color='darkred'>syncing...</font>") );
+        // Masternode List Status
+        ui->labelMnList->setText(tr("<font color='darkred'>syncing...</font>") );
+        // Gobject List Status
+        ui->labelGobjectList->setText(tr("<font color='darkred'>syncing...</font>") );
+
     }
 }
 
@@ -278,8 +314,41 @@ void OverviewPage::updateAlerts(const QString &warnings)
 
 void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
+    ui->labelStatus->setVisible(fShow);
+    ui->labelMnList->setVisible(fShow);
+    ui->labelGobjectList->setVisible(fShow);
+    if (!fShow) {
+        ui->labelStatus->setVisible(true);
+        ui->labelMnList->setVisible(true);
+        ui->labelGobjectList->setVisible(true);
+        // Change new status
+        // Wallet Status
+        ui->labelStatus->setText(tr("<font color='darkgreen'>ready</font>") );
+        // Transaction Status
+        // Masternode List Status
+        if (masternodeSync.IsMasternodeListSynced()) {
+            ui->labelMnList->setText(tr("<font color='darkgreen'>ready</font>") );
+        } else if (masternodeSync.IsFailed()) {
+            ui->labelMnList->setText(tr("<font color='darkred'>failed</font>") );
+            ui->labelGobjectList->setText(tr("<font color='darkred'>failed</font>") );
+        }
+        if (masternodeSync.IsSynced()) {
+            ui->labelGobjectList->setText(tr("<font color='darkgreen'>ready</font>") );
+        }
+    }
 
-
+    // Update staking status on wallet change
+    if (Params().GetConsensus().nLastPoWBlock > chainActive.Height()) {
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>Staking hasn't started</font>") );
+    } else if (!masternodeSync.IsSynced()) {
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>Masternode list not synced</font>") );
+    } else if (pwalletMain->IsLocked()){
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>Wallet is locked</font>") );
+    } else if (!pwalletMain->MintableCoins()){
+        ui->labelStakeStatus->setText(tr("<font color='darkred'>No mintable coins</font>") );
+    } else {
+        ui->labelStakeStatus->setText(tr("<font color='darkgreen'>Staking</font>") );
+    }
 
 }
 

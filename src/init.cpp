@@ -460,6 +460,8 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-timeout=<n>", strprintf(_("Specify connection timeout in milliseconds (minimum: 1, default: %d)"), DEFAULT_CONNECT_TIMEOUT));
     strUsage += HelpMessageOpt("-torcontrol=<ip>:<port>", strprintf(_("Tor control port to use if onion listening enabled (default: %s)"), DEFAULT_TOR_CONTROL));
     strUsage += HelpMessageOpt("-torpassword=<pass>", _("Tor control port password (default: empty)"));
+    strUsage += HelpMessageOpt("-staking=<true>", strprintf(_("Enable staking while working with wallet, default is %b"), DEFAULT_STAKING));
+
 #ifdef USE_UPNP
 #if USE_UPNP
     strUsage += HelpMessageOpt("-upnp", _("Use UPnP to map the listening port (default: 1 when listening and no -proxy)"));
@@ -1974,8 +1976,11 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
 #ifdef ENABLE_WALLET
     if (pwalletMain)
         pwalletMain->postInitProcess(threadGroup);
-    if (chainActive.Height() >= chainparams.GetConsensus().nLastPoWBlock)
-    threadGroup.create_thread(std::bind(&ThreadStakeMinter, boost::ref(chainparams), boost::ref(connman), pwalletMain));
+    if (IsArgSet("-staking"))
+    {
+        if (GetBoolArg("-staking", DEFAULT_STAKING))
+            threadGroup.create_thread(std::bind(&ThreadStakeMinter, boost::ref(chainparams), boost::ref(connman), pwalletMain));
+    }
 #endif
 
     threadGroup.create_thread(boost::bind(&ThreadSendAlert, boost::ref(connman)));

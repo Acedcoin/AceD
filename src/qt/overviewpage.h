@@ -39,7 +39,8 @@ public:
 
 public Q_SLOTS:
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance,
-                    const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
+                    const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance, const CAmount& stakeBalance, const int stakeInputs);
+    void setBlockChainInfo(int count, const QDateTime& blockDate, double nVerificationProgress, bool headers);
 
 Q_SIGNALS:
     void transactionClicked(const QModelIndex &index);
@@ -54,6 +55,8 @@ private:
     CAmount currentBalance;
     CAmount currentUnconfirmedBalance;
     CAmount currentImmatureBalance;
+    CAmount currentStakeBalance;
+    int currentStakeInputs;
     CAmount currentAnonymizedBalance;
     CAmount currentWatchOnlyBalance;
     CAmount currentWatchUnconfBalance;
