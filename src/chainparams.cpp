@@ -146,18 +146,18 @@ public:
             consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
             consensus.nPowTargetTimespan = 24 * 60 * 60; // polis: 1 day
             consensus.nPowTargetSpacing = 120 ; // polis: 2 minutes
-            consensus.fPowAllowMinDifficultyBlocks = false;
+            consensus.fPowAllowMinDifficultyBlocks = true;
             consensus.fPowNoRetargeting = false;
             consensus.nPowKGWHeight = 551;
             consensus.nPowDGWHeight = 551;
 
             // Stake information
-            consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
+            consensus.nPosTargetSpacing = 1 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40;
             consensus.nStakeMinAge = 60 * 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // POS hard fork date
-            consensus.nLastPoWBlock = 188328;
+            consensus.nLastPoWBlock = 188348;
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -184,7 +184,7 @@ public:
             consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nThreshold = 3226; // 80% of 4032
 
             // The best chain should have at least this much work.
-            consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000003742f0c317e7795931"); // 134622
+            consensus.nMinimumChainWork = uint256S("0x0"); // 134622
             // By default assume that the signatures in ancestors of this block are valid.
             consensus.defaultAssumeValid = uint256S("0x00000000000002115266e3f36778feb4fe9488fccabcd004e13c13ab46ddfaeb"); // 134622
             /**

@@ -485,8 +485,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
             throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Polis Core is not connected!");
 
-        if (IsInitialBlockDownload())
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Polis Core is downloading blocks...");
+        // if (IsInitialBlockDownload())
+        //    throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Polis Core is downloading blocks...");
     }
 
     // when enforcement is on we need information about a masternode payee or otherwise our block is going to be orphaned by the network
