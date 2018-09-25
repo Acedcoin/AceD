@@ -233,9 +233,11 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     // Most recent algo first
-   if (pindexLast->nHeight + 1 >= params.nLastPoWBlock -10 && pindexLast->nHeight + 1 <= params.nLastPoWBlock) {
-	return 0x1e0ffff0;
-   }
+    LogPrintf("GetNextWorkRequired()::pindexLast: %d\nThreshols: %d", pindexLast->nHeight, params.nLastPoWBlock -10);
+    if (pindexLast->nHeight + 1 >= params.nLastPoWBlock -11 && pindexLast->nHeight + 1 <= params.nLastPoWBlock) {
+        LogPrintf("GetNextWorkRequired()::Got here!");
+        return 0x1e0ffff0;
+    }
 
     if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
         return PoSWorkRequired(pindexLast, params);

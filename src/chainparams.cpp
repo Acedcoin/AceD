@@ -157,7 +157,7 @@ public:
             consensus.nStakeMinAge = 60 * 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // POS hard fork date
-            consensus.nLastPoWBlock = 188340;
+            consensus.nLastPoWBlock = 188337;
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -227,7 +227,7 @@ public:
 
             vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
-            fMiningRequiresPeers = true;
+            fMiningRequiresPeers = false;
             fDefaultConsistencyChecks = false;
             fRequireStandard = true;
             fMineBlocksOnDemand = false;
@@ -291,7 +291,7 @@ public:
             consensus.nBudgetPaymentsStartBlock = 46;
             consensus.nBudgetPaymentsCycleBlocks = 24;
             consensus.nBudgetPaymentsWindowBlocks = 10;
-            consensus.nSuperblockStartBlock = 70; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+            consensus.nSuperblockStartBlock = 3050; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
             // consensus.nSuperblockStartHash = uint256S("000001af046f4ed575a48b919ed28be8a40c6a78df8d7830fbbfd07ec17a1fee");
             consensus.nSuperblockCycle = 24; // Superblocks can be issued hourly on testnet
             consensus.nGovernanceMinQuorum = 1;
@@ -313,9 +313,9 @@ public:
             // Stake info
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40;
-            consensus.nStakeMinAge = 60;
+            consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 100;
+            consensus.nLastPoWBlock = 5040;
 
             consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
