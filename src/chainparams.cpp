@@ -158,10 +158,10 @@ public:
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // highest difficulty | 0x1e0ffff0
             // smallest difficulty | 0x008000
-            consensus.nLastPoWBlockDiff = 0x008000; // Genesis Difficulty
+            consensus.nLastPoWBlockDiff = 0x1e0ffff0; // Genesis Difficulty
 
             // POS hard fork date
-            consensus.nLastPoWBlock = 198048;
+            consensus.nLastPoWBlock = 201648;
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -319,10 +319,10 @@ public:
             consensus.nPosTargetTimespan = 60 * 40;
             consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 300;
-            // highest difficulty | 0x1e0ffff0
+            consensus.nLastPoWBlock = 400;
+            // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
-            consensus.nLastPoWBlockDiff = 0x008000; // Genesis Difficulty
+            consensus.nLastPoWBlockDiff = 0x1e0ffff0; // Genesis Difficulty
 
             consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -612,9 +612,9 @@ public:
             consensus.nStakeMinAge = 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             consensus.nLastPoWBlock = 25;
-            // highest difficulty | 0x1e0ffff0
+            // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
-            consensus.nLastPoWBlockDiff = 0x008000; // Genesis Difficulty
+            consensus.nLastPoWBlockDiff = 0x1e0ffff0; // Genesis Difficulty
 
             // The best chain should have at least this much work.
             consensus.nMinimumChainWork = uint256S("0x00");
