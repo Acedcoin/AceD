@@ -242,7 +242,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return PoSWorkRequired(pindexLast, params);
     } else if (pindexLast->nHeight + 1 >= params.nPowDGWHeight) {
         LogPrintf("\nGetNextWorkRequired()::pindexLast: %d\nThresholds: %d\n", pindexLast->nHeight, params.nLastPoWBlock -10);
-        if (pindexLast->nHeight + 1 >= params.nLastPoWBlock -11 && pindexLast->nHeight + 1 <= params.nLastPoWBlock) {
+        if (pindexLast->nHeight + 1 >= params.nLastPoWBlock -3 && pindexLast->nHeight + 1 < params.nLastPoWBlock) {
             LogPrintf("\nGetNextWorkRequired()::Got here!\n");
             return PoW2PoSRequired(pindexLast, params);
         }
