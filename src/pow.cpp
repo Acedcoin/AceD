@@ -102,7 +102,7 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
 }
 
 unsigned int static PoW2PoSRequired(const CBlockIndex* pindexLast, const Consensus::Params& params) {
-    return Params().GetConsensus().nLastPoWBlockDiff; // Gets hardcoded diff for last PoW block.
+    return Params().GetConsensus().nWSTargetDiff; // Gets hardcoded diff for last PoW block.
 }
 
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params) {
