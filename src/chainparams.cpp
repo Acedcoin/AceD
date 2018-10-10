@@ -158,7 +158,8 @@ public:
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // highest difficulty | 0x1e0ffff0
             // smallest difficulty | 0x008000
-            consensus.nLastPoWBlockDiff = 0x1e0ffff0; // Genesis Difficulty
+            consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
+            consensus.nPoSDiffAdjustRange = 10;
 
             // POS hard fork date
             consensus.nLastPoWBlock = 201648;
@@ -319,10 +320,11 @@ public:
             consensus.nPosTargetTimespan = 60 * 40;
             consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 400;
+            consensus.nLastPoWBlock = 450;
+            consensus.nPoSDiffAdjustRange = 10;
             // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
-            consensus.nLastPoWBlockDiff = 0x1e0ffff0; // Genesis Difficulty
+            consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
 
             consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -614,7 +616,7 @@ public:
             consensus.nLastPoWBlock = 25;
             // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
-            consensus.nLastPoWBlockDiff = 0x1e0ffff0; // Genesis Difficulty
+            consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
 
             // The best chain should have at least this much work.
             consensus.nMinimumChainWork = uint256S("0x00");
