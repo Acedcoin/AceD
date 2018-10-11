@@ -320,7 +320,7 @@ public:
             consensus.nPosTargetTimespan = 60 * 40;
             consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 450;
+            consensus.nLastPoWBlock = 500;
             consensus.nPoSDiffAdjustRange = 10;
             // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
