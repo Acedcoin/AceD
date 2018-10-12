@@ -98,6 +98,7 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     bnNew /= ((nInterval + 1) * nTargetSpacing);
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
+    LogPrintf("PoSWorkRequired:: bnNew value: %d", bnNew.GetCompact());
     return bnNew.GetCompact();
 }
 
@@ -239,7 +240,8 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Most recent algo first
 
     if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
-        if(pindexLast->nHeight + 1 <= params.nLastPoWBlock + params.nPoSDiffAdjustRange){
+        LogPrintf("PoW::GetNextWorkRequired : %d\n\t\tRange: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,params.nPoSDiffAdjustRange);
+        if(pindexLast->nHeight + 1 <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
             return PoW2PoSRequired(pindexLast, params);
         }
         return PoSWorkRequired(pindexLast, params);
