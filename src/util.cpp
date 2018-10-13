@@ -108,8 +108,7 @@ namespace boost {
 
 
 
-
-//AceD only features
+//aced only features
 bool fMasternodeMode = false;
 bool fLiteMode = false;
 /**
@@ -270,7 +269,6 @@ bool LogAcceptCategory(const char* category)
 
         if (ptrCategory.get() == NULL)
         {
-
             if (mapMultiArgs.count("-debug")) {
                 std::string strThreadName = GetThreadName();
                 LogPrintf("debug turned on:\n");
@@ -279,7 +277,7 @@ bool LogAcceptCategory(const char* category)
                 const std::vector<std::string>& categories = mapMultiArgs.at("-debug");
                 ptrCategory.reset(new std::set<std::string>(categories.begin(), categories.end()));
                 // thread_specific_ptr automatically deletes the set when the thread ends.
-                // "aced" is a composite category enabling all AceD-related debug output
+                // "aced" is a composite category enabling all aced-related debug output
                 if(ptrCategory->count(std::string("aced"))) {
                     ptrCategory->insert(std::string("privatesend"));
                     ptrCategory->insert(std::string("instantsend"));
@@ -654,7 +652,6 @@ void ReadConfigFile(const std::string& confPath)
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile(confPath));
     if (!streamConfig.good()){
-
         // Create empty aced.conf if it does not excist
         FILE* configFile = fopen(GetConfigFile(confPath).string().c_str(), "a");
         if (configFile != NULL)
@@ -663,7 +660,6 @@ void ReadConfigFile(const std::string& confPath)
     }
 
     {
-
         LOCK(cs_args);
         std::set<std::string> setOptions;
         setOptions.insert("*");
@@ -950,6 +946,19 @@ bool SetupNetworking()
     return true;
 }
 
+void SetThreadPriority(int nPriority)
+{
+#ifdef WIN32
+    SetThreadPriority(GetCurrentThread(), nPriority);
+#else // WIN32
+#ifdef PRIO_THREAD
+    setpriority(PRIO_THREAD, 0, nPriority);
+#else // PRIO_THREAD
+    setpriority(PRIO_PROCESS, 0, nPriority);
+#endif // PRIO_THREAD
+#endif // WIN32
+}
+
 int GetNumCores()
 {
 #if BOOST_VERSION >= 105600
@@ -1017,3 +1026,4 @@ std::string SafeIntVersionToString(uint32_t nVersion)
         return "invalid_version";
     }
 }
+

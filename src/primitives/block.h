@@ -74,6 +74,8 @@ class CBlock : public CBlockHeader
 public:
     // network and disk
     std::vector<CTransactionRef> vtx;
+    std::vector<unsigned char> vchBlockSig;
+
 
     // memory only
     mutable CTxOut txoutMasternode; // masternode payment
@@ -119,6 +121,8 @@ public:
         block.nNonce         = nNonce;
         return block;
     }
+    bool IsProofOfStake() const;
+    bool IsProofOfWork() const;
 
     std::string ToString() const;
 };
