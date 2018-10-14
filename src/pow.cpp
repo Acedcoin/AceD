@@ -107,7 +107,8 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockH
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
-    if (!pindexLast || pindexLast->nHeight < nPastBlocks) {
+    //if (!pindexLast || pindexLast->nHeight < nPastBlocks) {
+    if (!pindexLast || pindexLast->nHeight < nPastBlocks || (pindexLast->nHeight >= 57450 && pindexLast->nHeight < 57460)) {
         return bnPowLimit.GetCompact();
     }
 
@@ -196,7 +197,8 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
 
     // Genesis block
-    if (pindexLast == NULL)
+    //if (pindexLast == NULL)
+   if (pindexLast == NULL || pindexLast->nHeight+1 < 57460)
         return nProofOfWorkLimit;
 
     // Only change once per interval
