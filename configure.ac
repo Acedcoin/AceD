@@ -1,14 +1,15 @@
+
 dnl require autoconf 2.60 (AS_ECHO/AS_ECHO_N)
 AC_PREREQ([2.60])
 define(_CLIENT_VERSION_MAJOR, 1)
-define(_CLIENT_VERSION_MINOR, 4)
+define(_CLIENT_VERSION_MINOR, 8)
 define(_CLIENT_VERSION_REVISION, 1)
 define(_CLIENT_VERSION_BUILD, 0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
-define(_COPYRIGHT_YEAR, 2018)
+define(_COPYRIGHT_YEAR, 2017)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
-define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Polis Core]])
-AC_INIT([Polis Core],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[https://github.com/polispay/polis/issues],[poliscore],[https://polispay.org/])
+define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[polis Core]])
+AC_INIT([polis Core],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[https://github.com/polispay/polis/issues],[poliscore],[https://polispay.org/])
 AC_CONFIG_SRCDIR([src/validation.cpp])
 AC_CONFIG_HEADERS([src/config/polis-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -21,9 +22,9 @@ BITCOIN_TX_NAME=polis-tx
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef POLIS_CONFIG_H])
-AH_TOP([#define POLIS_CONFIG_H])
-AH_BOTTOM([#endif //POLIS_CONFIG_H])
+AH_TOP([#ifndef polis_CONFIG_H])
+AH_TOP([#define polis_CONFIG_H])
+AH_BOTTOM([#endif //polis_CONFIG_H])
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME
