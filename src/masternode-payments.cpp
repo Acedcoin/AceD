@@ -200,7 +200,7 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
             CSuperblockManager::CreateSuperblock(txNew, nBlockHeight, voutSuperblockRet);
             return;
     }
-
+/*
     // HardCoded Tx
     if (nBlockHeight == Params().GetConsensus().nLastPoWBlock + 5) {
         CBitcoinAddress addr = Params().SporkAddress();
@@ -208,7 +208,7 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
         CTxOut refundTx = CTxOut(11000000000000, payeeAddr);
         txNew.vout.push_back(refundTx);
     }
-
+*/
     // FILL BLOCK PAYEE WITH MASTERNODE PAYMENT OTHERWISE
     mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
     LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txoutMasternodeRet %s txNew %s",

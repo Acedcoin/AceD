@@ -138,7 +138,7 @@ public:
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 15;
-	consensus.nLastPoWBlock = 100000;
+	consensus.nLastPoWBlock = 22;
             // Stake information
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40;
@@ -199,7 +199,7 @@ public:
         pchMessageStart[2] = 0x6b;
         pchMessageStart[3] = 0xbd;
         vAlertPubKey = ParseHex("12345afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f");
-        nDefaultPort = 24126;
+        nDefaultPort = 24129;
         //nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
 

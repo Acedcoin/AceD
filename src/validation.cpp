@@ -2395,9 +2395,9 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
     // TODO: resync data (both ways?) and try to reprocess this block later.
-    CAmount expectedReward = pindex->nHeight == Params().GetConsensus().nLastPoWBlock + 5
-            ?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 11000000000000
-            : GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
+    //CAmount expectedReward =
+       //     ?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 11000000000000
+       CAmount expectedReward = GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, expectedReward, pindex->nMint, strError)) {
         return state.DoS(0, error("ConnectBlock(POLIS): %s", strError), REJECT_INVALID, "bad-cb-amount");
@@ -3200,7 +3200,7 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     if(!pindexNew)
         return;
 
-    if (block.IsProofOfStake()) {
+    if (block.IsProofOfStake() && chainActive.Height() >= 23) {
         pindexNew->SetProofOfStake();
         pindexNew->prevoutStake = block.vtx[1]->vin[0].prevout;
         pindexNew->nStakeTime = block.nTime;
@@ -3222,14 +3222,14 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     uint256 hash = block.GetHash();
 
     // ppcoin: record proof-of-stake hash value
-    if (pindexNew->IsProofOfStake()) {
+    if (pindexNew->IsProofOfStake() && chainActive.Height() >= 23) {
         if (!mapProofOfStake.count(hash))
             LogPrintf("AcceptProofOfStakeBlock() : hashProofOfStake not found in map \n");
         pindexNew->hashProofOfStake = mapProofOfStake[hash];
     }
 
     // ppcoin: compute stake modifier
-    if (pindexNew->IsProofOfStake()) {
+    if (pindexNew->IsProofOfStake() && chainActive.Height() >= 23) {
 
         uint64_t nStakeModifier = 0;
         bool fGeneratedStakeModifier = false;
@@ -3505,7 +3505,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     }
 
 
-    if (block.IsProofOfStake()) {
+    if (block.IsProofOfStake() && chainActive.Height() >= 23) {
         // Second transaction must be coinstake, the rest must not be
         if (block.vtx.empty() || !block.vtx[1]->IsCoinStake())
             return state.DoS(100, error("CheckBlock() : second tx is not coinstake"));

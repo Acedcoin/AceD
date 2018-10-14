@@ -703,7 +703,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman,
             }
             if(fProofOfStake)
             {
-                if (chainActive.Tip()->nHeight < chainparams.GetConsensus().nLastPoWBlock || pwallet->IsLocked() )
+                if (chainActive.Tip()->nHeight+1 < chainparams.GetConsensus().nLastPoWBlock || pwallet->IsLocked() )
                 {
                     LogPrintf("Not capable staking \n");
                     nLastCoinStakeSearchInterval = 0;
@@ -711,7 +711,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman,
                     continue;
                 }
             }
-            if(!fProofOfStake && chainActive.Tip()->nHeight >= chainparams.GetConsensus().nLastPoWBlock)
+            if(!fProofOfStake && chainActive.Tip()->nHeight-1 >= chainparams.GetConsensus().nLastPoWBlock)
             {
                 return;
             }
