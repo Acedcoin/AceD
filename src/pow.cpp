@@ -240,18 +240,13 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Most recent algo first
 
     if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
-        LogPrintf("PoW::GetNextWorkRequired : %d\n\t\tRange: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,params.nPoSDiffAdjustRange);
         if(pindexLast->nHeight + 1 <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
+            LogPrintf("PoW::GetNextWorkRequired : Range Limit %d\n\t\tWithin Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,pindexLast->nHeight);
             return PoW2PoSRequired(pindexLast, params);
         }
+        LogPrintf("PoW::GetNextWorkRequired : %d\n\t\tOut of initial Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,params.nPoSDiffAdjustRange);
         return PoSWorkRequired(pindexLast, params);
     } else if (pindexLast->nHeight + 1 >= params.nPowDGWHeight) {
-        /*LogPrintf("\nGetNextWorkRequired()::pindexLast: %d\nThresholds: %d\n", pindexLast->nHeight, params.nLastPoWBlock -10);
-        if (pindexLast->nHeight + 1 >= params.nLastPoWBlock -3 && pindexLast->nHeight + 1 < params.nLastPoWBlock) {
-            LogPrintf("\nGetNextWorkRequired()::Got here!\n");
-            return PoW2PoSRequired(pindexLast, params);
-        }
-        LogPrintf("\nGetNextWorkRequired()::Not at decrease difficulty range!\n");*/
         return DarkGravityWave(pindexLast, pblock, params);
     }
     else if (pindexLast->nHeight + 1 >= params.nPowKGWHeight) {
