@@ -40,7 +40,7 @@ unsigned int getIntervalVersion(bool fTestNet)
 //}
 // Hard checkpoints of stake modifiers to ensure they are deterministic
 static std::map<int, unsigned int> mapStakeModifierCheckpoints =
-        boost::assign::map_list_of(0, 0);
+        boost::assign::map_list_of(0, 0x0000000000000000);
 // Get time weight
 int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd)
 {
@@ -453,7 +453,7 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
 bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierChecksum)
 {
     if (fTestNet) return true; // Testnet has no checkpoints
-    //if (mapStakeModifierCheckpoints.count(nHeight))
-       // return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
+    if (mapStakeModifierCheckpoints.count(nHeight))
+        return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
     return true;
 }

@@ -243,7 +243,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Most recent algo first
     if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
         if(pindexLast->nHeight + 1 <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
-            LogPrintf("PoW::GetNextWorkRequired : Range Limit %d\n\t\tWithin Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,pindexLast->nHeight);
+            LogPrintf("PoS::GetNextWorkRequired : Range Limit %d\n\t\tWithin Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,pindexLast->nHeight);
             return PoW2PoSRequired(pindexLast, params);
         }
         LogPrintf("PoW::GetNextWorkRequired : %d\n\t\tOut of initial Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,params.nPoSDiffAdjustRange);
