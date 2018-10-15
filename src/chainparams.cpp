@@ -159,7 +159,7 @@ public:
             // highest difficulty | 0x1e0ffff0
             // smallest difficulty | 0x008000
             consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
-            consensus.nPoSDiffAdjustRange = 10;
+            consensus.nPoSDiffAdjustRange = 1;
 
             // POS hard fork date
             consensus.nLastPoWBlock = 202600;
@@ -322,7 +322,7 @@ public:
             consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             consensus.nLastPoWBlock = 600;
-            consensus.nPoSDiffAdjustRange = 10;
+            consensus.nPoSDiffAdjustRange = 1;
             // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
             consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
