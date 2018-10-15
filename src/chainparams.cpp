@@ -154,7 +154,7 @@ public:
             // Stake information
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40;
-            consensus.nStakeMinAge = 60 * 60;
+            consensus.nStakeMinAge = 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // highest difficulty | 0x1e0ffff0
             // smallest difficulty | 0x008000

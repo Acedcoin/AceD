@@ -261,11 +261,13 @@ static bool GetKernelStakeModifierV05(unsigned int nTimeTx, uint64_t& nStakeModi
         pindex = pindex->pprev;
         if (pindex->GeneratedStakeModifier())
         {
+            LogPrintf("Kernel::GetKernelStakeModifierV05 PrevIndexGeneratedStakeModifier TRUE");
             nStakeModifierHeight = pindex->nHeight;
             nStakeModifierTime = pindex->GetBlockTime();
         }
     }
     nStakeModifier = pindex->nStakeModifier;
+    LogPrintf("Kernel::GetKernelStakeModifierV05 PrevIndexNStakeModifier %d", nStakeModifier);
     return true;
 }
 // Get the stake modifier specified by the protocol to hash for a stake kernel
