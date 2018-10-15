@@ -85,8 +85,11 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     int64_t nTargetSpacing = Params().GetConsensus().nPosTargetSpacing;
     int64_t nTargetTimespan = Params().GetConsensus().nPosTargetTimespan;
     int64_t nActualSpacing = 0;
-    if (pindexLast->nHeight != 0)
+    if (pindexLast->nHeight != 0){
         nActualSpacing = pindexLast->GetBlockTime() - pindexLast->pprev->GetBlockTime();
+        LogPrintf("PoSWorkRequired:: nActualSpacing: %d", nActualSpacing);
+    }
+
     if (nActualSpacing < 0)
         nActualSpacing = 1;
     // ppcoin: target change every block
@@ -238,7 +241,6 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     // Most recent algo first
-
     if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
         if(pindexLast->nHeight + 1 <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
             LogPrintf("PoW::GetNextWorkRequired : Range Limit %d\n\t\tWithin Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,pindexLast->nHeight);
