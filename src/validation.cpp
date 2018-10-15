@@ -1285,15 +1285,17 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
         might be a good idea to change this to use prev bits
         but current height to avoid confusion.
 */
-CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
-{
-    CAmount nSubsidyBase = 10;
+
+//CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+//{
+  //  CAmount nSubsidyBase = 10;
     /*
     NOTE:   unlike bitcoin we are using PREVIOUS block height here,
             might be a good idea to change this to use prev bits
             but current height to avoid confusion.
     */
     // Old Block reward
+/*
     if(nPrevHeight <= 4) {nSubsidyBase = 50000;}
     if(nPrevHeight == 9) {nSubsidyBase = 1;}
     if(nPrevHeight == 19) {nSubsidyBase = 1;}
@@ -1316,31 +1318,100 @@ CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParam
     if(nPrevHeight == 141119) {nSubsidyBase = 5000;}
     if(nPrevHeight == 161279) {nSubsidyBase = 5000;}
     if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
-    if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 181439) {nSubsidyBase = 5000;}*/
 
     // New Block Reward
-    if(nPrevHeight > 188328) {nSubsidyBase = 20;}
+    //if(nPrevHeight > 188328) {nSubsidyBase = 20;}
 
     // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
-    CAmount nSubsidy = nSubsidyBase * COIN;
+    //CAmount nSubsidy = nSubsidyBase * COIN;
 
     // yearly decline of production by ~20% per year, projected ~25M coins max by year 2043+.
-    for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
-        nSubsidy -= nSubsidy/5;
-    }
+    //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+      //  nSubsidy -= nSubsidy/5;
+    //}
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+    //CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
 
-    return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
-}
+    //return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
+//}
+//CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
+//{
+  //  CAmount ret = blockValue/4; // start at 20%
+   // if(nHeight > 7000) ret = blockValue / 1.25;
+    //return ret;
+//}
+//CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+   {
+       double dDiff;
+        CAmount nSubsidyBase = 10;
+  /*
+  NOTE:   unlike bitcoin we are using PREVIOUS block height here,
+          might be a good idea to change this to use prev bits
+          but current height to avoid confusion.
+  */
+    if(nPrevHeight <= 4) {nSubsidyBase = 300000;}
+    if(nPrevHeight == 9) {nSubsidyBase = 1;}
+    if(nPrevHeight == 19) {nSubsidyBase = 1;}
+    if(nPrevHeight == 719) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 1439) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 2159) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 2879) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 3599) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 4319) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 5039) {nSubsidyBase = 1000;}
+    if(nPrevHeight > 6000) {nSubsidyBase = 20;}
+    if(nPrevHeight == 10079) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 15119) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 17170) {nSubsidyBase = 19;}
+    if(nPrevHeight == 17171) {nSubsidyBase = 21;}
+    if(nPrevHeight >= 32801) {nSubsidyBase = 18;}
+    if(nPrevHeight > 1314000) {nSubsidyBase = 2;}
+    if(nPrevHeight > 2628000) {nSubsidyBase = 0.1;}
+   /* if(nPrevHeight == 20159) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 40319) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 60479) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 80639) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 100799) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 120959) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 141119) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 161279) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 201599) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 221759) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 241919) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 483839) {nSubsidyBase = 10000;}
+    if(nPrevHeight == 725759) {nSubsidyBase = 10000;}
+    if(nPrevHeight == 967679) {nSubsidyBase = 10000;}
+    if(nPrevHeight == 1209599) {nSubsidyBase = 10000;}
+		*/
+        // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
+       CAmount nSubsidy = nSubsidyBase * COIN;
+
+      // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
+      //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+        //  nSubsidy -= nSubsidy/14;
+      //}
+
+      // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
+     // CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+   if(((nPrevHeight) % 100 == 0) && nPrevHeight >= 57798) {
+        nSubsidy = (((nSubsidy/0.9) * .1) * 100)+(nSubsidy*.2);
+	}
+
+       return nSubsidy;
+   }
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
-{
-    CAmount ret = blockValue/4; // start at 20%
-    if(nHeight > 7000) ret = blockValue / 1.25;
-    return ret;
-}
-
+    {
+       CAmount ret = blockValue/4; // start at 20%
+       if(nHeight > 7000) ret = blockValue / 1.25;
+    if ((nHeight-1) % 100 == 0 && nHeight >= 57799){
+	return blockValue * .982318;
+	}
+       return ret;
+   }
 bool IsInitialBlockDownload()
 {
     // Once this function has returned false, it must remain false.
