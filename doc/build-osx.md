@@ -24,17 +24,17 @@ If you want to build the disk image with `make deploy` (.dmg / optional), you ne
 
 NOTE: Building with Qt4 is still supported, however, doing so could result in a broken UI. Therefore, building with Qt5 is recommended.
 
-Build Polis Core
+Build AceD Core
 ------------------------
 
-1. Clone the Polis Core source code and cd into `polis`
+1. Clone the AceD Core source code and cd into `aced`
 
-        git clone https://github.com/polispay/polis
-        cd polis
+        git clone https://github.com/acedpay/aced
+        cd aced
 
-2.  Build Polis Core:
+2.  Build AceD Core:
 
-    Configure and build the headless polis binaries as well as the GUI (if Qt is found).
+    Configure and build the headless aced binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -53,37 +53,37 @@ Build Polis Core
 Running
 -------
 
-Polis Core is now available at `./src/polisd`
+AceD Core is now available at `./src/acedd`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=polisrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/PolisCore/polis.conf"
+    echo -e "rpcuser=acedrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/AceDCore/aced.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/PolisCore/polis.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/AceDCore/aced.conf"
 
-The first time you run polisd, it will start downloading the blockchain. This process could take several hours.
+The first time you run acedd, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/PolisCore/debug.log
+    tail -f $HOME/Library/Application\ Support/AceDCore/debug.log
 
 Other commands:
 -------
 
-    ./src/polisd -daemon # Starts the polis daemon.
-    ./src/polis-cli --help # Outputs a list of command-line options.
-    ./src/polis-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/acedd -daemon # Starts the aced daemon.
+    ./src/aced-cli --help # Outputs a list of command-line options.
+    ./src/aced-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for polis development.
+You can use Qt Creator as an IDE, for aced development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
 1. Make sure you installed everything through Homebrew mentioned above
 2. Do a proper ./configure --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "polis-qt" as project name, enter src/qt as location
+4. Enter "aced-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."

@@ -17,7 +17,7 @@ osx=true
 SIGNER=
 VERSION=
 commit=false
-url=https://github.com/polispay/polis
+url=https://github.com/acedpay/aced
 proc=2
 mem=2000
 lxc=true
@@ -32,7 +32,7 @@ commitFiles=true
 read -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] signer version
 
-Run this script from the directory containing the polis, gitian-builder, gitian.sigs, and polis-detached-sigs.
+Run this script from the directory containing the aced, gitian-builder, gitian.sigs, and aced-detached-sigs.
 
 Arguments:
 signer          GPG signer to sign each build assert file
@@ -40,7 +40,7 @@ version		Version number, commit, or branch to build. If building a commit or bra
 
 Options:
 -c|--commit	Indicate that the version argument is for a commit or branch
--u|--url	Specify the URL of the repository. Default is https://github.com/polispay/polis
+-u|--url	Specify the URL of the repository. Default is https://github.com/acedpay/aced
 -v|--verify 	Verify the gitian build
 -b|--build	Do a gitian build
 -s|--sign	Make signed binaries for Windows and Mac OSX
@@ -249,8 +249,8 @@ echo ${COMMIT}
 if [[ $setup = true ]]
 then
     sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm qemu-utils
-    git clone https://github.com/polispay/gitian.sigs.git
-    git clone https://github.com/polispay/polis-detached-sigs.git
+    git clone https://github.com/acedpay/gitian.sigs.git
+    git clone https://github.com/acedpay/aced-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
     pushd ./gitian-builder
     if [[ -n "$USE_LXC" ]]
@@ -268,7 +268,7 @@ then
 fi
 
 # Set up build
-pushd ./polis
+pushd ./aced
 git fetch
 git checkout ${COMMIT}
 popd
@@ -277,7 +277,7 @@ popd
 if [[ $build = true ]]
 then
 	# Make output folder
-	mkdir -p ./poliscore-binaries/${VERSION}
+	mkdir -p ./acedcore-binaries/${VERSION}
 	
 	# Build Dependencies
 	echo ""
@@ -287,7 +287,7 @@ then
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../polis/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../aced/depends download SOURCES_PATH=`pwd`/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -295,9 +295,9 @@ then
             echo ""
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit polis=${COMMIT} --url polis=${url} ../polis/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../polis/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/poliscore-*.tar.gz build/out/src/poliscore-*.tar.gz ../poliscore-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit aced=${COMMIT} --url aced=${url} ../aced/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../aced/contrib/gitian-descriptors/gitian-linux.yml
+	    mv build/out/acedcore-*.tar.gz build/out/src/acedcore-*.tar.gz ../acedcore-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -305,10 +305,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit polis=${COMMIT} --url polis=${url} ../polis/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../polis/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/poliscore-*-win-unsigned.tar.gz inputs/poliscore-win-unsigned.tar.gz
-	    mv build/out/poliscore-*.zip build/out/poliscore-*.exe ../poliscore-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit aced=${COMMIT} --url aced=${url} ../aced/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../aced/contrib/gitian-descriptors/gitian-win.yml
+	    mv build/out/acedcore-*-win-unsigned.tar.gz inputs/acedcore-win-unsigned.tar.gz
+	    mv build/out/acedcore-*.zip build/out/acedcore-*.exe ../acedcore-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -316,10 +316,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit polis=${COMMIT} --url polis=${url} ../polis/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../polis/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/poliscore-*-osx-unsigned.tar.gz inputs/poliscore-osx-unsigned.tar.gz
-	    mv build/out/poliscore-*.tar.gz build/out/poliscore-*.dmg ../poliscore-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit aced=${COMMIT} --url aced=${url} ../aced/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../aced/contrib/gitian-descriptors/gitian-osx.yml
+	    mv build/out/acedcore-*-osx-unsigned.tar.gz inputs/acedcore-osx-unsigned.tar.gz
+	    mv build/out/acedcore-*.tar.gz build/out/acedcore-*.dmg ../acedcore-binaries/${VERSION}
 	fi
 	popd
 
@@ -346,27 +346,27 @@ then
 	echo ""
 	echo "Verifying v${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../polis/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../aced/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying v${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../polis/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../aced/contrib/gitian-descriptors/gitian-win.yml
 	# Mac OSX	
 	echo ""
 	echo "Verifying v${VERSION} Mac OSX"
 	echo ""	
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../polis/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../aced/contrib/gitian-descriptors/gitian-osx.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying v${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../polis/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../aced/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../polis/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../aced/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -381,10 +381,10 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../polis/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../polis/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/poliscore-*win64-setup.exe ../poliscore-binaries/${VERSION}
-	    mv build/out/poliscore-*win32-setup.exe ../poliscore-binaries/${VERSION}
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../aced/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../aced/contrib/gitian-descriptors/gitian-win-signer.yml
+	    mv build/out/acedcore-*win64-setup.exe ../acedcore-binaries/${VERSION}
+	    mv build/out/acedcore-*win32-setup.exe ../acedcore-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -392,9 +392,9 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../polis/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../polis/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/poliscore-osx-signed.dmg ../poliscore-binaries/${VERSION}/poliscore-${VERSION}-osx.dmg
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../aced/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../aced/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    mv build/out/acedcore-osx-signed.dmg ../acedcore-binaries/${VERSION}/acedcore-${VERSION}-osx.dmg
 	fi
 	popd
 

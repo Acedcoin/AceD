@@ -4,7 +4,7 @@
 
 #include "limitedmap.h"
 
-#include "test/test_polis.h"
+#include "test/test_aced.h"
 
 #include <boost/test/unit_test.hpp>
 

@@ -4,7 +4,7 @@
 
 #include "chain.h"
 #include "versionbits.h"
-#include "test/test_polis.h"
+#include "test/test_aced.h"
 #include "test/test_random.h"
 #include "chainparams.h"
 #include "validation.h"

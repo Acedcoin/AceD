@@ -7,7 +7,7 @@
 #define BITCOIN_COMPAT_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/polis-config.h"
+#include "config/aced-config.h"
 #endif
 
 #ifdef WIN32

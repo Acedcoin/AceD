@@ -137,7 +137,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../polis.qrc"/>
+  <include location="../aced.qrc"/>
  </resources>
  <connections/>
 </ui>
