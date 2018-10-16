@@ -162,7 +162,7 @@ public:
             consensus.nPoSDiffAdjustRange = 1;
 
             // POS hard fork date
-            consensus.nLastPoWBlock = 202600;
+            consensus.nLastPoWBlock = 203220;
 
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -321,7 +321,7 @@ public:
             consensus.nPosTargetTimespan = 60 * 40;
             consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 600;
+            consensus.nLastPoWBlock = 650;
             consensus.nPoSDiffAdjustRange = 1;
             // highest difficulty | 0x1e0ffff0 (?)
             // smallest difficulty | 0x008000
