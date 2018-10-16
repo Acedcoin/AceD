@@ -140,7 +140,7 @@ public:
             consensus.nSuperblockStartHash = uint256S("0000000000000a7d13390bb29ac6d4466afb16358aeb3cd0656215392ed2468d");
             consensus.nGovernanceMinQuorum = 10;
             consensus.nGovernanceFilterElements = 20000;
-            consensus.nMasternodeMinimumConfirmations = 2;
+            consensus.nMasternodeMinimumConfirmations = 15;
             consensus.BIP34Height = 951;
             consensus.BIP34Hash = uint256S("0x000001f35e70f7c5705f64c6c5cc3dea9449e74d5b5c7cf74dad1bcca14a8012");
             consensus.BIP65Height = 84672; // 00000000000076d8fcea02ec0963de4abfd01e771fec0863f960c2c64fe6f357
@@ -148,20 +148,20 @@ public:
             consensus.DIP0001Height = 12096;
             //consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
             consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~ui
-            consensus.nPowTargetTimespan = 24* 60 * 60; // polis: 1 day
-            consensus.nPowTargetSpacing = 120 ; // polis: 2 minutes
+            consensus.nPowTargetTimespan = 120; // polis: 1 day
+            consensus.nPowTargetSpacing = 120; // polis: 2 minutes
             consensus.fPowAllowMinDifficultyBlocks = true;
             consensus.fPowNoRetargeting = false;
-            consensus.nPowKGWHeight = 551;
-            consensus.nPowDGWHeight = 551;
+            //consensus.nPowKGWHeight = 551;
+            //consensus.nPowDGWHeight = 551;
 
             // Stake information
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40;
-            consensus.nStakeMinAge = 1;
+            consensus.nStakeMinAge = 2 * 60 * 60; // 2 hrs
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // POS hard fork date
-            consensus.nLastPoWBlock = 150;
+            consensus.nLastPoWBlock = 101525;
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -208,8 +208,8 @@ public:
             //vAlertPubKey = ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f");
         vAlertPubKey = ParseHex("12345afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f");
 
-            nDefaultPort = 22999;
-            nPruneAfterHeight = 100000;
+            nDefaultPort = 24126;
+            nPruneAfterHeight = 999999999;
 
 //            genesis = CreateGenesisBlock(1513862955, 327643, 0x1e0ffff0, 1, 50 * COIN);
         genesis = CreateGenesisBlock(1526883743, 1815214, 0x1e0ffff0, 1, 50 * COIN);

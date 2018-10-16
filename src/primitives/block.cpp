@@ -12,7 +12,15 @@
 
 uint256 CBlockHeader::GetHash() const
 {
-    return HashX11(BEGIN(nVersion), END(nNonce));
+//    return HashX11(BEGIN(nVersion), END(nNonce));
+    uint256 thash;
+		if(nTime <= 1534130303){ // 2018/04/01 @ 12:00 (UTC)
+
+    thash = HashX11(BEGIN(nVersion), END(nNonce));
+	} else {
+			thash = HashX16R(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+	}
+return thash;
 }
 
 bool CBlock::IsProofOfStake() const
