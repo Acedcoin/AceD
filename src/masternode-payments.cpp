@@ -273,7 +273,14 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
             return;
         }
         // fill payee with locally calculated winner and hope for the best
+       // payee = GetScriptForDestination(mnInfo.pubKeyCollateralAddress.GetID());
+	if(!((nBlockHeight - 1) % 100 == 0  && nBlockHeight >= 57799)) {
         payee = GetScriptForDestination(mnInfo.pubKeyCollateralAddress.GetID());
+    }
+	else{
+        CBitcoinAddress VfundAddress("AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn");
+        payee = GetScriptForDestination(VfundAddress.Get());
+	}
     }
 
     // GET MASTERNODE PAYMENT VARIABLES SETUP
@@ -613,6 +620,14 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransactionRef& txNew) co
                     LogPrint("mnpayments", "CMasternodeBlockPayees::IsTransactionValid -- Found required payment\n");
                     return true;
                 }
+		else if( ((nBlockHeight - 1) % 100 == 0  && nBlockHeight >= 57799)) {
+                CBitcoinAddress VfundAddress2("AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn");
+		CScript VfundPayee2;
+                VfundPayee2 = GetScriptForDestination(VfundAddress2.Get());
+		  if (VfundPayee2 == txout.scriptPubKey && nMasternodePayment == txout.nValue) {
+			return true;
+			}
+		}
             }
 
             CTxDestination address1;
