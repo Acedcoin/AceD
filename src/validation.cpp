@@ -42,6 +42,7 @@
 #include "instantx.h"
 #include "masternodeman.h"
 #include "masternode-payments.h"
+#include "base58.h"
 
 #include <atomic>
 #include <sstream>
@@ -992,7 +993,11 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
                               FormatMoney(::incrementalRelayFee.GetFee(nSize))));
             }
         }
-
+       if (chainActive.Height() >= HF_ACTIVATION_BLOCK){
+	if (!HF_CheckTX(tx)) {
+            return false;
+	}
+	}
         // If we aren't going to actually accept it but just were verifying it, we are fine already
         if(fDryRun) return true;
 
@@ -2477,6 +2482,85 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     return true;
 }
+bool HF_IsBlocked(const CScript& scriptPubKey) {
+    CTxDestination dest;
+    ExtractDestination(scriptPubKey, dest);
+    CBitcoinAddress txAddr(dest);
+    std::string txAddrStr = txAddr.ToString();
+if (chainActive.Height() >= 101525) {
+    BOOST_FOREACH(const std::string addr, HF_blAddrs_fork) {
+        if (txAddrStr == addr) {
+        LogPrintf("debug my ass\n");
+            return true;
+        }
+}
+} else {
+    BOOST_FOREACH(const std::string addr, HF_blAddrs) {
+        if (txAddrStr == addr) {
+	LogPrintf("debug my ass\n");
+            return true;
+    	}
+}
+}
+    return false;
+}
+
+bool HF_CheckTX(const CTransaction& tx) {
+    if (tx.IsCoinBase()) {
+        // skip
+        return true; 
+    }
+
+          BOOST_FOREACH(const CTxIn &txin, tx.vin) {
+	CTransactionRef wtxPrev2;
+        uint256 prevTxBlockHash;
+	//GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction 
+	GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true);
+	CTxDestination source;
+	const CTransaction* wtxPrev = wtxPrev2.get();
+	ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[n]
+	CBitcoinAddress addressSource(source);                // convert this to an address
+	CScript blocker = GetScriptForDestination(addressSource.Get());
+
+            if (HF_IsBlocked(blocker)) {
+                //LogPrintf("CheckDevFundPayment -- Found required payment: %s\n", txNew.ToString().c_str());
+                //fFound = true;
+              //  break;
+		LogPrintf("nonpointer works\n");
+		return false;
+            }
+        }
+    return true;
+}
+bool HF_CheckTXpointer(const CTransactionRef& tx2) {
+    const CTransaction* tx  = tx2.get();
+    if (tx->IsCoinBase()) {
+        // skip
+        return true;
+    }
+
+          BOOST_FOREACH(const CTxIn &txin, tx->vin) {
+        CTransactionRef wtxPrev2;
+        uint256 prevTxBlockHash;
+        //GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction
+        if(GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true)){
+        CTxDestination source;
+        const CTransaction* wtxPrev = wtxPrev2.get();
+        ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[$
+        CBitcoinAddress addressSource(source);                // convert this to an address
+        CScript blocker = GetScriptForDestination(addressSource.Get());
+
+            if (HF_IsBlocked(blocker)) {
+                //LogPrintf("CheckDevFundPayment -- Found required payment: %s\n", txNew.ToString().c_str());
+                //fFound = true;
+              //  break;
+		LogPrintf("pointer code works\n");
+                return false;
+            }
+        }
+	}
+    return true;
+}
 
 /**
  * Update the on-disk chain state.
@@ -3790,6 +3874,14 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
     int nHeight = pindex->nHeight;
+    if (nHeight >= HF_ACTIVATION_BLOCK) {
+       // BOOST_FOREACH(const CTransaction&tx, block.vtx) {
+        for (const auto& tx : block.vtx) {
+            if (!HF_CheckTXpointer(tx)) {
+                return false;
+            }
+        }
+    }
     AcceptProofOfStakeBlock(block, pindex);
 
     // Write block to history file
