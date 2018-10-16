@@ -8,7 +8,6 @@
 
 #include "addrdb.h"
 #include "addrman.h"
-#include "amount.h"
 #include "bloom.h"
 #include "compat.h"
 #include "hash.h"
@@ -162,7 +161,6 @@ public:
     bool OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false, bool fFeeler = false, bool fAddnode = false, bool fConnectToMasternode = false);
     bool OpenMasternodeConnection(const CAddress& addrConnect);
     bool CheckIncomingNonce(uint64_t nonce);
-
 
     struct CFullyConnectedOnly {
         bool operator() (const CNode* pnode) const {
@@ -776,9 +774,6 @@ public:
     // Used for headers announcements - unfiltered blocks to relay
     // Also protected by cs_inventory
     std::vector<uint256> vBlockHashesToAnnounce;
-    // Blocks received by INV while headers chain was too far behind. These are used to delay GETHEADERS messages
-    // Also protected by cs_inventory
-    std::vector<uint256> vDelayedGetHeaders;
     // Used for BIP35 mempool sending, also protected by cs_inventory
     bool fSendMempool;
 
@@ -799,11 +794,6 @@ public:
     std::atomic<int64_t> nMinPingUsecTime;
     // Whether a ping is requested.
     std::atomic<bool> fPingQueued;
-    // Minimum fee rate with which to filter inv's to this node
-    CAmount minFeeFilter;
-    CCriticalSection cs_feeFilter;
-    CAmount lastSentFeeFilter;
-    int64_t nextSendTimeFeeFilter;
 
     CNode(NodeId id, ServiceFlags nLocalServicesIn, int nMyStartingHeightIn, SOCKET hSocketIn, const CAddress &addrIn, uint64_t nKeyedNetGroupIn, uint64_t nLocalHostNonceIn, const std::string &addrNameIn = "", bool fInboundIn = false);
     ~CNode();
@@ -926,12 +916,6 @@ public:
     {
         LOCK(cs_inventory);
         vBlockHashesToAnnounce.push_back(hash);
-    }
-
-    void PushDelayedGetHeaders(const uint256 &hash)
-    {
-        LOCK(cs_inventory);
-        vDelayedGetHeaders.push_back(hash);
     }
 
     void AskFor(const CInv& inv);

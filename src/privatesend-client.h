@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -108,9 +108,7 @@ private:
     void CheckPool();
     void CompletedTransaction(PoolMessage nMessageID);
 
-    bool IsDenomSkipped(CAmount nDenomValue) {
-        return std::find(vecDenominationsSkipped.begin(), vecDenominationsSkipped.end(), nDenomValue) != vecDenominationsSkipped.end();
-    }
+    bool IsDenomSkipped(CAmount nDenomValue);
 
     bool WaitForAnotherBlock();
 

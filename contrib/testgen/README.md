@@ -1,6 +1,6 @@
 ### TestGen ###
 
-Utilities to generate test vectors for the data-driven aced tests.
+Utilities to generate test vectors for the data-driven Polis tests.
 
 Usage: 
 

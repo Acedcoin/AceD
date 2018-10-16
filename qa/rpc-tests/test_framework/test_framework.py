@@ -25,6 +25,9 @@ from .util import (
     check_json_precision,
     initialize_chain_clean,
     PortSeed,
+    set_cache_mocktime,
+    set_genesis_mocktime,
+    get_mocktime
 )
 from .authproxy import JSONRPCException
 
@@ -46,8 +49,10 @@ class BitcoinTestFramework(object):
         print("Initializing test directory "+self.options.tmpdir)
         if self.setup_clean_chain:
             initialize_chain_clean(self.options.tmpdir, self.num_nodes)
+            set_genesis_mocktime()
         else:
             initialize_chain(self.options.tmpdir, self.num_nodes, self.options.cachedir)
+            set_cache_mocktime()
 
     def stop_node(self, num_node):
         stop_node(self.nodes[num_node], num_node)
@@ -104,11 +109,11 @@ class BitcoinTestFramework(object):
 
         parser = optparse.OptionParser(usage="%prog [options]")
         parser.add_option("--nocleanup", dest="nocleanup", default=False, action="store_true",
-                          help="Leave acedds and test.* datadir on exit or error")
+                          help="Leave polisds and test.* datadir on exit or error")
         parser.add_option("--noshutdown", dest="noshutdown", default=False, action="store_true",
-                          help="Don't stop acedds after the test execution")
+                          help="Don't stop polisds after the test execution")
         parser.add_option("--srcdir", dest="srcdir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__))+"/../../../src"),
-                          help="Source directory containing acedd/aced-cli (default: %default)")
+                          help="Source directory containing polisd/polis-cli (default: %default)")
         parser.add_option("--cachedir", dest="cachedir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__))+"/../../cache"),
                           help="Directory for caching pregenerated datadirs")
         parser.add_option("--tmpdir", dest="tmpdir", default=tempfile.mkdtemp(prefix="test"),
@@ -163,7 +168,7 @@ class BitcoinTestFramework(object):
             print("Stopping nodes")
             stop_nodes(self.nodes)
         else:
-            print("Note: acedds were not stopped and may still be running")
+            print("Note: polisds were not stopped and may still be running")
 
         if not self.options.nocleanup and not self.options.noshutdown and success:
             print("Cleaning up")
@@ -205,10 +210,10 @@ class ComparisonTestFramework(BitcoinTestFramework):
 
     def add_options(self, parser):
         parser.add_option("--testbinary", dest="testbinary",
-                          default=os.getenv("acedD", "acedd"),
+                          default=os.getenv("POLISD", "polisd"),
                           help="bitcoind binary to test")
         parser.add_option("--refbinary", dest="refbinary",
-                          default=os.getenv("acedD", "acedd"),
+                          default=os.getenv("POLISD", "polisd"),
                           help="bitcoind binary to use for reference nodes (if any)")
 
     def setup_network(self):

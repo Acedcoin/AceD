@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -116,11 +116,9 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
         return COLLATERAL_UTXO_NOT_FOUND;
     }
 
-    if(coin.out.nValue != 1000 * COIN && chainActive.Height() < 57615) {
+    if(coin.out.nValue != 1000 * COIN) {
         return COLLATERAL_INVALID_AMOUNT;
-    } else if (coin.out.nValue != 2500  * COIN) {
-	return COLLATERAL_INVALID_AMOUNT;
-	}
+    }
 
     if(pubkey == CPubKey() || coin.out.scriptPubKey != GetScriptForDestination(pubkey.GetID())) {
         return COLLATERAL_INVALID_PUBKEY;
@@ -218,9 +216,9 @@ void CMasternode::Check(bool fForce)
             return;
         }
 
+        // part 1: expire based on polisd ping
         bool fSentinelPingActive = masternodeSync.IsSynced() && mnodeman.IsSentinelPingActive();
-        bool fSentinelPingExpired = fSentinelPingActive && (!lastPing.fSentinelIsCurrent || !IsPingedWithin(MASTERNODE_SENTINEL_PING_MAX_SECONDS));
-
+        bool fSentinelPingExpired = fSentinelPingActive && !IsPingedWithin(MASTERNODE_SENTINEL_PING_MAX_SECONDS);
         LogPrint("masternode", "CMasternode::Check -- outpoint=%s, GetAdjustedTime()=%d, fSentinelPingExpired=%d\n",
                 outpoint.ToStringShort(), GetAdjustedTime(), fSentinelPingExpired);
 
@@ -231,15 +229,31 @@ void CMasternode::Check(bool fForce)
             }
             return;
         }
-
     }
 
-    // Allow MNs to become ENABLED immediately in regtest/devnet
-    // On mainnet/testnet, we require them to be in PRE_ENABLED state for some time before they get into ENABLED state
+    // We require MNs to be in PRE_ENABLED until they either start to expire or receive a ping and go into ENABLED state
+    // Works on mainnet/testnet only and not the case on regtest/devnet.
     if (Params().NetworkIDString() != CBaseChainParams::REGTEST && Params().NetworkIDString() != CBaseChainParams::DEVNET) {
         if (lastPing.sigTime - sigTime < MASTERNODE_MIN_MNP_SECONDS) {
             nActiveState = MASTERNODE_PRE_ENABLED;
             if (nActiveStatePrev != nActiveState) {
+                LogPrint("masternode", "CMasternode::Check -- Masternode %s is in %s state now\n", outpoint.ToStringShort(), GetStateString());
+            }
+            return;
+        }
+    }
+
+    if(!fWaitForPing || fOurMasternode) {
+        // part 2: expire based on sentinel info
+        bool fSentinelPingActive = masternodeSync.IsSynced() && mnodeman.IsSentinelPingActive();
+        bool fSentinelPingExpired = fSentinelPingActive && !lastPing.fSentinelIsCurrent;
+
+        LogPrint("masternode", "CMasternode::Check -- outpoint=%s, GetAdjustedTime()=%d, fSentinelPingExpired=%d\n",
+                outpoint.ToStringShort(), GetAdjustedTime(), fSentinelPingExpired);
+
+        if(fSentinelPingExpired) {
+            nActiveState = MASTERNODE_SENTINEL_PING_EXPIRED;
+            if(nActiveStatePrev != nActiveState) {
                 LogPrint("masternode", "CMasternode::Check -- Masternode %s is in %s state now\n", outpoint.ToStringShort(), GetStateString());
             }
             return;
@@ -281,7 +295,7 @@ std::string CMasternode::StateToString(int nStateIn)
         case MASTERNODE_EXPIRED:                return "EXPIRED";
         case MASTERNODE_OUTPOINT_SPENT:         return "OUTPOINT_SPENT";
         case MASTERNODE_UPDATE_REQUIRED:        return "UPDATE_REQUIRED";
-        case MASTERNODE_SENTINEL_PING_EXPIRED:  return "ENABLED";
+        case MASTERNODE_SENTINEL_PING_EXPIRED:  return "SENTINEL_PING_EXPIRED";
         case MASTERNODE_NEW_START_REQUIRED:     return "NEW_START_REQUIRED";
         case MASTERNODE_POSE_BAN:               return "POSE_BAN";
         default:                                return "UNKNOWN";
@@ -319,10 +333,8 @@ void CMasternode::UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScan
                 continue; // shouldn't really happen
             const auto& coinbaseTransaction = (BlockReading->nHeight > Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
 
-
             CAmount nMasternodePayment = GetMasternodePayment(BlockReading->nHeight, block.vtx[0]->GetValueOut());
 
-   //         for (const auto& txout : block.vtx[0]->vout)
             for (const auto& txout : coinbaseTransaction->vout)
                 if(mnpayee == txout.scriptPubKey && nMasternodePayment == txout.nValue) {
                     nBlockLastPaid = BlockReading->nHeight;
@@ -357,8 +369,8 @@ bool CMasternodeBroadcast::Create(const std::string& strService, const std::stri
         return false;
     };
 
-    //need correct blocks to send ping
-    if (!fOffline && !masternodeSync.IsBlockchainSynced())
+    // Wait for sync to finish because mnb simply won't be relayed otherwise
+    if (!fOffline && !masternodeSync.IsSynced())
         return Log("Sync in progress. Must wait until sync is complete to start Masternode");
 
     if (!CMessageSigner::GetKeysFromSecret(strKeyMasternode, keyMasternodeNew, pubKeyMasternodeNew))
@@ -366,11 +378,7 @@ bool CMasternodeBroadcast::Create(const std::string& strService, const std::stri
 
     if (!pwalletMain->GetMasternodeOutpointAndKeys(outpoint, pubKeyCollateralAddressNew, keyCollateralAddressNew, strTxHash, strOutputIndex))
         return Log(strprintf("Could not allocate outpoint %s:%s for masternode %s", strTxHash, strOutputIndex, strService));
-    
-    if (sporkManager.IsSporkActive(SPORK_15_MASTERNODE_LOCK_NUMBER) && mnodeman.size() > sporkManager.GetSporkValue(SPORK_15_MASTERNODE_LOCK_NUMBER))
-        return Log(strprintf("Masternode limit reached, masternodes enabled: %d ,cannot enable more masternodes. Current limit is %d",mnodeman.size(), sporkManager.GetSporkValue(SPORK_15_MASTERNODE_LOCK_NUMBER)));
 
-    
     CService service;
     if (!Lookup(strService.c_str(), service, 0, false))
         return Log(strprintf("Invalid address %s for masternode.", strService));
@@ -445,8 +453,8 @@ bool CMasternodeBroadcast::SimpleCheck(int& nDos)
     }
 
     if(nProtocolVersion < mnpayments.GetMinMasternodePaymentsProto()) {
-        LogPrintf("CMasternodeBroadcast::SimpleCheck -- ignoring outdated Masternode: masternode=%s  nProtocolVersion=%d\n", outpoint.ToStringShort(), nProtocolVersion);
-        return false;
+        LogPrintf("CMasternodeBroadcast::SimpleCheck -- outdated Masternode: masternode=%s  nProtocolVersion=%d\n", outpoint.ToStringShort(), nProtocolVersion);
+        nActiveState = MASTERNODE_UPDATE_REQUIRED;
     }
 
     CScript pubkeyScript;
@@ -547,11 +555,10 @@ bool CMasternodeBroadcast::CheckOutpoint(int& nDos)
     }
 
     if (err == COLLATERAL_INVALID_AMOUNT) {
-        LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 2500 ACED, masternode=%s\n", outpoint.ToStringShort());
+        LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 1000 POLIS, masternode=%s\n", outpoint.ToStringShort());
         nDos = 33;
         return false;
     }
-
 
     if(err == COLLATERAL_INVALID_PUBKEY) {
         LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should match pubKeyCollateralAddress, masternode=%s\n", outpoint.ToStringShort());
@@ -579,7 +586,6 @@ bool CMasternodeBroadcast::CheckOutpoint(int& nDos)
                   sigTime, Params().GetConsensus().nMasternodeMinimumConfirmations, pRequiredConfIndex->GetBlockTime(), outpoint.ToStringShort(), addr.ToString());
         return false;
     }
-
 
     if (!CheckSignature(nDos)) {
         LogPrintf("CMasternodeBroadcast::CheckOutpoint -- CheckSignature() failed, masternode=%s\n", outpoint.ToStringShort());

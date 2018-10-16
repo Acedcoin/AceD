@@ -1,6 +1,5 @@
-// Copyright (c) 2011-2013 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The AceD Core developers
-
+// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,7 +17,7 @@ OpenURIDialog::OpenURIDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 #if QT_VERSION >= 0x040700
-    ui->uriEdit->setPlaceholderText("aced:");
+    ui->uriEdit->setPlaceholderText("polis:");
 #endif
 }
 
@@ -50,5 +49,5 @@ void OpenURIDialog::on_selectFileButton_clicked()
     if(filename.isEmpty())
         return;
     QUrl fileUri = QUrl::fromLocalFile(filename);
-    ui->uriEdit->setText("aced:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
+    ui->uriEdit->setText("polis:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
 }

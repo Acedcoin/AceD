@@ -4,7 +4,6 @@
 
 #include "wallet/wallet.h"
 
-
 #include "wallet/test/wallet_test_fixture.h"
 
 #include <stdint.h>

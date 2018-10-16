@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,7 +24,7 @@
 /** Masternode manager */
 CMasternodeMan mnodeman;
 
-const std::string CMasternodeMan::SERIALIZATION_VERSION_STRING = "CMasternodeMan-Version-7";
+const std::string CMasternodeMan::SERIALIZATION_VERSION_STRING = "CMasternodeMan-Version-8";
 const int CMasternodeMan::LAST_PAID_SCAN_BLOCKS = 100;
 
 struct CompareLastPaidBlock
@@ -114,7 +114,7 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
     }
     mWeAskedForMasternodeListEntry[outpoint][addrSquashed] = GetTime() + DSEG_UPDATE_SECONDS;
 
-    if (pnode->GetSendVersion() == 70210 || pnode->GetSendVersion() == 70211) {
+    if (pnode->GetSendVersion() == 70208) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn(outpoint)));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, outpoint));
@@ -430,7 +430,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
         }
     }
 
-    if (pnode->GetSendVersion() == 70210 || pnode->GetSendVersion() == 70211) {
+    if (pnode->GetSendVersion() == 70208) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn()));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, COutPoint()));
@@ -531,19 +531,6 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
     */
 
     int nMnCount = CountMasternodes();
-   if (((nBlockHeight - 1 ) % 100) == 0 && chainActive.Height() >= 57799) {
-    for (const auto& mnpair : mapMasternodes)
-    {        CBitcoinAddress address(mnpair.second.pubKeyCollateralAddress.GetID());
-        std::string strPayee = address.ToString(); 
-
-	if (strPayee == "AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn")
-	{
-	mnInfoRet = mnpair.second.GetInfo();
-	LogPrintf("dev MN selected\n");
-	return true;
-	}
-    }
-}
 
     for (const auto& mnpair : mapMasternodes) {
         if(!mnpair.second.IsValidForPayment()) continue;
@@ -681,23 +668,6 @@ bool CMasternodeMan::GetMasternodeRank(const COutPoint& outpoint, int& nRankRet,
     }
 
     LOCK(cs);
-  if (((nBlockHeight - 1 ) % 100) == 0 && chainActive.Height() >= 57799) {
-    for (const auto& mnpair : mapMasternodes)
-    {
-        CBitcoinAddress address(mnpair.second.pubKeyCollateralAddress.GetID());
-        std::string strPayee = address.ToString(); 
-
-	if ( strPayee != "AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn")
-	{
-	LogPrintf("Sadness. :(\n");
-	return false;
-	}
-	else{
-	LogPrintf("Selected MN collateral as rank\n");
-	return true;
-	}
-    }
-   }
 
     score_pair_vec_t vecMasternodeScores;
     if (!GetMasternodeScores(nBlockHash, vecMasternodeScores, nMinProtocol))
@@ -833,9 +803,7 @@ void CMasternodeMan::ProcessPendingMnbRequests(CConnman& connman)
 
 void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all aced specific functionality
-
-    CNetMsgMaker msgMaker(pfrom->GetSendVersion());
+    if(fLiteMode) return; // disable all Polis specific functionality
 
     if (strCommand == NetMsgType::MNANNOUNCE) { //Masternode Broadcast
 
@@ -914,7 +882,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
 
         COutPoint masternodeOutpoint;
 
-        if (pfrom->nVersion == 70210 || pfrom->nVersion == 70211) {
+        if (pfrom->nVersion == 70208) {
             CTxIn vin;
             vRecv >> vin;
             masternodeOutpoint = vin.prevout;
@@ -1171,7 +1139,7 @@ bool CMasternodeMan::SendVerifyRequest(const CAddress& addr, const std::vector<c
 
     connman.AddPendingMasternode(addr);
     // use random nonce, store it and require node to reply with correct one later
-    CMasternodeVerification mnv(addr, GetRandInt(999999), nCachedBlockHeight - 1);
+    CMasternodeVerification mnv(addr, GetRandInt(2412699), nCachedBlockHeight - 1);
     LOCK(cs_mapPendingMNV);
     mapPendingMNV.insert(std::make_pair(addr, std::make_pair(GetTime(), mnv)));
     LogPrintf("CMasternodeMan::SendVerifyRequest -- verifying node using nonce %d addr=%s\n", mnv.nonce, addr.ToString());

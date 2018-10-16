@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef MASTERNODE_SYNC_H
@@ -48,7 +48,6 @@ private:
     int64_t nTimeLastFailure;
 
     void Fail();
-    void ClearFulfilledRequests(CConnman& connman);
 
 public:
     CMasternodeSync() { Reset(); }

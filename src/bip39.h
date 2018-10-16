@@ -21,8 +21,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef aced_BIP39_H
-#define aced_BIP39_H
+#ifndef POLIS_BIP39_H
+#define POLIS_BIP39_H
 
 #include "support/allocators/secure.h"
 

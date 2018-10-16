@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,7 +8,7 @@
 #define BITCOIN_VALIDATION_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/aced-config.h"
+#include "config/polis-config.h"
 #endif
 
 #include "amount.h"
@@ -91,6 +91,11 @@ static const unsigned int BLOCK_STALLING_TIMEOUT = 2;
 /** Number of headers sent in one getheaders result. We rely on the assumption that if a peer sends
  *  less than this number, we reached its tip. Changing this value is a protocol upgrade. */
 static const unsigned int MAX_HEADERS_RESULTS = 2000;
+/** Maximum depth of blocks we're willing to serve as compact blocks to peers
+ *  when requested. For older blocks, a regular BLOCK response will be sent. */
+static const int MAX_CMPCTBLOCK_DEPTH = 5;
+/** Maximum depth of blocks we're willing to respond to GETBLOCKTXN requests for. */
+static const int MAX_BLOCKTXN_DEPTH = 10;
 /** Size of the "block download window": how far ahead of our current height do we fetch?
  *  Larger windows tolerate larger download speed differences between peer, but increase the potential
  *  degree of disordering of blocks on disk (which make reindexing and in the future perhaps pruning
@@ -112,10 +117,6 @@ static const unsigned int INVENTORY_BROADCAST_INTERVAL = 5;
 /** Maximum number of inventory items to send per transmission.
  *  Limits the impact of low-fee transaction floods. */
 static const unsigned int INVENTORY_BROADCAST_MAX = 7 * INVENTORY_BROADCAST_INTERVAL;
-/** Average delay between feefilter broadcasts in seconds. */
-static const unsigned int AVG_FEEFILTER_BROADCAST_INTERVAL = 10 * 60;
-/** Maximum feefilter broadcast delay after significant change. */
-static const unsigned int MAX_FEEFILTER_CHANGE_DELAY = 5 * 60;
 /** Block download timeout base, expressed in millionths of the block interval (i.e. 2.5 min) */
 static const int64_t BLOCK_DOWNLOAD_TIMEOUT_BASE = 1000000;
 /** Additional block download timeout per parallel downloading peer (i.e. 1.25 min) */
@@ -132,6 +133,7 @@ static const bool DEFAULT_PERMIT_BAREMULTISIG = true;
 static const unsigned int DEFAULT_BYTES_PER_SIGOP = 20;
 static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
 static const bool DEFAULT_TXINDEX = true;
+static const bool DEFAULT_STAKING = false;
 static const bool DEFAULT_ADDRESSINDEX = false;
 static const bool DEFAULT_TIMESTAMPINDEX = false;
 static const bool DEFAULT_SPENTINDEX = false;
@@ -139,8 +141,6 @@ static const unsigned int DEFAULT_BANSCORE_THRESHOLD = 100;
 
 /** Default for -mempoolreplacement */
 static const bool DEFAULT_ENABLE_REPLACEMENT = false;
-/** Default for using fee filter */
-static const bool DEFAULT_FEEFILTER = true;
 
 /** Maximum number of headers to announce when relaying blocks with headers message.*/
 static const unsigned int MAX_BLOCKS_TO_ANNOUNCE = 8;
@@ -290,9 +290,7 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &tx, const Consensus::P
 bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams, std::shared_ptr<const CBlock> pblock = std::shared_ptr<const CBlock>());
 
 double ConvertBitsToDouble(unsigned int nBits);
-//CAmount GetBlockSubsidy(int nBits, int nHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly = false);
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly = false);
-
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue);
 
 /** Guess verification progress (as a fraction between 0.0=genesis and 1.0=current tip). */
@@ -334,13 +332,16 @@ void PruneAndFlush();
 /** Prune block files up to a given height */
 void PruneBlockFilesManual(int nPruneUpToHeight);
 
-/** (try to) add transaction to memory pool **/
+/** (try to) add transaction to memory pool
+ * plTxnReplaced will be appended to with all transactions replaced from mempool **/
 bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, const CTransactionRef &tx, bool fLimitFree,
-                        bool* pfMissingInputs, bool fOverrideMempoolLimit=false, const CAmount nAbsurdFee=0, bool fDryRun=false);
+                        bool* pfMissingInputs, std::list<CTransactionRef>* plTxnReplaced = NULL, bool fOverrideMempoolLimit=false,
+                        const CAmount nAbsurdFee=0, bool fDryRun=false);
 
 /** (try to) add transaction to memory pool with a specified acceptance time **/
 bool AcceptToMemoryPoolWithTime(CTxMemPool& pool, CValidationState &state, const CTransactionRef &tx, bool fLimitFree,
-                        bool* pfMissingInputs, int64_t nAcceptTime, bool fOverrideMempoolLimit=false, const CAmount nAbsurdFee=0, bool fDryRun=false);
+                        bool* pfMissingInputs, int64_t nAcceptTime, std::list<CTransactionRef>* plTxnReplaced = NULL,
+                        bool fOverrideMempoolLimit=false, const CAmount nAbsurdFee=0, bool fDryRun=false);
 
 bool GetUTXOCoin(const COutPoint& outpoint, Coin& coin);
 int GetUTXOHeight(const COutPoint& outpoint);
@@ -386,7 +387,7 @@ void UpdateCoins(const CTransaction& tx, CCoinsViewCache& inputs, int nHeight);
 /** Transaction validation functions */
 
 /** Context-independent validity checks */
-bool CheckTransaction(const CTransaction& tx, CValidationState& state, bool fCheckDuplicateInputs=true);
+bool CheckTransaction(const CTransaction& tx, CValidationState& state);
 
 namespace Consensus {
 
@@ -503,55 +504,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
 
 /** Check a block is completely valid from start to finish (only works on top of our current best block, with cs_main held) */
 bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams, const CBlock& block, CBlockIndex* pindexPrev, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
-static const int HF_ACTIVATION_BLOCK = 17170;
-static const std::string HF_blAddrs[] = {
-   /* "LfdfsdfsdfsdfsfsdfsdfLVUft158tEM24",
-    "LR8hSKspkNy5gYHyxwrmXnfbdzCFw73oLc",
-    "LLKDVHRDeWXiYHRXUTTnGXFHXKPqwN5f7J",
-    "Lg8VLzP6c8MeqpGDC5pLqBbqaLVtMarNq3",
-    "Ldw3tr4nDaJQztBr1dLAs8u6bzQqpac7L1",
-    "LYUHVBsHA88S8kufUuN1Q9GEAkrNcz8bLv",
-    "LLdf4j6jvVsBJw5wGCRyCRQmouYGpytmkd",
-    "LPWGchfjBPxVr7VBH1DkMfV6XFzFDP93Kh",
-    "LW9bK2zVhKdzBP2x4gjapms55aqmudqevc",
-    "LSQHaZUyLPXtn8z2e1VEcwbJyzLYHH7GKy"*/
-"AcJGaB6aTik1D48UzkEFKrxh6fKmWo8GBR",
-"Aaq1fXFMFGR6h2LaPk2jtx9KtKCg8WG76Z",
-"ARdcktKEF22zSQBSrkFLfMxdmPznkbG1JD",
-"AMqSShP4VBb1ds8mGZQt1Whb5rVZ1Vbf8x",
-"AV4a4YSiaJDMfMVwnVTzE7o1oJzQYA5M1T",
-"ALXgBSf9Qz5DmvSngZkbUwem5pcvi6PV9D",
-"ANPXTed1ZSvMWLigKEgmJhdrYEEa6JDiG3",
-"Abyi4FMkvZgWkPBhsF97p6GqftCGp9Rvij",
-"AU4cBo81vMm5foT9aRc15SK9ZtFAPh8Lew",
-"AJSqsZWkjxpzadsnqqBUDi48wNcfmc43PB",
-"AeAf3G5YiAyPqK8DTa1rmRABLa7CH7P1Eo",
-"AG9NJavcAyFDejYoA55aJPKEcz42QNhiYP",
-"AeQjnHhXz77emMULURUGgRuAhi1PwGbvLz",
-"AcCp4LPg4d7wesW5imqxRSNfSQwQPQQSP3",
-"Aah7doj9ZibvmD33GX5GQiRrvSyXPz2o6z",
-"ASGBuws7BD7NCDsQEnTxLFLKi5zV9DLnPe",
-"AemYmU8Xk4r2ZaCoQXy81gGBBZ6t44Hrij",
-"AHP7NiMHJP1t3HytGRMVkeMyT5tPGu6HYh",
-"AemnvxmKKfdKCneHXfnK36HCYwU4892sHe",
-"AKtPbSEu1nqKwqw31px4MBiGCEV13gdusr",
-"ANoGjG3mvvM2DDtHto6aN8BXTtGPBvjJVb",
-"Af2vFnGN56ooe7A1wmw2igGxYGruS1kyHo",
-"ASWG1BZqVSFJRcXKCQYxNVSfZmtkdw74NF",
-"AaHpsCJgEUiZfubTmJM7omRhZ4wMByeSEq",
-"AKfgu7GZRyKRf4KZhx6wHutpMza6yY4Dfn",
-"AGcWUo2D3Cf6oWWPs13AuxAg6UomimF8pW",
-"AYDGMp8479aXhRqnDBiJw14jDgaRXzbuev",
-"ARMyPc2HTiumGPLnEiofzbnsyzdND8yEwR",
-"AM99mfQvSc72ZFGenBgg66U6sa6VjcZ33g",
-"AMEXoa3sdndHfrzD7zrPRgxXK7ewxS5N3w",
-"AUgGR4wsuz1a6fFztxjiCDocBSTVhMS9fJ",
-"ARurP5TKFX1ibfQJt3bAfm88yxwA3evVhK"
-};
 
-bool HF_IsBlocked(const CScript& scriptPubKey);
-bool HF_CheckTX(const CTransaction& tx);
-bool HF_CheckTXpointer(const CTransactionRef& tx2);
 /** RAII wrapper for VerifyDB: Verify consistency of the block and coin databases */
 class CVerifyDB {
 public:

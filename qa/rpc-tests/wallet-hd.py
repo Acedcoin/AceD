@@ -9,9 +9,10 @@ from test_framework.util import *
 
 class WalletHDTest(BitcoinTestFramework):
 
-    def setup_chain(self):
-        print("Initializing test directory "+self.options.tmpdir)
-        initialize_chain_clean(self.options.tmpdir, 2)
+    def __init__(self):
+        super().__init__()
+        self.setup_clean_chain = True
+        self.num_nodes = 2
 
     def setup_network(self):
         self.nodes = start_nodes(2, self.options.tmpdir, [['-usehd=0'], ['-usehd=1', '-keypool=0']], redirect_stderr=True)
@@ -29,7 +30,7 @@ class WalletHDTest(BitcoinTestFramework):
             start_node(1, self.options.tmpdir, ['-usehd=0'], redirect_stderr=True)
             raise AssertionError("Must not allow to turn off HD on an already existing HD wallet")
         except Exception as e:
-            assert("acedd exited with status 1 during initialization" in str(e))
+            assert("polisd exited with status 1 during initialization" in str(e))
         # assert_start_raises_init_error(1, self.options.tmpdir, ['-usehd=0'], 'already existing HD wallet')
         # self.nodes[1] = start_node(1, self.options.tmpdir, self.node_args[1])
         self.nodes[1] = start_node(1, self.options.tmpdir, ['-usehd=1', '-keypool=0'], redirect_stderr=True)

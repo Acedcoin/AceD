@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,9 +19,9 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(ACED);
-    unitlist.append(maced);
-    unitlist.append(uaced);
+    unitlist.append(POLIS);
+    unitlist.append(mPOLIS);
+    unitlist.append(uPOLIS);
     unitlist.append(duffs);
     return unitlist;
 }
@@ -30,9 +30,9 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case ACED:
-    case maced:
-    case uaced:
+    case POLIS:
+    case mPOLIS:
+    case uPOLIS:
     case duffs:
         return true;
     default:
@@ -46,9 +46,9 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case ACED: return QString("ACED");
-            case maced: return QString("maced");
-            case uaced: return QString::fromUtf8("μaced");
+            case POLIS: return QString("POLIS");
+            case mPOLIS: return QString("mPOLIS");
+            case uPOLIS: return QString::fromUtf8("μPOLIS");
             case duffs: return QString("duffs");
             default: return QString("???");
         }
@@ -57,9 +57,9 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case ACED: return QString("tACED");
-            case maced: return QString("mtaced");
-            case uaced: return QString::fromUtf8("μtaced");
+            case POLIS: return QString("tPOLIS");
+            case mPOLIS: return QString("mtPOLIS");
+            case uPOLIS: return QString::fromUtf8("μtPOLIS");
             case duffs: return QString("tduffs");
             default: return QString("???");
         }
@@ -72,10 +72,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case ACED: return QString("ACED");
-            case maced: return QString("Milli-aced (1 / 1" THIN_SP_UTF8 "000)");
-            case uaced: return QString("Micro-aced (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-aced (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case POLIS: return QString("Polis");
+            case mPOLIS: return QString("Milli-Polis (1 / 1" THIN_SP_UTF8 "000)");
+            case uPOLIS: return QString("Micro-Polis (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case duffs: return QString("Ten Nano-Polis (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -83,10 +83,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case ACED: return QString("Testaceds");
-            case maced: return QString("Milli-Testaced (1 / 1" THIN_SP_UTF8 "000)");
-            case uaced: return QString("Micro-Testaced (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-Testaced (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case POLIS: return QString("TestPoliss");
+            case mPOLIS: return QString("Milli-TestPolis (1 / 1" THIN_SP_UTF8 "000)");
+            case uPOLIS: return QString("Micro-TestPolis (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case duffs: return QString("Ten Nano-TestPolis (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -96,9 +96,9 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case ACED:  return 100000000;
-    case maced: return 100000;
-    case uaced: return 100;
+    case POLIS:  return 100000000;
+    case mPOLIS: return 100000;
+    case uPOLIS: return 100;
     case duffs: return 1;
     default:   return 100000000;
     }
@@ -108,9 +108,9 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case ACED: return 8;
-    case maced: return 5;
-    case uaced: return 2;
+    case POLIS: return 8;
+    case mPOLIS: return 5;
+    case uPOLIS: return 2;
     case duffs: return 0;
     default: return 0;
     }

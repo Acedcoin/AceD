@@ -64,6 +64,7 @@ class WalletDumpTest(BitcoinTestFramework):
         # TODO remove this when usehd=1 becomes the default
         # use our own cache and -usehd=1 as extra arg as the default cache is run with -usehd=0
         initialize_chain(self.options.tmpdir, self.num_nodes, self.options.cachedir + "/hd", ["-usehd=1"], redirect_stderr=True)
+        set_cache_mocktime()
 
     def setup_network(self, split=False):
         # Use 1 minute timeout because the initial getnewaddress RPC can take
@@ -106,7 +107,7 @@ class WalletDumpTest(BitcoinTestFramework):
         found_addr, found_addr_chg, found_addr_rsv, hd_master_addr_enc = \
             read_dump(tmpdir + "/node0/wallet.encrypted.dump", addrs, hd_master_addr_unenc)
         assert_equal(found_addr, test_addr_count)
-        # TODO clarify if we want the behavior that is tested below in AceD (only when HD seed was generated and not user-provided)
+        # TODO clarify if we want the behavior that is tested below in Polis (only when HD seed was generated and not user-provided)
         # assert_equal(found_addr_chg, 180 + 50)  # old reserve keys are marked as change now
         assert_equal(found_addr_rsv, 180)  # keypool size
 

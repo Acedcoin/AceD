@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 
 #include "governance.h"
 
-#include "test/test_aced.h"
+#include "test/test_polis.h"
 
 #include <boost/test/unit_test.hpp>
 

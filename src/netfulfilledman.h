@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,6 +24,8 @@ private:
     fulfilledreqmap_t mapFulfilledRequests;
     CCriticalSection cs_mapFulfilledRequests;
 
+    void RemoveFulfilledRequest(const CService& addr, const std::string& strRequest);
+
 public:
     CNetFulfilledRequestManager() {}
 
@@ -37,7 +39,6 @@ public:
 
     void AddFulfilledRequest(const CService& addr, const std::string& strRequest);
     bool HasFulfilledRequest(const CService& addr, const std::string& strRequest);
-    void RemoveFulfilledRequest(const CService& addr, const std::string& strRequest);
 
     void CheckAndRemove();
     void Clear();

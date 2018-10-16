@@ -155,7 +155,7 @@ class FrameworkInfo(object):
 class ApplicationBundleInfo(object):
     def __init__(self, path):
         self.path = path
-        appName = "AceD-Qt"
+        appName = "Polis-Qt"
         self.binaryPath = os.path.join(path, "Contents", "MacOS", appName)
         if not os.path.exists(self.binaryPath):
             raise RuntimeError("Could not find bundle binary for " + path)
@@ -597,7 +597,6 @@ if os.path.exists("dist"):
 
 # ------------------------------------------------
 
-
 if len(config.volname) == 1:
     volname = config.volname[0]
 else:
@@ -605,7 +604,7 @@ else:
 
 # ------------------------------------------------
 
-target = os.path.join("dist", "AceD-Qt.app")
+target = os.path.join("dist", "Polis-Qt.app")
 
 if verbose >= 2:
     print("+ Copying source bundle +")
@@ -766,7 +765,6 @@ if config.dmg is not None:
 
     if fancy is None:
         try:
-
             runHDIUtil("create", dmg_name, srcfolder="dist", format="UDBZ", volname=volname, ov=True)
         except subprocess.CalledProcessError as e:
             sys.exit(e.returncode)
@@ -782,7 +780,6 @@ if config.dmg is not None:
         if verbose >= 3:
             print("Creating temp image for modification...")
         try:
-
             runHDIUtil("create", dmg_name + ".temp", srcfolder="dist", format="UDRW", size=size, volname=volname, ov=True)
         except subprocess.CalledProcessError as e:
             sys.exit(e.returncode)
@@ -848,7 +845,6 @@ if config.dmg is not None:
                 items_positions.append(itemscript.substitute(params))
 
         params = {
-
             "disk" : volname,
             "window_bounds" : "300,300,800,620",
             "icon_size" : "96",

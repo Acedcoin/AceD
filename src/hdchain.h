@@ -1,7 +1,7 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
-#ifndef aced_HDCHAIN_H
-#define aced_HDCHAIN_H
+#ifndef POLIS_HDCHAIN_H
+#define POLIS_HDCHAIN_H
 
 #include "key.h"
 #include "sync.h"
@@ -45,7 +45,7 @@ private:
 
 public:
 
-    CHDChain() : nVersion(CHDChain::CURRENT_VERSION) { SetNull(); }
+    CHDChain() { SetNull(); }
     CHDChain(const CHDChain& other) :
         nVersion(other.nVersion),
         id(other.id),
@@ -147,4 +147,4 @@ public:
     std::string GetKeyPath() const;
 };
 
-#endif // aced_HDCHAIN_H
+#endif // POLIS_HDCHAIN_H

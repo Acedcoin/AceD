@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/aced-config.h"
+#include "config/polis-config.h"
 #endif
 
 #include "askpassphrasedialog.h"
@@ -18,6 +18,8 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPushButton>
+
+
 
 AskPassphraseDialog::AskPassphraseDialog(Mode _mode, QWidget *parent) :
     QDialog(parent),
@@ -41,6 +43,8 @@ AskPassphraseDialog::AskPassphraseDialog(Mode _mode, QWidget *parent) :
     ui->passEdit2->installEventFilter(this);
     ui->passEdit3->installEventFilter(this);
 
+    // ui->stakingCheckBox->setChecked(fWalletUnlockStakingOnly);
+
     switch(mode)
     {
         case Encrypt: // Ask passphrase x2
@@ -57,6 +61,10 @@ AskPassphraseDialog::AskPassphraseDialog(Mode _mode, QWidget *parent) :
             ui->passEdit3->hide();
             setWindowTitle(tr("Unlock wallet for mixing only"));
             break;
+        case UnlockStaking:
+            ui->stakingCheckBox->setChecked(true);
+            ui->stakingCheckBox->show();
+            // fallthru
         case Unlock: // Ask passphrase
             ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
             ui->passLabel2->hide();
@@ -120,7 +128,7 @@ void AskPassphraseDialog::accept()
             break;
         }
         QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm wallet encryption"),
-                 tr("Warning: If you encrypt your wallet and lose your passphrase, you will <b>LOSE ALL OF YOUR aced</b>!") + "<br><br>" + tr("Are you sure you wish to encrypt your wallet?"),
+                 tr("Warning: If you encrypt your wallet and lose your passphrase, you will <b>LOSE ALL OF YOUR POLIS</b>!") + "<br><br>" + tr("Are you sure you wish to encrypt your wallet?"),
                  QMessageBox::Yes|QMessageBox::Cancel,
                  QMessageBox::Cancel);
         if(retval == QMessageBox::Yes)
@@ -132,14 +140,13 @@ void AskPassphraseDialog::accept()
                     if (model->hdEnabled()) {
                         QMessageBox::warning(this, tr("Wallet encrypted"),
                                          "<qt>" +
-
                                          tr("%1 will close now to finish the encryption process. "
                                          "Remember that encrypting your wallet cannot fully protect "
                                          "your funds from being stolen by malware infecting your computer.").arg(tr(PACKAGE_NAME)) +
                                          "<br><br><b>" +
                                          tr("IMPORTANT: Any previous backups you have made of your wallet file "
                                          "should be replaced with the newly generated, encrypted wallet file. "
-                                         "Previous backups of the unencrypted wallet file contain the same HD seed and"
+                                         "Previous backups of the unencrypted wallet file contain the same HD seed and "
                                          "still have full access to all your funds just like the new, encrypted wallet.") +
                                          "</b></qt>");
                     } else {
@@ -176,6 +183,7 @@ void AskPassphraseDialog::accept()
         }
         } break;
     case UnlockMixing:
+    case UnlockStaking:
     case Unlock:
         if(!model->setWalletLocked(false, oldpass, mode == UnlockMixing))
         {
@@ -184,9 +192,10 @@ void AskPassphraseDialog::accept()
         }
         else
         {
+           // fWalletUnlockStakingOnly = ui->stakingCheckBox->isChecked();
             QDialog::accept(); // Success
         }
-        break;
+            break;
     case Decrypt:
         if(!model->setWalletEncrypted(false, oldpass))
         {
@@ -232,6 +241,7 @@ void AskPassphraseDialog::textChanged()
         acceptable = !ui->passEdit2->text().isEmpty() && !ui->passEdit3->text().isEmpty();
         break;
     case UnlockMixing: // Old passphrase x1
+    case UnlockStaking: // Old passphrase x1
     case Unlock: // Old passphrase x1
     case Decrypt:
         acceptable = !ui->passEdit1->text().isEmpty();

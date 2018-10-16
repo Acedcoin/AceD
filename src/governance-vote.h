@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -29,37 +29,6 @@ enum vote_signal_enum_t  {
     VOTE_SIGNAL_VALID      = 2, //   -- this object checks out in sentinel engine
     VOTE_SIGNAL_DELETE     = 3, //   -- this object should be deleted from memory entirely
     VOTE_SIGNAL_ENDORSED   = 4, //   -- officially endorsed by the network somehow (delegation)
-    VOTE_SIGNAL_NOOP1      = 5, // FOR FURTHER EXPANSION
-    VOTE_SIGNAL_NOOP2      = 6,
-    VOTE_SIGNAL_NOOP3      = 7,
-    VOTE_SIGNAL_NOOP4      = 8,
-    VOTE_SIGNAL_NOOP5      = 9,
-    VOTE_SIGNAL_NOOP6      = 10,
-    VOTE_SIGNAL_NOOP7      = 11,
-    VOTE_SIGNAL_NOOP8      = 12,
-    VOTE_SIGNAL_NOOP9      = 13,
-    VOTE_SIGNAL_NOOP10     = 14,
-    VOTE_SIGNAL_NOOP11     = 15,
-    VOTE_SIGNAL_CUSTOM1    = 16,  // SENTINEL CUSTOM ACTIONS
-    VOTE_SIGNAL_CUSTOM2    = 17,  //        16-35
-    VOTE_SIGNAL_CUSTOM3    = 18,
-    VOTE_SIGNAL_CUSTOM4    = 19,
-    VOTE_SIGNAL_CUSTOM5    = 20,
-    VOTE_SIGNAL_CUSTOM6    = 21,
-    VOTE_SIGNAL_CUSTOM7    = 22,
-    VOTE_SIGNAL_CUSTOM8    = 23,
-    VOTE_SIGNAL_CUSTOM9    = 24,
-    VOTE_SIGNAL_CUSTOM10   = 25,
-    VOTE_SIGNAL_CUSTOM11   = 26,
-    VOTE_SIGNAL_CUSTOM12   = 27,
-    VOTE_SIGNAL_CUSTOM13   = 28,
-    VOTE_SIGNAL_CUSTOM14   = 29,
-    VOTE_SIGNAL_CUSTOM15   = 30,
-    VOTE_SIGNAL_CUSTOM16   = 31,
-    VOTE_SIGNAL_CUSTOM17   = 32,
-    VOTE_SIGNAL_CUSTOM18   = 33,
-    VOTE_SIGNAL_CUSTOM19   = 34,
-    VOTE_SIGNAL_CUSTOM20   = 35
 };
 
 static const int MAX_SUPPORTED_VOTE_SIGNAL = VOTE_SIGNAL_ENDORSED;
@@ -143,22 +112,14 @@ public:
     uint256 GetHash() const;
     uint256 GetSignatureHash() const;
 
-    std::string ToString() const
-    {
-        std::ostringstream ostr;
-        ostr << masternodeOutpoint.ToStringShort() << ":"
-             << nTime << ":"
-             << CGovernanceVoting::ConvertOutcomeToString(GetOutcome()) << ":"
-             << CGovernanceVoting::ConvertSignalToString(GetSignal());
-        return ostr.str();
-    }
+    std::string ToString() const;
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         int nVersion = s.GetVersion();
-        if (nVersion >= 70209 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin{};
             if (ser_action.ForRead()) {
@@ -184,24 +145,5 @@ public:
     }
 
 };
-
-
-
-/**
-* 12.1.1 - CGovernanceVoteManager
-* -------------------------------
-*
-
-    GetVote(name, yes_no):
-        - caching function
-        - mark last accessed votes
-        - load serialized files from filesystem if needed
-        - calc answer
-        - return result
-
-    CacheUnused():
-        - Cache votes if lastused > 12h/24/48/etc
-
-*/
 
 #endif

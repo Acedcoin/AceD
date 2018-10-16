@@ -1,7 +1,7 @@
-TOR SUPPORT IN aced CORE
+TOR SUPPORT IN POLIS CORE
 =======================
 
-It is possible to run aced Core as a Tor hidden service, and connect to such services.
+It is possible to run Polis Core as a Tor hidden service, and connect to such services.
 
 The following directions assume you have a Tor proxy running on port 9050. Many
 distributions default to having a SOCKS proxy listening on port 9050, but others
@@ -10,10 +10,10 @@ See [Tor Project FAQ:TBBSocksPort](https://www.torproject.org/docs/faq.html.en#T
 for how to properly configure Tor.
 
 
-1. Run aced Core behind a Tor proxy
+1. Run Polis Core behind a Tor proxy
 ----------------------------------
 
-The first step is running aced Core behind a Tor proxy. This will already make all
+The first step is running Polis Core behind a Tor proxy. This will already make all
 outgoing connections be anonymized, but more is possible.
 
 	-proxy=ip:port  Set the proxy server. If SOCKS5 is selected (default), this proxy
@@ -37,31 +37,31 @@ outgoing connections be anonymized, but more is possible.
 An example how to start the client if the Tor proxy is running on local host on
 port 9050 and only allows .onion nodes to connect:
 
-	./acedd -onion=127.0.0.1:9050 -onlynet=tor -listen=0 -addnode=ssapp53tmftyjmjb.onion
+	./polisd -onion=127.0.0.1:9050 -onlynet=tor -listen=0 -addnode=ssapp53tmftyjmjb.onion
 
 In a typical situation, this suffices to run behind a Tor proxy:
 
-	./acedd -proxy=127.0.0.1:9050
+	./polisd -proxy=127.0.0.1:9050
 
 
-2. Run a aced Core hidden server
+2. Run a Polis Core hidden server
 -------------------------------
 
 If you configure your Tor system accordingly, it is possible to make your node also
 reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equivalent
 config file):
 
-	HiddenServiceDir /var/lib/tor/acedcore-service/
-	HiddenServicePort 24127 127.0.0.1:24127
-	HiddenServicePort 1999 127.0.0.1:19999
+	HiddenServiceDir /var/lib/tor/poliscore-service/
+	HiddenServicePort 24126 127.0.0.1:24126
+	HiddenServicePort 24130 127.0.0.1:24130
 
 The directory can be different of course, but (both) port numbers should be equal to
-your acedd's P2P listen port (24127 by default).
+your polisd's P2P listen port (24126 by default).
 
-	-externalip=X   You can tell aced Core about its publicly reachable address using
+	-externalip=X   You can tell Polis Core about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
 	                configuration, you can find your onion address in
-	                /var/lib/tor/acedcore-service/hostname. Onion addresses are given
+	                /var/lib/tor/poliscore-service/hostname. Onion addresses are given
 	                preference for your node to advertise itself with, for connections
 	                coming from unroutable addresses (such as 127.0.0.1, where the
 	                Tor proxy typically runs).
@@ -78,28 +78,28 @@ your acedd's P2P listen port (24127 by default).
 
 In a typical situation, where you're only reachable via Tor, this should suffice:
 
-	./acedd -proxy=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -listen
+	./polisd -proxy=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -listen
 
 (obviously, replace the Onion address with your own). It should be noted that you still
 listen on all devices and another node could establish a clearnet connection, when knowing
 your address. To mitigate this, additionally bind the address of your Tor proxy:
 
-	./acedd ... -bind=127.0.0.1
+	./polisd ... -bind=127.0.0.1
 
 If you don't care too much about hiding your node, and want to be reachable on IPv4
 as well, use `discover` instead:
 
-	./acedd ... -discover
+	./polisd ... -discover
 
-and open port 24127 on your firewall (or use -upnp).
+and open port 24126 on your firewall (or use -upnp).
 
 If you only want to use Tor to reach onion addresses, but not use it as a proxy
 for normal IPv4/IPv6 communication, use:
 
-	./acedd -onion=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -discover
+	./polisd -onion=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -discover
 
 
-3. List of known aced Core Tor relays
+3. List of known Polis Core Tor relays
 ------------------------------------
 
 * [darkcoinie7ghp67.onion](http://darkcoinie7ghp67.onion/)
@@ -120,24 +120,24 @@ for normal IPv4/IPv6 communication, use:
 
 Starting with Tor version 0.2.7.1 it is possible, through Tor's control socket
 API, to create and destroy 'ephemeral' hidden services programmatically.
-aced Core has been updated to make use of this.
+Polis Core has been updated to make use of this.
 
 This means that if Tor is running (and proper authentication has been configured),
-AceD Core automatically creates a hidden service to listen on. This will positively
+Polis Core automatically creates a hidden service to listen on. This will positively 
 affect the number of available .onion nodes.
 
-This new feature is enabled by default if AceD Core is listening (`-listen`), and
+This new feature is enabled by default if Polis Core is listening (`-listen`), and
 requires a Tor connection to work. It can be explicitly disabled with `-listenonion=0`
 and, if not disabled, configured using the `-torcontrol` and `-torpassword` settings.
 To show verbose debugging information, pass `-debug=tor`.
 
 Connecting to Tor's control socket API requires one of two authentication methods to be 
-configured. For cookie authentication the user running acedd must have write access
+configured. For cookie authentication the user running polisd must have write access 
 to the `CookieAuthFile` specified in Tor configuration. In some cases this is 
 preconfigured and the creation of a hidden service is automatic. If permission problems 
 are seen with `-debug=tor` they can be resolved by adding both the user running tor and 
-the user running acedd to the same group and setting permissions appropriately. On
-Debian-based systems the user running acedd can be added to the debian-tor group,
+the user running polisd to the same group and setting permissions appropriately. On 
+Debian-based systems the user running polisd can be added to the debian-tor group, 
 which has the appropriate permissions. An alternative authentication method is the use 
 of the `-torpassword` flag and a `hash-password` which can be enabled and specified in 
 Tor configuration.
@@ -150,4 +150,3 @@ Tor configuration.
   Otherwise it is trivial to link them, which may reduce privacy. Hidden
   services created automatically (as in section 3) always have only one port
   open.
-

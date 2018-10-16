@@ -7,7 +7,6 @@
 # Test addressindex generation and fetching
 #
 
-import time
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.script import *
@@ -16,9 +15,10 @@ import binascii
 
 class SpentIndexTest(BitcoinTestFramework):
 
-    def setup_chain(self):
-        print("Initializing test directory "+self.options.tmpdir)
-        initialize_chain_clean(self.options.tmpdir, 4)
+    def __init__(self):
+        super().__init__()
+        self.setup_clean_chain = True
+        self.num_nodes = 4
 
     def setup_network(self):
         self.nodes = []
@@ -58,7 +58,7 @@ class SpentIndexTest(BitcoinTestFramework):
         tx.rehash()
 
         signed_tx = self.nodes[0].signrawtransaction(binascii.hexlify(tx.serialize()).decode("utf-8"))
-        txid = self.nodes[0].sendrawtransaction(signed_tx["hex"], True)
+        txid = self.nodes[0].sendrawtransaction(signed_tx["hex"], True, False, True)
         self.nodes[0].generate(1)
         self.sync_all()
 
@@ -94,7 +94,7 @@ class SpentIndexTest(BitcoinTestFramework):
         tx2.rehash()
         self.nodes[0].importprivkey(privkey)
         signed_tx2 = self.nodes[0].signrawtransaction(binascii.hexlify(tx2.serialize()).decode("utf-8"))
-        txid2 = self.nodes[0].sendrawtransaction(signed_tx2["hex"], True)
+        txid2 = self.nodes[0].sendrawtransaction(signed_tx2["hex"], True, False, True)
 
         # Check the mempool index
         self.sync_all()

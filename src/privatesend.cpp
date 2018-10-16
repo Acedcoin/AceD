@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "privatesend.h"
@@ -12,6 +12,7 @@
 #include "masternode-sync.h"
 #include "masternodeman.h"
 #include "messagesigner.h"
+#include "netfulfilledman.h"
 #include "netmessagemaker.h"
 #include "script/sign.h"
 #include "txmempool.h"
@@ -192,6 +193,7 @@ void CPrivateSendBase::SetNull()
     nState = POOL_STATE_IDLE;
     nSessionID = 0;
     nSessionDenom = 0;
+    nSessionInputCount = 0;
     vecEntries.clear();
     finalMutableTransaction.vin.clear();
     finalMutableTransaction.vout.clear();
@@ -266,13 +268,8 @@ bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
 
     for (const auto& txout : txCollateral.vout) {
         nValueOut += txout.nValue;
-	int catcher;
-	if (chainActive.Height() < 57615){
-	catcher=70210;
-	}else {
-	catcher=70211;
-	}
-        bool fAllowData = mnpayments.GetMinMasternodePaymentsProto() > catcher;
+
+        bool fAllowData = mnpayments.GetMinMasternodePaymentsProto() > 70208;
         if(!txout.scriptPubKey.IsPayToPublicKeyHash() && !(fAllowData && txout.scriptPubKey.IsUnspendable())) {
             LogPrintf ("CPrivateSend::IsCollateralValid -- Invalid Script, txCollateral=%s", txCollateral.ToString());
             return false;
@@ -299,7 +296,7 @@ bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
     {
         LOCK(cs_main);
         CValidationState validationState;
-        if(!AcceptToMemoryPool(mempool, validationState, MakeTransactionRef(txCollateral), false, NULL, false, maxTxFee, true)) {
+        if(!AcceptToMemoryPool(mempool, validationState, MakeTransactionRef(txCollateral), false, NULL, NULL, false, maxTxFee, true)) {
             LogPrint("privatesend", "CPrivateSend::IsCollateralValid -- didn't pass AcceptToMemoryPool()\n");
             return false;
         }
@@ -310,15 +307,7 @@ bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
 
 bool CPrivateSend::IsCollateralAmount(CAmount nInputAmount)
 {
-
-        int catcher;
-        if (chainActive.Height() < 57615){
-        catcher=70210;
-        }else {
-        catcher=70211;
-        }
-
-    if (mnpayments.GetMinMasternodePaymentsProto() > catcher) {
+    if (mnpayments.GetMinMasternodePaymentsProto() > 70208) {
         // collateral input can be anything between 1x and "max" (including both)
         return (nInputAmount >= GetCollateralAmount() && nInputAmount <= GetMaxCollateralAmount());
     } else { // <= 70208
@@ -403,10 +392,10 @@ int CPrivateSend::GetDenominations(const std::vector<CTxOut>& vecTxOut, bool fSi
 bool CPrivateSend::GetDenominationsBits(int nDenom, std::vector<int> &vecBitsRet)
 {
     // ( bit on if present, 4 denominations example )
-    // bit 0 - 100aced+1
-    // bit 1 - 10aced+1
-    // bit 2 - 1aced+1
-    // bit 3 - .1aced+1
+    // bit 0 - 100POLIS+1
+    // bit 1 - 10POLIS+1
+    // bit 2 - 1POLIS+1
+    // bit 3 - .1POLIS+1
 
     int nMaxDenoms = vecStandardDenominations.size();
 
@@ -469,6 +458,7 @@ std::string CPrivateSend::GetMessageByID(PoolMessage nMessageID)
         case MSG_NOERR:                 return _("No errors detected.");
         case MSG_SUCCESS:               return _("Transaction created successfully.");
         case MSG_ENTRIES_ADDED:         return _("Your entries added successfully.");
+        case ERR_INVALID_INPUT_COUNT:   return _("Invalid input count.");
         default:                        return _("Unknown response.");
     }
 }
@@ -524,14 +514,14 @@ void CPrivateSend::SyncTransaction(const CTransaction& tx, const CBlockIndex *pi
 //TODO: Rename/move to core
 void ThreadCheckPrivateSend(CConnman& connman)
 {
-    if(fLiteMode) return; // disable all aced specific functionality
+    if(fLiteMode) return; // disable all Polis specific functionality
 
     static bool fOneThread;
     if(fOneThread) return;
     fOneThread = true;
 
     // Make this thread recognisable as the PrivateSend thread
-    RenameThread("aced-ps");
+    RenameThread("polis-ps");
 
     unsigned int nTick = 0;
 
@@ -558,6 +548,7 @@ void ThreadCheckPrivateSend(CConnman& connman)
                 activeMasternode.ManageState(connman);
 
             if(nTick % 60 == 0) {
+                netfulfilledman.CheckAndRemove();
                 mnodeman.ProcessMasternodeConnections(connman);
                 mnodeman.CheckAndRemove(connman);
                 mnodeman.WarnMasternodeDaemonUpdates();

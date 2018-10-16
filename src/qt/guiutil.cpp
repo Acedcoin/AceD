@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -134,8 +134,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-
-    widget->setPlaceholderText(QObject::tr("Enter a AceD address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a Polis address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
@@ -153,8 +152,8 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no aced: URI
-    if(!uri.isValid() || uri.scheme() != QString("aced"))
+    // return if URI is not valid or is no polis: URI
+    if(!uri.isValid() || uri.scheme() != QString("polis"))
         return false;
 
     SendCoinsRecipient rv;
@@ -203,7 +202,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!BitcoinUnits::parse(BitcoinUnits::ACED, i->second, &rv.amount))
+                if(!BitcoinUnits::parse(BitcoinUnits::POLIS, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -223,13 +222,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert aced:// to aced:
+    // Convert polis:// to polis:
     //
-    //    Cannot handle this later, because aced:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because polis:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("aced://", Qt::CaseInsensitive))
+    if(uri.startsWith("polis://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 7, "aced:");
+        uri.replace(0, 7, "polis:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -237,12 +236,12 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("aced:%1").arg(info.address);
+    QString ret = QString("polis:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::ACED, info.amount, false, BitcoinUnits::separatorNever));
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::POLIS, info.amount, false, BitcoinUnits::separatorNever));
         paramCount++;
     }
 
@@ -443,7 +442,7 @@ void openConfigfile()
 {
     boost::filesystem::path pathConfig = GetConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME));
 
-    /* Open aced.conf with the associated application */
+    /* Open polis.conf with the associated application */
     if (boost::filesystem::exists(pathConfig))
         QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
 }
@@ -653,15 +652,15 @@ boost::filesystem::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "aced Core.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Polis Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "aced Core (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("aced Core (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Polis Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Polis Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for "aced Core*.lnk"
+    // check for "Polis Core*.lnk"
     return boost::filesystem::exists(StartupShortcutPath());
 }
 
@@ -753,8 +752,8 @@ boost::filesystem::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "acedcore.desktop";
-    return GetAutostartDir() / strprintf("acedcore-%s.lnk", chain);
+        return GetAutostartDir() / "poliscore.desktop";
+    return GetAutostartDir() / strprintf("poliscore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -793,13 +792,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = ChainNameFromCommandLine();
-        // Write a acedcore.desktop file to the autostart directory:
+        // Write a poliscore.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=aced Core\n";
+            optionFile << "Name=Polis Core\n";
         else
-            optionFile << strprintf("Name=aced Core (%s)\n", chain);
+            optionFile << strprintf("Name=Polis Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", GetBoolArg("-testnet", false), GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -820,7 +819,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
-    // loop through the list of startup items and try to find the aced Core app
+    // loop through the list of startup items and try to find the Polis Core app
     CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, NULL);
     for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
@@ -865,7 +864,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if(fAutoStart && !foundItem) {
-        // add aced Core app to startup item list
+        // add Polis Core app to startup item list
         LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, bitcoinAppUrl, NULL, NULL);
     }
     else if(!fAutoStart && foundItem) {

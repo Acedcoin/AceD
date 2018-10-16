@@ -9,8 +9,8 @@
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
-#include "test/test_aced.h"
 #include "script/ismine.h"
+#include "test/test_polis.h"
 
 #include <vector>
 

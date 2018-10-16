@@ -76,7 +76,6 @@ public:
     std::vector<CTransactionRef> vtx;
     std::vector<unsigned char> vchBlockSig;
 
-
     // memory only
     mutable CTxOut txoutMasternode; // masternode payment
     mutable std::vector<CTxOut> voutSuperblock; // superblock payment

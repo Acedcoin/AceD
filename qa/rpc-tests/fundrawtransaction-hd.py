@@ -9,12 +9,13 @@ from test_framework.util import *
 # Create one-input, one-output, no-fee transaction:
 class RawTransactionsTest(BitcoinTestFramework):
 
-    def setup_chain(self):
-        print("Initializing test directory "+self.options.tmpdir)
-        initialize_chain_clean(self.options.tmpdir, 4)
+    def __init__(self):
+        super().__init__()
+        self.setup_clean_chain = True
+        self.num_nodes = 4
 
     def setup_network(self, split=False):
-        self.nodes = start_nodes(4, self.options.tmpdir, [['-usehd=1'], ['-usehd=1'], ['-usehd=1'], ['-usehd=1']], redirect_stderr=True)
+        self.nodes = start_nodes(4, self.options.tmpdir, [['-usehd=1']] * self.num_nodes, redirect_stderr=True)
 
         connect_nodes_bi(self.nodes,0,1)
         connect_nodes_bi(self.nodes,1,2)
@@ -416,7 +417,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         mSigObj = self.nodes[2].addmultisigaddress(2, [addr1Obj['pubkey'], addr2Obj['pubkey']])
 
 
-        # send 12 aced to msig addr
+        # send 12 POLIS to msig addr
         txId = self.nodes[0].sendtoaddress(mSigObj, 12)
         self.sync_all()
         self.nodes[1].generate(1)
@@ -445,7 +446,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         stop_node(self.nodes[1], 2)
         stop_node(self.nodes[2], 3)
 
-        self.nodes = start_nodes(4, self.options.tmpdir, [['-usehd=1'], ['-usehd=1'], ['-usehd=1'], ['-usehd=1']], redirect_stderr=True)
+        self.nodes = start_nodes(4, self.options.tmpdir, [['-usehd=1']] * self.num_nodes, redirect_stderr=True)
         # This test is not meant to test fee estimation and we'd like
         # to be sure all txs are sent at a consistent desired feerate
         for node in self.nodes:

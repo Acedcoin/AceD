@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -52,7 +52,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         int nVersion = s.GetVersion();
-        if (nVersion >= 70209 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin{};
             if (ser_action.ForRead()) {
@@ -85,7 +85,7 @@ public:
             nDaemonVersion = DEFAULT_DAEMON_VERSION;
             return;
         }
-        if (!(nVersion >= 70209 && (s.GetType() & SER_NETWORK))) {
+        if (!(nVersion == 70208 && (s.GetType() & SER_NETWORK))) {
             READWRITE(nDaemonVersion);
         }
     }
@@ -204,7 +204,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action) {
         LOCK(cs);
         int nVersion = s.GetVersion();
-        if (nVersion >= 70209 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin{};
             if (ser_action.ForRead()) {
@@ -291,7 +291,6 @@ public:
         return false;
     }
 
-
     bool IsValidNetAddr();
     static bool IsValidNetAddr(CService addrIn);
 
@@ -362,7 +361,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         int nVersion = s.GetVersion();
-        if (nVersion >= 70209 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin{};
             if (ser_action.ForRead()) {
@@ -429,7 +428,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         int nVersion = s.GetVersion();
-        if (nVersion >= 70209 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin1{};
             CTxIn txin2{};

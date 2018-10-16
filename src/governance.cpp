@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +21,7 @@ CGovernanceManager governance;
 
 int nSubmittedFinalBudget;
 
-const std::string CGovernanceManager::SERIALIZATION_VERSION_STRING = "CGovernanceManager-Version-12";
+const std::string CGovernanceManager::SERIALIZATION_VERSION_STRING = "CGovernanceManager-Version-13";
 const int CGovernanceManager::MAX_TIME_FUTURE_DEVIATION = 60*60;
 const int CGovernanceManager::RELIABLE_PROPAGATION_TIME = 60;
 
@@ -316,17 +316,16 @@ void CGovernanceManager::AddGovernanceObject(CGovernanceObject& govobj, CConnman
         return;
     }
 
-    // IF WE HAVE THIS OBJECT ALREADY, WE DON'T WANT ANOTHER COPY
-
-    if(mapObjects.count(nHash)) {
-        LogPrintf("CGovernanceManager::AddGovernanceObject -- already have governance object %s\n", nHash.ToString());
-        return;
-    }
-
     LogPrint("gobject", "CGovernanceManager::AddGovernanceObject -- Adding object: hash = %s, type = %d\n", nHash.ToString(), govobj.GetObjectType());
 
     // INSERT INTO OUR GOVERNANCE OBJECT MEMORY
-    mapObjects.insert(std::make_pair(nHash, govobj));
+    // IF WE HAVE THIS OBJECT ALREADY, WE DON'T WANT ANOTHER COPY
+    auto objpair = mapObjects.emplace(nHash, govobj);
+
+    if(!objpair.second) {
+        LogPrintf("CGovernanceManager::AddGovernanceObject -- already have governance object %s\n", nHash.ToString());
+        return;
+    }
 
     // SHOULD WE ADD THIS OBJECT TO ANY OTHER MANANGERS?
 
@@ -337,7 +336,15 @@ void CGovernanceManager::AddGovernanceObject(CGovernanceObject& govobj, CConnman
 
     if (govobj.nObjectType == GOVERNANCE_OBJECT_TRIGGER) {
         DBG( std::cout << "CGovernanceManager::AddGovernanceObject Before AddNewTrigger" << std::endl; );
-        triggerman.AddNewTrigger(nHash);
+        if (!triggerman.AddNewTrigger(nHash)) {
+            LogPrint("gobject", "CGovernanceManager::AddGovernanceObject -- undo adding invalid trigger object: hash = %s\n", nHash.ToString());
+            CGovernanceObject& objref = objpair.first->second;
+            objref.fCachedDelete = true;
+            if (objref.nDeletionTime == 0) {
+                objref.nDeletionTime = GetAdjustedTime();
+            }
+            return;
+        }
         DBG( std::cout << "CGovernanceManager::AddGovernanceObject After AddNewTrigger" << std::endl; );
     }
 
@@ -376,13 +383,10 @@ void CGovernanceManager::UpdateCachesAndClean()
 
     ScopedLockBool guard(cs, fRateChecksEnabled, false);
 
-    // UPDATE CACHE FOR EACH OBJECT THAT IS FLAGGED DIRTYCACHE=TRUE
-
-    object_m_it it = mapObjects.begin();
-
     // Clean up any expired or invalid triggers
     triggerman.CleanAndRemove();
 
+    object_m_it it = mapObjects.begin();
     int64_t nNow = GetAdjustedTime();
 
     while(it != mapObjects.end())
@@ -445,8 +449,8 @@ void CGovernanceManager::UpdateCachesAndClean()
             mapErasedGovernanceObjects.insert(std::make_pair(nHash, nTimeExpired));
             mapObjects.erase(it++);
         } else {
-            // DO NOT USE THIS UNTIL MAY, 2018 on mainnet
-            if ((GetAdjustedTime() >= 1526423380 || Params().NetworkIDString() != CBaseChainParams::MAIN) && pObj->GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
+            // NOTE: triggers are handled via triggerman
+            if (pObj->GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
                 CProposalValidator validator(pObj->GetDataAsHexString());
                 if (!validator.Validate()) {
                     LogPrintf("CGovernanceManager::UpdateCachesAndClean -- set for deletion expired obj %s\n", (*it).first.ToString());
@@ -1032,7 +1036,7 @@ void CGovernanceManager::RequestGovernanceObject(CNode* pfrom, const uint256& nH
         CGovernanceObject* pObj = FindGovernanceObject(nHash);
 
         if(pObj) {
-            filter = CBloomFilter(Params().GetConsensus().nGovernanceFilterElements, GOVERNANCE_FILTER_FP_RATE, GetRandInt(999999), BLOOM_UPDATE_ALL);
+            filter = CBloomFilter(Params().GetConsensus().nGovernanceFilterElements, GOVERNANCE_FILTER_FP_RATE, GetRandInt(2412699), BLOOM_UPDATE_ALL);
             std::vector<CGovernanceVote> vecVotes = pObj->GetVoteFile().GetVotes();
             nVoteCount = vecVotes.size();
             for(size_t i = 0; i < vecVotes.size(); ++i) {
@@ -1197,14 +1201,19 @@ void CGovernanceManager::AddCachedTriggers()
 {
     LOCK(cs);
 
-    for(object_m_it it = mapObjects.begin(); it != mapObjects.end(); ++it) {
-        CGovernanceObject& govobj = it->second;
+    for (auto& objpair : mapObjects) {
+        CGovernanceObject& govobj = objpair.second;
 
         if(govobj.nObjectType != GOVERNANCE_OBJECT_TRIGGER) {
             continue;
         }
 
-        triggerman.AddNewTrigger(govobj.GetHash());
+        if (!triggerman.AddNewTrigger(govobj.GetHash())) {
+            govobj.fCachedDelete = true;
+            if (govobj.nDeletionTime == 0) {
+                govobj.nDeletionTime = GetAdjustedTime();
+            }
+        }
     }
 }
 

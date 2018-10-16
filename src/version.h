@@ -9,7 +9,7 @@
 /**
  * network protocol versioning
  */
-
+static const int SHORT_IDS_BLOCKS_VERSION = 70209;
 static const int PROTOCOL_VERSION = 70211;
 
 //! initial proto version, to be increased after version/verack negotiation

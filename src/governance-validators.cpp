@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The aced Core developers
+// Copyright (c) 2014-2017 The Polis Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,6 +11,7 @@
 
 #include <algorithm>
 
+const size_t MAX_DATA_SIZE  = 512;
 const size_t MAX_NAME_SIZE  = 40;
 
 CProposalValidator::CProposalValidator(const std::string& strHexData) :
@@ -26,6 +27,10 @@ CProposalValidator::CProposalValidator(const std::string& strHexData) :
 void CProposalValidator::ParseStrHexData(const std::string& strHexData)
 {
     std::vector<unsigned char> v = ParseHex(strHexData);
+    if (v.size() > MAX_DATA_SIZE) {
+        strErrorMessages = strprintf("data exceeds %lu characters;", MAX_DATA_SIZE);
+        return;
+    }
     ParseJSONData(std::string(v.begin(), v.end()));
 }
 

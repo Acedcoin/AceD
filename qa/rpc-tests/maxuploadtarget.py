@@ -6,7 +6,6 @@
 from test_framework.mininode import *
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
-import time
 
 '''
 Test behavior of -maxuploadtarget.
@@ -92,14 +91,19 @@ class MaxUploadTest(BitcoinTestFramework):
     def setup_network(self):
         # Start a node with maxuploadtarget of 200 MB (/24h)
         self.nodes = []
-        self.nodes.append(start_node(0, self.options.tmpdir, ["-debug", "-maxuploadtarget=200", "-blockmaxsize=999000"]))
+        self.nodes.append(start_node(0, self.options.tmpdir, ["-debug", "-maxuploadtarget=200", "-blockmaxsize=999000", "-maxtipage="+str(2*60*60*24*7)]))
 
     def run_test(self):
+        # Advance all nodes 2 weeks in the future
+        old_mocktime = get_mocktime()
+        current_mocktime = old_mocktime + 2*60*60*24*7
+        set_mocktime(current_mocktime)
+        set_node_times(self.nodes, current_mocktime)
+
         # Before we connect anything, we first set the time on the node
         # to be in the past, otherwise things break because the CNode
         # time counters can't be reset backward after initialization
-        old_time = int(time.time() - 2*60*60*24*7)
-        self.nodes[0].setmocktime(old_time)
+        self.nodes[0].setmocktime(old_mocktime)
 
         # Generate some old blocks
         self.nodes[0].generate(130)
@@ -129,7 +133,7 @@ class MaxUploadTest(BitcoinTestFramework):
         big_old_block = int(big_old_block, 16)
 
         # Advance to two days ago
-        self.nodes[0].setmocktime(int(time.time()) - 2*60*60*24)
+        self.nodes[0].setmocktime(current_mocktime - 2*60*60*24)
 
         # Mine one more block, so that the prior block looks old
         mine_large_block(self.nodes[0], self.utxo_cache)
@@ -188,7 +192,7 @@ class MaxUploadTest(BitcoinTestFramework):
 
         # If we advance the time by 24 hours, then the counters should reset,
         # and test_nodes[2] should be able to retrieve the old block.
-        self.nodes[0].setmocktime(int(time.time()))
+        self.nodes[0].setmocktime(current_mocktime)
         test_nodes[2].sync_with_ping()
         test_nodes[2].send_message(getdata_request)
         test_nodes[2].sync_with_ping()
@@ -201,7 +205,7 @@ class MaxUploadTest(BitcoinTestFramework):
         #stop and start node 0 with 1MB maxuploadtarget, whitelist 127.0.0.1
         print("Restarting nodes with -whitelist=127.0.0.1")
         stop_node(self.nodes[0], 0)
-        self.nodes[0] = start_node(0, self.options.tmpdir, ["-debug", "-whitelist=127.0.0.1", "-maxuploadtarget=1", "-blockmaxsize=999000"])
+        self.nodes[0] = start_node(0, self.options.tmpdir, ["-debug", "-whitelist=127.0.0.1", "-maxuploadtarget=1", "-blockmaxsize=999000", "-maxtipage="+str(2*60*60*24*7)])
 
         #recreate/reconnect 3 test nodes
         test_nodes = []

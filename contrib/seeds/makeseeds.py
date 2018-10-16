@@ -10,7 +10,6 @@ NSEEDS=512
 
 MAX_SEEDS_PER_ASN=4
 
-
 MIN_PROTOCOL_VERSION = 70208
 MAX_LAST_SEEN_DIFF = 60 * 60 * 24 * 1 # 1 day
 MAX_LAST_PAID_DIFF = 60 * 60 * 24 * 30 # 1 month
@@ -30,7 +29,6 @@ import time
 PATTERN_IPV4 = re.compile(r"^((\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})):(\d+)$")
 PATTERN_IPV6 = re.compile(r"^\[([0-9a-z:]+)\]:(\d+)$")
 PATTERN_ONION = re.compile(r"^([abcdefghijklmnopqrstuvwxyz234567]{16}\.onion):(\d+)$")
-
 
 def parseline(line):
     # line format: status protocol payee lastseen activeseconds lastpaidtime lastpaidblock IP
