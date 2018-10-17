@@ -140,7 +140,7 @@ public:
             consensus.nMasternodeMinimumConfirmations = 15;
             consensus.BIP34Height = 951;
             consensus.BIP34Hash = uint256S("0x000001f35e70f7c5705f64c6c5cc3dea9449e74d5b5c7cf74dad1bcca14a8012");
-            consensus.BIP65Height = 84672; // 00000000000076d8fcea02ec0963de4abfd01e771fec0863f960c2c64fe6f357
+            consensus.BIP65Height = 84672;  // 00000000000076d8fcea02ec0963de4abfd01e771fec0863f960c2c64fe6f357
             consensus.BIP66Height = 245817; // 00000000000b1fa2dfa312863570e13fae9ca7b5566cb27e55422620b469aefa
             consensus.DIP0001Height = 12096;
             consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
@@ -153,11 +153,15 @@ public:
 
             // Stake information
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
-            consensus.nPosTargetTimespan = 60 * 40;
-            consensus.nStakeMinAge = 60 * 60;
+            consensus.nPosTargetTimespan = 60 * 40; // 40 minutes at max for difficulty adjustment 40 mins
+            consensus.nStakeMinAge = 60 * 2;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
+            consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
+            consensus.nPoSDiffAdjustRange = 5;
+
             // POS hard fork date
-            consensus.nLastPoWBlock = 188340;
+            consensus.nLastPoWBlock = 209000;
+
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -184,7 +188,7 @@ public:
             consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nThreshold = 3226; // 80% of 4032
 
             // The best chain should have at least this much work.
-            consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000003742f0c317e7795931"); // 134622
+            consensus.nMinimumChainWork = uint256S("0x0"); // 134622
             // By default assume that the signatures in ancestors of this block are valid.
             consensus.defaultAssumeValid = uint256S("0x00000000000002115266e3f36778feb4fe9488fccabcd004e13c13ab46ddfaeb"); // 134622
             /**
@@ -291,7 +295,7 @@ public:
             consensus.nBudgetPaymentsStartBlock = 46;
             consensus.nBudgetPaymentsCycleBlocks = 24;
             consensus.nBudgetPaymentsWindowBlocks = 10;
-            consensus.nSuperblockStartBlock = 70; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+            consensus.nSuperblockStartBlock = 3050; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
             // consensus.nSuperblockStartHash = uint256S("000001af046f4ed575a48b919ed28be8a40c6a78df8d7830fbbfd07ec17a1fee");
             consensus.nSuperblockCycle = 24; // Superblocks can be issued hourly on testnet
             consensus.nGovernanceMinQuorum = 1;
@@ -313,9 +317,13 @@ public:
             // Stake info
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40;
-            consensus.nStakeMinAge = 60;
+            consensus.nStakeMinAge = 60; //one minute
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
-            consensus.nLastPoWBlock = 100;
+            consensus.nLastPoWBlock = 650;
+            consensus.nPoSDiffAdjustRange = 1;
+            // highest difficulty | 0x1e0ffff0 (?)
+            // smallest difficulty | 0x008000
+            consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
 
             consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -454,6 +462,7 @@ public:
             consensus.nStakeMinAge = 60 * 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             consensus.nLastPoWBlock = 180675;
+
 
 
             consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
@@ -604,6 +613,9 @@ public:
             consensus.nStakeMinAge = 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             consensus.nLastPoWBlock = 25;
+            // highest difficulty | 0x1e0ffff0 (?)
+            // smallest difficulty | 0x008000
+            consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
 
             // The best chain should have at least this much work.
             consensus.nMinimumChainWork = uint256S("0x00");

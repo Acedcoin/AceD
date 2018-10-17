@@ -227,7 +227,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(CWallet *wallet, 
             coinbaseTx.vout[0].nValue -= pblock->txoutMasternode.nValue;
         }
 
-        LogPrintf("CreateNewBlock -- nBlockHeight %d blockReward %lld txoutMasternode %s txNew %s",
+        LogPrintf("CreateNewBlock PoW-- nBlockHeight %d blockReward %lld txoutMasternode %s txNew %s",
                   nHeight, blockReward, pblock->txoutMasternode.ToString(), coinbaseTx.ToString());
 
     }

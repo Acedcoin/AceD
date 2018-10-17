@@ -40,7 +40,7 @@ unsigned int getIntervalVersion(bool fTestNet)
 //}
 // Hard checkpoints of stake modifiers to ensure they are deterministic
 static std::map<int, unsigned int> mapStakeModifierCheckpoints =
-        boost::assign::map_list_of(0, 0);
+        boost::assign::map_list_of(0, 0x0000000000000000);
 // Get time weight
 int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd)
 {
@@ -261,11 +261,13 @@ static bool GetKernelStakeModifierV05(unsigned int nTimeTx, uint64_t& nStakeModi
         pindex = pindex->pprev;
         if (pindex->GeneratedStakeModifier())
         {
+            LogPrintf("Kernel::GetKernelStakeModifierV05 PrevIndexGeneratedStakeModifier TRUE");
             nStakeModifierHeight = pindex->nHeight;
             nStakeModifierTime = pindex->GetBlockTime();
         }
     }
     nStakeModifier = pindex->nStakeModifier;
+    LogPrintf("Kernel::GetKernelStakeModifierV05 PrevIndexNStakeModifier %d", nStakeModifier);
     return true;
 }
 // Get the stake modifier specified by the protocol to hash for a stake kernel
@@ -451,7 +453,10 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
 bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierChecksum)
 {
     if (fTestNet) return true; // Testnet has no checkpoints
-    if (mapStakeModifierCheckpoints.count(nHeight))
+    LogPrintf("Kernel::CheckStakeModifierCheckpoints Height: %d nSMC: %d mSMC: %d\n", nHeight, nStakeModifierChecksum, mapStakeModifierCheckpoints[nHeight]);
+    if (mapStakeModifierCheckpoints.count(nHeight)){
+        LogPrintf("Kernel::CheckStakeModifierCheckpoints Height: %d nSMC: %d mSMC: %d\n", nHeight, nStakeModifierChecksum, mapStakeModifierCheckpoints[nHeight]);
         return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
+    }
     return true;
 }
