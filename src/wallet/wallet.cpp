@@ -2703,7 +2703,7 @@ void CWallet::AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed, 
                     if (CPrivateSend::IsCollateralAmount(pcoin->tx->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !CPrivateSend::IsDenominatedAmount(pcoin->tx->vout[i].nValue);
                 } else if(nCoinType == ONLY_1000) {
-		   if(chainActive.Height() >= 101525) {
+		   if(chainActive.Height() >= 103230) {
                     found = pcoin->tx->vout[i].nValue == 10000*COIN;
 			} else {
                     found = pcoin->tx->vout[i].nValue == 2500*COIN;
@@ -3259,7 +3259,7 @@ bool CWallet::SelectCoinsGrouppedByAddresses(std::vector<CompactTallyItem>& vecT
             if(fAnonymizable) {
                 // ignore collaterals
                 if(CPrivateSend::IsCollateralAmount(wtx.tx->vout[i].nValue)) continue;
-		if(chainActive.Height() >= 101525) {
+		if(chainActive.Height() >= 103230) {
                 if(fMasternodeMode && wtx.tx->vout[i].nValue == 10000*COIN) continue;
 		} else {
                 if(fMasternodeMode && wtx.tx->vout[i].nValue == 2500*COIN) continue;
@@ -3329,7 +3329,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<
         if(out.tx->tx->vout[out.i].nValue < nValueMin/10) continue;
         //do not allow collaterals to be selected
         if(CPrivateSend::IsCollateralAmount(out.tx->tx->vout[out.i].nValue)) continue;
-	if(chainActive.Height() >= 101525) {
+	if(chainActive.Height() >= 103230) {
         if(fMasternodeMode && out.tx->tx->vout[out.i].nValue == 10000*COIN) continue; //masternode input
 	} else {
         if(fMasternodeMode && out.tx->tx->vout[out.i].nValue == 2500*COIN) continue; //masternode input

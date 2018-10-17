@@ -161,7 +161,7 @@ public:
             consensus.nStakeMinAge = 2 * 60 * 60; // 2 hrs
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             // POS hard fork date
-            consensus.nLastPoWBlock = 101525;
+            consensus.nLastPoWBlock = 103230;
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
             consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
