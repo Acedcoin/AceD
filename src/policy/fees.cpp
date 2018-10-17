@@ -504,3 +504,4 @@ CAmount FeeFilterRounder::round(CAmount currentMinFee)
     }
     return *it;
 }
+

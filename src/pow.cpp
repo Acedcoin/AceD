@@ -106,7 +106,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
-    if (!pindexLast || pindexLast->nHeight < nPastBlocks || (pindexLast->nHeight >= 57450 && pindexLast->nHeight < 57460)) {
+    if (!pindexLast || pindexLast->nHeight < nPastBlocks || (pindexLast->nHeight >= 57450 && pindexLast->nHeight < 98500)) {
         return bnPowLimit.GetCompact();
     }
      //    if (pindexLast->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2){
@@ -158,7 +158,7 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
 
     // Genesis block
-    if (pindexLast == NULL || pindexLast->nHeight+1 < 57460)
+    if (pindexLast == NULL || pindexLast->nHeight+1 < 98500)
         return nProofOfWorkLimit;
 
     // Only change once per interval
@@ -195,7 +195,7 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     // Most recent algo first
-    if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
+    if (pindexLast->nHeight + 1  >= params.nLastPoWBlock) {
         return PoSWorkRequired(pindexLast, params);
     } else if (pindexLast->nHeight + 1 >= params.nPowDGWHeight) {
   //  if (pindexLast->nHeight + 1 >= params.nPowDGWHeight) {
