@@ -1317,9 +1317,10 @@ CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParam
     if(nPrevHeight == 161279) {nSubsidyBase = 5000;}
     if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
     if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 201599) {nSubsidyBase = 5000;}
 
     // New Block Reward
-    if(nPrevHeight > 188328) {nSubsidyBase = 20;}
+    if(nPrevHeight > 201599) {nSubsidyBase = 20;}
 
     // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
     CAmount nSubsidy = nSubsidyBase * COIN;
@@ -2331,10 +2332,10 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     if (!IsBlockValueValid(block, pindex->nHeight, expectedReward, pindex->nMint, strError)) {
         return state.DoS(0, error("ConnectBlock(POLIS): %s", strError), REJECT_INVALID, "bad-cb-amount");
     }
-    const auto& coinbaseTransaction = (pindex->nHeight > Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
+    const auto& coinbaseTransaction = (pindex->nHeight >= Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
 
     if (!IsBlockPayeeValid(coinbaseTransaction, pindex->nHeight, expectedReward, pindex->nMint)) {
-        mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
+        //        mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
         return state.DoS(0, error("ConnectBlock(POLIS): couldn't find masternode or superblock payments"),
                          REJECT_INVALID, "bad-cb-payee");
     }

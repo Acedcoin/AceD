@@ -85,8 +85,11 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     int64_t nTargetSpacing = Params().GetConsensus().nPosTargetSpacing;
     int64_t nTargetTimespan = Params().GetConsensus().nPosTargetTimespan;
     int64_t nActualSpacing = 0;
-    if (pindexLast->nHeight != 0)
+    if (pindexLast->nHeight != 0){
         nActualSpacing = pindexLast->GetBlockTime() - pindexLast->pprev->GetBlockTime();
+        //LogPrintf("PoSWorkRequired:: nActualSpacing: %d", nActualSpacing);
+    }
+
     if (nActualSpacing < 0)
         nActualSpacing = 1;
     // ppcoin: target change every block
@@ -98,7 +101,12 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     bnNew /= ((nInterval + 1) * nTargetSpacing);
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
+    LogPrintf("PoSWorkRequired:: bnNew value: %d", bnNew.GetCompact());
     return bnNew.GetCompact();
+}
+
+unsigned int static PoW2PoSRequired(const CBlockIndex* pindexLast, const Consensus::Params& params) {
+    return Params().GetConsensus().nWSTargetDiff; // Gets hardcoded diff for last PoW block.
 }
 
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params) {
@@ -233,10 +241,10 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     // Most recent algo first
-	if (pindexLast->nHeight  == params.nLastPoWBlock) {
-	return 0x1e0ffff0;
-	}
-    if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
+    if (pindexLast->nHeight >= params.nLastPoWBlock) {
+        if(pindexLast->nHeight  <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
+            return PoW2PoSRequired(pindexLast, params);
+        }
         return PoSWorkRequired(pindexLast, params);
     } else if (pindexLast->nHeight + 1 >= params.nPowDGWHeight) {
         return DarkGravityWave(pindexLast, pblock, params);
