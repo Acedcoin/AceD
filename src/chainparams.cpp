@@ -154,13 +154,13 @@ public:
             // Stake information
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
             consensus.nPosTargetTimespan = 60 * 40; // 40 minutes at max for difficulty adjustment 40 mins
-            consensus.nStakeMinAge = 60;
+            consensus.nStakeMinAge = 60 * 2;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
-            consensus.nPoSDiffAdjustRange = 1;
+            consensus.nPoSDiffAdjustRange = 5;
 
             // POS hard fork date
-            consensus.nLastPoWBlock = 203992;
+            consensus.nLastPoWBlock = 204055;
 
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -188,7 +188,7 @@ public:
             consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nThreshold = 3226; // 80% of 4032
 
             // The best chain should have at least this much work.
-            consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000003742f0c317e7795931"); // 134622
+            consensus.nMinimumChainWork = uint256S("0x0"); // 134622
             // By default assume that the signatures in ancestors of this block are valid.
             consensus.defaultAssumeValid = uint256S("0x00000000000002115266e3f36778feb4fe9488fccabcd004e13c13ab46ddfaeb"); // 134622
             /**
@@ -231,7 +231,7 @@ public:
 
             vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
-            fMiningRequiresPeers = false;
+            fMiningRequiresPeers = true;
             fDefaultConsistencyChecks = false;
             fRequireStandard = true;
             fMineBlocksOnDemand = false;
