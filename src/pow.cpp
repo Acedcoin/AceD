@@ -87,7 +87,7 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     int64_t nActualSpacing = 0;
     if (pindexLast->nHeight != 0){
         nActualSpacing = pindexLast->GetBlockTime() - pindexLast->pprev->GetBlockTime();
-        LogPrintf("PoSWorkRequired:: nActualSpacing: %d", nActualSpacing);
+        //LogPrintf("PoSWorkRequired:: nActualSpacing: %d", nActualSpacing);
     }
 
     if (nActualSpacing < 0)
@@ -243,10 +243,8 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Most recent algo first
     if (pindexLast->nHeight >= params.nLastPoWBlock) {
         if(pindexLast->nHeight  <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
-            LogPrintf("PoS::GetNextWorkRequired : Range Limit %d\n\t\tWithin Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,pindexLast->nHeight);
             return PoW2PoSRequired(pindexLast, params);
         }
-        LogPrintf("PoW::GetNextWorkRequired : %d\n\t\tOut of initial Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,params.nPoSDiffAdjustRange);
         return PoSWorkRequired(pindexLast, params);
     } else if (pindexLast->nHeight + 1 >= params.nPowDGWHeight) {
         return DarkGravityWave(pindexLast, pblock, params);
