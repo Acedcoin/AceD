@@ -453,7 +453,9 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
 bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierChecksum)
 {
     if (fTestNet) return true; // Testnet has no checkpoints
-    if (mapStakeModifierCheckpoints.count(nHeight))
+    if (mapStakeModifierCheckpoints.count(nHeight)){
+        LogPrintf("Kernel::CheckStakeModifierCheckpoints Height: %d nSMC: %d mSMC: %d\n", nHeight, nStakeModifierChecksum, mapStakeModifierCheckpoints[nHeight]);
         return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
+    }
     return true;
 }
