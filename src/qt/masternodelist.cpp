@@ -173,6 +173,7 @@ void MasternodeList::StartAll(std::string strCommand)
             strFailedHtml += "\nFailed to start " + mne.getAlias() + ". Error: " + strError;
         }
     }
+    pwalletMain->Lock();
 
     std::string returnObj;
     returnObj = strprintf("Successfully started %d masternodes, failed to start %d, total %d", nCountSuccessful, nCountFailed, nCountFailed + nCountSuccessful);
@@ -242,11 +243,6 @@ void MasternodeList::updateMyNodeList(bool fForce)
     if(nSecondsTillUpdate > 0 && !fForce) return;
     nTimeMyListUpdated = GetTime();
 
-    // Find selected row
-    QItemSelectionModel* selectionModel = ui->tableWidgetMyMasternodes->selectionModel();
-    QModelIndexList selected = selectionModel->selectedRows();
-    int nSelectedRow = selected.count() ? selected.at(0).row() : 0;
-
     ui->tableWidgetMyMasternodes->setSortingEnabled(false);
     for (const auto& mne : masternodeConfig.getEntries()) {
         int32_t nOutputIndex = 0;
@@ -256,7 +252,7 @@ void MasternodeList::updateMyNodeList(bool fForce)
 
         updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), COutPoint(uint256S(mne.getTxHash()), nOutputIndex));
     }
-    ui->tableWidgetMyMasternodes->selectRow(nSelectedRow);
+    ui->tableWidgetMyMasternodes->selectRow(0);
     ui->tableWidgetMyMasternodes->setSortingEnabled(true);
 
     // reset "timer"
@@ -473,7 +469,7 @@ void MasternodeList::ShowQRCode(std::string strAlias) {
     CMasternode mn;
     bool fFound = false;
 
-    for (const auto& mne : masternodeConfig.getEntries()) {
+    BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
         if (strAlias != mne.getAlias()) {
             continue;
         }
@@ -487,7 +483,7 @@ void MasternodeList::ShowQRCode(std::string strAlias) {
     }
 
     // Title of popup window
-    QString strWindowtitle = tr("Additional information for Masternode %1").arg(QString::fromStdString(strAlias));
+    QString strWindowtitle = tr("Additional information for Masternode ") + QString::fromStdString(strAlias);
 
     // Title above QR-Code
     QString strQRCodeTitle = tr("Masternode Private Key");

@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The AceD Core developers
+// Copyright (c) 2014-2017 The aced Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,8 +20,8 @@ QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
     unitlist.append(ACED);
-    unitlist.append(mACED);
-    unitlist.append(uACED);
+    unitlist.append(maced);
+    unitlist.append(uaced);
     unitlist.append(duffs);
     return unitlist;
 }
@@ -31,8 +31,8 @@ bool BitcoinUnits::valid(int unit)
     switch(unit)
     {
     case ACED:
-    case mACED:
-    case uACED:
+    case maced:
+    case uaced:
     case duffs:
         return true;
     default:
@@ -47,8 +47,8 @@ QString BitcoinUnits::name(int unit)
         switch(unit)
         {
             case ACED: return QString("ACED");
-            case mACED: return QString("mACED");
-            case uACED: return QString::fromUtf8("μACED");
+            case maced: return QString("maced");
+            case uaced: return QString::fromUtf8("μaced");
             case duffs: return QString("duffs");
             default: return QString("???");
         }
@@ -58,8 +58,8 @@ QString BitcoinUnits::name(int unit)
         switch(unit)
         {
             case ACED: return QString("tACED");
-            case mACED: return QString("mtACED");
-            case uACED: return QString::fromUtf8("μtACED");
+            case maced: return QString("mtaced");
+            case uaced: return QString::fromUtf8("μtaced");
             case duffs: return QString("tduffs");
             default: return QString("???");
         }
@@ -72,10 +72,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case ACED: return QString("AceD");
-            case mACED: return QString("Milli-AceD (1 / 1" THIN_SP_UTF8 "000)");
-            case uACED: return QString("Micro-AceD (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-AceD (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case ACED: return QString("ACED");
+            case maced: return QString("Milli-aced (1 / 1" THIN_SP_UTF8 "000)");
+            case uaced: return QString("Micro-aced (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case duffs: return QString("Ten Nano-aced (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -83,10 +83,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case ACED: return QString("TestAceDs");
-            case mACED: return QString("Milli-TestAceD (1 / 1" THIN_SP_UTF8 "000)");
-            case uACED: return QString("Micro-TestAceD (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-TestAceD (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case ACED: return QString("Testaceds");
+            case maced: return QString("Milli-Testaced (1 / 1" THIN_SP_UTF8 "000)");
+            case uaced: return QString("Micro-Testaced (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case duffs: return QString("Ten Nano-Testaced (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -97,8 +97,8 @@ qint64 BitcoinUnits::factor(int unit)
     switch(unit)
     {
     case ACED:  return 100000000;
-    case mACED: return 100000;
-    case uACED: return 100;
+    case maced: return 100000;
+    case uaced: return 100;
     case duffs: return 1;
     default:   return 100000000;
     }
@@ -109,8 +109,8 @@ int BitcoinUnits::decimals(int unit)
     switch(unit)
     {
     case ACED: return 8;
-    case mACED: return 5;
-    case uACED: return 2;
+    case maced: return 5;
+    case uaced: return 2;
     case duffs: return 0;
     default: return 0;
     }

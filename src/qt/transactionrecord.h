@@ -76,7 +76,6 @@ public:
     {
         Other,
         Generated,
-        StakeMint,
         SendToAddress,
         SendToOther,
         RecvWithAddress,
@@ -87,8 +86,7 @@ public:
         PrivateSendCollateralPayment,
         PrivateSendMakeCollaterals,
         PrivateSendCreateDenominations,
-        PrivateSend,
-        MNReward
+        PrivateSend
     };
 
     /** Number of confirmation recommended for accepting a transaction */

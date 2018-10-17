@@ -80,15 +80,12 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-
+    //addWidget(masternodestab);
     QSettings settings;
+    //settings.setValue("fShowMasternodesTab", 1);
     if (!fLiteMode && settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage = new MasternodeList(platformStyle);
         addWidget(masternodeListPage);
-    }
-    if (!fLiteMode && settings.value("fShowGovernanceTab").toBool()) {
-        governanceListPage = new GovernanceList(platformStyle);
-        addWidget(governanceListPage);
     }
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
@@ -146,9 +143,6 @@ void WalletView::setClientModel(ClientModel *_clientModel)
     if (!fLiteMode && settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage->setClientModel(_clientModel);
     }
-    if (!fLiteMode && settings.value("fShowGovernanceTab").toBool()) {
-        governanceListPage->setClientModel(_clientModel);
-    }
 }
 
 void WalletView::setWalletModel(WalletModel *_walletModel)
@@ -161,9 +155,6 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     QSettings settings;
     if (!fLiteMode && settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage->setWalletModel(_walletModel);
-    }
-    if (!fLiteMode && settings.value("fShowGovernanceTab").toBool()) {
-        governanceListPage->setWalletModel(_walletModel);
     }
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
@@ -229,14 +220,6 @@ void WalletView::gotoMasternodePage()
     QSettings settings;
     if (!fLiteMode && settings.value("fShowMasternodesTab").toBool()) {
         setCurrentWidget(masternodeListPage);
-    }
-}
-
-void WalletView::gotoGovernancePage()
-{
-    QSettings settings;
-    if (!fLiteMode && settings.value("fShowGovernanceTab").toBool()) {
-        setCurrentWidget(governanceListPage);
     }
 }
 

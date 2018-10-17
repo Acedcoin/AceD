@@ -7,20 +7,21 @@ padding-bottom: 20px;
 }
 
 QStatusBar {
-background-color:#ffffff;
+background-color:#000000;
 }
 
 .QFrame {
 background-color:transparent;
-border:0px solid #fff;
+border:0px solid #000;
 }
 
 QMenuBar {
-background-color:#fff;
+background-color:#000;
 }
 
 QMenuBar::item {
-background-color:#fff;
+background-color:#000;
+color:#ff8c00;
 }
 
 QMenuBar::item:selected {
@@ -32,33 +33,33 @@ background-color:#f8f6f6;
 }
 
 QMenu::item {
-color:#333;
+color:#000;
 }
 
 QMenu::item:selected {
 background-color:#f2f0f0;
-color:#333;
+color:#000;
 }
 
 QToolBar {
-background-color:#fff;
+background-color:#000;
 border:0px solid #000;
 padding:0;
 margin:0;
 }
 
 QToolBar > QToolButton {
-background-color:#fff;
-border:0px solid #333;
+background-color:#000;
+border:0px solid #000;
 min-height:2.5em;
 min-width: 8em;
 padding: 0em 1em;
 /*font-weight:bold;*/
-color:#333;
+color:#ff8c00;
 }
 
 QToolBar > QToolButton:checked {
-background-color:#2E4D7C;
+background-color:#e09e30;
 color:#fff;
 font-weight:bold;
 }
@@ -71,11 +72,11 @@ background-color:#F8F6F6;
 
 QLabel { /* Base Text Size & Color */
 font-size:12px;
-color:#333333;
+color:#ff8c00;
 }
 
 .QCheckBox { /* Checkbox Labels */
-color:#333333;
+color:#ff8c00;
 background-color:transparent;
 }
 
@@ -84,7 +85,7 @@ background-color:transparent;
 }
 
 .QValidatedLineEdit, .QLineEdit { /* Text Entry Fields */
-border: 1px solid #2E4D7C;
+border: 1px solid #e09e30;
 font-size:11px;
 min-height:25px;
 outline:0;
@@ -103,7 +104,7 @@ background-color:#f2f2f2;
 /*******************************************************/
 
 QPushButton { /* Global Button Style */
-background-color:#2E4D7C;
+background-color:#e09e30;
 border:0;
 border-radius:3px;
 color:#ffffff;
@@ -130,7 +131,7 @@ border:1px solid #fff;
 }
 
 QComboBox { /* Dropdown Menus */
-border:1px solid #2E4D7C;
+border:1px solid #e09e30;
 padding: 3px 5px 3px 5px;
 background:#fcfcfc;
 min-height:25px;
@@ -142,7 +143,7 @@ background:#f2f2f2;
 }
 
 QComboBox:editable {
-background: #2E4D7C;
+background: #e09e30;
 color:#616161;
 border:0px solid transparent;
 }
@@ -186,7 +187,7 @@ selection-color:transparent;
 }
 
 QAbstractSpinBox {
-border:1px solid #2E4D7C;
+border:1px solid #e09e30;
 padding: 3px 5px 3px 5px;
 background:#fcfcfc;
 min-height:25px;
@@ -199,8 +200,8 @@ subcontrol-position: top right;
 width:21px;
 background:#fcfcfc;
 border-left:0px;
-border-right:1px solid #2E4D7C;
-border-top:1px solid #2E4D7C;
+border-right:1px solid #e09e30;
+border-top:1px solid #e09e30;
 border-bottom:0px;
 padding-right:1px;
 padding-left:5px;
@@ -218,8 +219,8 @@ width:21px;
 background:#fcfcfc;
 border-top:0px;
 border-left:0px;
-border-right:1px solid #2E4D7C;
-border-bottom:1px solid #2E4D7C;
+border-right:1px solid #e09e30;
+border-bottom:1px solid #e09e30;
 padding-right:1px;
 padding-left:5px;
 padding-bottom:2px;
@@ -278,7 +279,7 @@ background-color:transparent;
 
 QHeaderView::section { /* Table Header Sections */
 qproperty-alignment:center;
-background-color:#2E4D7C;
+background-color:#e09e30;
 color:#fff;
 min-height:25px;
 font-weight:bold;
@@ -485,7 +486,7 @@ padding-right:10px;
 }
 
 QDialog#SignVerifyMessageDialog QPlainTextEdit { /* Message Signing Text */
-border:1px solid #2E4D7C;
+border:1px solid #e09e30;
 background-color:#fff;
 }
 
@@ -599,7 +600,7 @@ min-width:180px;
 }
 
 QDialog#RPCConsole QWidget#tab_peers  QLabel#peerHeading { /* Peers Info Header */
-color:#2E4D7C;
+color:#e09e30;
 }
 
 QDialog#RPCConsole QPushButton#openDebugLogfileButton {
@@ -643,16 +644,16 @@ QDialog#HelpMessageDialog QScrollBar:vertical, QDialog#HelpMessageDialog QScroll
 border:0;
 }
 
-/* About AceD Dialog */
+/* About Polis Dialog */
 QDialog#AboutDialog {
 background-color:#F8F6F6;
 }
 
-QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About AceD Contents */
+QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About Polis Contents */
 margin-left:10px;
 }
 
-QDialog#AboutDialog QLabel#label_2 { /* Margin for About AceD text */
+QDialog#AboutDialog QLabel#label_2 { /* Margin for About Polis text */
 margin-right:10px;
 }
 
@@ -730,7 +731,7 @@ margin-left:16px;
 QWidget .QFrame#frame .QLabel#labelBalanceText { /* Available Balance Label */
 qproperty-alignment: 'AlignVCenter | AlignCenter';
 min-width:160px;
-background-color:#2E4D7C;
+background-color:#e09e30;
 color:#ffffff;
 margin-right:5px;
 padding-right:5px;
@@ -742,7 +743,7 @@ min-height:35px;
 QWidget .QFrame#frame .QLabel#labelStakeInfo { /* Available Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
-    background-color:#2E4D7C;
+    background-color:#e09e30;
     color:#ffffff;
     margin-right:5px;
     padding-right:5px;
@@ -754,7 +755,7 @@ QWidget .QFrame#frame .QLabel#labelStakeInfo { /* Available Balance Label */
 QWidget .QFrame#frame .QLabel#labelWalletInfo { /* Available Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
-    background-color:#2E4D7C;
+    background-color:#e09e30;
     color:#ffffff;
     margin-right:5px;
     padding-right:5px;
@@ -766,7 +767,7 @@ QWidget .QFrame#frame .QLabel#labelWalletInfo { /* Available Balance Label */
 QWidget .QFrame#frame .QLabel#labelBlockchainInfo { /* Available Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
-    background-color:#2E4D7C;
+    background-color:#e09e30;
     color:#ffffff;
     margin-right:5px;
     padding-right:5px;
@@ -779,7 +780,7 @@ QWidget .QFrame#frame .QLabel#labelBlockchainInfo { /* Available Balance Label *
 QWidget .QFrame#frame .QLabel#labelBalance { /* Available Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:16px;
-color:#2E4D7C;
+color:#e09e30;
 margin-left:0px;
     font-weight: bold;
 }
@@ -794,7 +795,7 @@ QWidget .QFrame#frame .QLabel#labelPendingText { /* Pending Balance Label */
 qproperty-alignment: 'AlignVCenter | AlignCenter';
 min-width:160px;
 font-size:12px;
-background-color:#F8F6F6;
+background-color:transparent;
 margin-right:5px;
 padding-right:5px;
 }
@@ -803,7 +804,7 @@ QWidget .QFrame#frame .QLabel#labelStakeBalanceText { /* Stake Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -812,7 +813,7 @@ QWidget .QFrame#frame .QLabel#labelStakeStatusText { /* Stake Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -821,7 +822,7 @@ QWidget .QFrame#frame .QLabel#labelStakeInputsText { /* Stake Balance Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -830,7 +831,7 @@ QWidget .QFrame#frame .QLabel#labelStatusText { /* Wallet Status Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -839,7 +840,7 @@ QWidget .QFrame#frame .QLabel#labelHeadersText { /* Headers Status Label */
      qproperty-alignment: 'AlignVCenter | AlignCenter';
      min-width:160px;
      font-size:12px;
-     background-color:#F8F6F6;
+     background-color:transparent;
      margin-right:5px;
      padding-right:5px;
  }
@@ -848,7 +849,7 @@ QWidget .QFrame#frame .QLabel#labelHeadersText { /* Headers Status Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -857,7 +858,7 @@ QWidget .QFrame#frame .QLabel#labelMnListText { /* Masternode List Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -866,7 +867,7 @@ QWidget .QFrame#frame .QLabel#labelGobjectListText { /* Gobject List Label */
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
-    background-color:#F8F6F6;
+    background-color:transparent;
     margin-right:5px;
     padding-right:5px;
 }
@@ -922,7 +923,7 @@ QWidget .QFrame#frame .QLabel#labelTotalText { /* Total Balance Label */
 qproperty-alignment: 'AlignVCenter | AlignCenter';
 min-width:160px;
 font-size:12px;
-background-color:#F8F6F6;
+background-color:transparent;
 margin-right:5px;
 padding-right:5px;
 }
@@ -954,7 +955,7 @@ background-position: center top;
 
 QWidget .QFrame#frame_2 .QLabel#label_4 { /* Recent Transactions Label */
 min-width:180px;
-color:#999;
+color:#e71c1c;
 margin-left:67px;
 margin-top:83px;
 margin-right:5px;
@@ -978,6 +979,7 @@ QWidget .QFrame#frame .QLabel#labelMnList { /* Masternode List Sync Status */
 QWidget .QFrame#frame_2 QListView { /* Transaction List */
 font-weight:normal;
 font-size:12px;
+color:#e71c1c;
 max-width:369px;
 margin-top:12px;
 margin-left:0px; /* CSS Voodoo - set to -66px to hide default transaction icons */
@@ -986,7 +988,7 @@ margin-left:0px; /* CSS Voodoo - set to -66px to hide default transaction icons 
 /* MODAL OVERLAY */
 
 QWidget#bgWidget { /* The 'frame' overlaying the overview-page */
-    background:#2E4D7C;
+    background:#e09e30;
     color:#616161;
     padding-left:10px;
     padding-right:10px;
@@ -1075,7 +1077,7 @@ min-height:27px;
 QDialog#SendCoinsDialog QLabel#labelBalance {
 margin-left:0px;
 padding-left:0px;
-color:#333333;
+color:#ff8c00;
 /* font-weight:bold;
 border-radius:5px;
 padding-top:20px;
@@ -1330,12 +1332,12 @@ margin-right:1px;
 }
 
 QLabel#transactionSumLabel { /* Example of setObjectName for widgets without name */
-color:#333333;
+color:#ff8c00;
 font-weight:bold;
 }
  
 QLabel#transactionSum { /* Example of setObjectName for widgets without name */
-color:#333333;
+color:#ff8c00;
 }
 
 /* TRANSACTION DETAIL DIALOG */
