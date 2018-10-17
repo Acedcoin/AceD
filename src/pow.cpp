@@ -241,8 +241,8 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     // Most recent algo first
-    if (pindexLast->nHeight + 1 >= params.nLastPoWBlock) {
-        if(pindexLast->nHeight + 1 <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
+    if (pindexLast->nHeight >= params.nLastPoWBlock) {
+        if(pindexLast->nHeight  <= (params.nLastPoWBlock + params.nPoSDiffAdjustRange)){
             LogPrintf("PoS::GetNextWorkRequired : Range Limit %d\n\t\tWithin Range: %d", params.nLastPoWBlock + params.nPoSDiffAdjustRange ,pindexLast->nHeight);
             return PoW2PoSRequired(pindexLast, params);
         }

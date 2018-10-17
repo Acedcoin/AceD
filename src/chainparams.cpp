@@ -153,14 +153,14 @@ public:
 
             // Stake information
             consensus.nPosTargetSpacing = 2 * 60; // PoSW: 2 minutes
-            consensus.nPosTargetTimespan = 60 * 40;
+            consensus.nPosTargetTimespan = 60 * 40; // 40 minutes at max for difficulty adjustment 40 mins
             consensus.nStakeMinAge = 60;
             consensus.nStakeMaxAge = 60 * 60 * 24; // one day
             consensus.nWSTargetDiff = 0x1e0ffff0; // Genesis Difficulty
             consensus.nPoSDiffAdjustRange = 1;
 
             // POS hard fork date
-            consensus.nLastPoWBlock = 203960;
+            consensus.nLastPoWBlock = 203992;
 
             consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
             consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
