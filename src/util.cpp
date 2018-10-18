@@ -561,7 +561,7 @@ boost::filesystem::path GetDefaultDataDir()
     // Unix: ~/.acedcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "AceDCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "acedCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -571,7 +571,7 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/AceDCore";
+    return pathRet / "Library/Application Support/acedCore";
 #else
     // Unix
     return pathRet / ".acedcore";
