@@ -608,6 +608,9 @@ void SendCoinsDialog::processSendCoinsReturn(const WalletModel::SendCoinsReturn 
     // all others are used only in WalletModel::prepareTransaction()
     switch(sendCoinsReturn.status)
     {
+    case WalletModel::InvalidUnlock:
+        msgParams.first = "ERROR: Wallet only unlocked for staking.";
+        break;
     case WalletModel::InvalidAddress:
         msgParams.first = tr("The recipient address is not valid. Please recheck.");
         break;

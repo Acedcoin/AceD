@@ -57,6 +57,9 @@ AskPassphraseDialog::AskPassphraseDialog(Mode _mode, QWidget *parent) :
             ui->passEdit3->hide();
             setWindowTitle(tr("Unlock wallet for mixing only"));
             break;
+        case UnlockStaking:
+            ui->stakingCheckBox->setChecked(true);
+            ui->stakingCheckBox->show();
         case Unlock: // Ask passphrase
             ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
             ui->passLabel2->hide();
@@ -176,6 +179,7 @@ void AskPassphraseDialog::accept()
         }
         } break;
     case UnlockMixing:
+    case UnlockStaking:
     case Unlock:
         if(!model->setWalletLocked(false, oldpass, mode == UnlockMixing))
         {
@@ -184,6 +188,7 @@ void AskPassphraseDialog::accept()
         }
         else
         {
+            fWalletUnlockStakingOnly = ui->stakingCheckBox->isChecked();
             QDialog::accept(); // Success
         }
         break;

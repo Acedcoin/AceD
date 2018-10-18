@@ -114,6 +114,7 @@ public:
     {
         OK,
         InvalidAmount,
+        InvalidUnlock,
         InvalidAddress,
         AmountExceedsBalance,
         AmountWithFeeExceedsBalance,
