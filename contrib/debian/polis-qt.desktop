@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Polis Core
+Comment=Polis P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Polis peer-to-peer Netzwerk
+Comment[fr]=Polis, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Polis, eşten eşe kriptografik sanal para birimi
+Exec=polis-qt %u
+Terminal=false
+Type=Application
+Icon=polis128
+MimeType=x-scheme-handler/polis;
+Categories=Office;Finance;
