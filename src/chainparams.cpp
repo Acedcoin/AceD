@@ -146,7 +146,7 @@ public:
             consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
             consensus.nPowTargetTimespan = 24 * 60 * 60; // polis: 1 day
             consensus.nPowTargetSpacing = 120 ; // polis: 2 minutes
-            consensus.fPowAllowMinDifficultyBlocks = true;
+            consensus.fPowAllowMinDifficultyBlocks = false;
             consensus.fPowNoRetargeting = false;
             consensus.nPowKGWHeight = 551;
             consensus.nPowDGWHeight = 551;
