@@ -285,7 +285,19 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
 
     // GET MASTERNODE PAYMENT VARIABLES SETUP
     CAmount masternodePayment = GetMasternodePayment(nBlockHeight, blockReward);
-    
+       // txNew.vout[0].nValue -= masternodePayment;
+if(chainActive.Height() >= 103230){
+//            unsigned int i = txNew.vout.size();
+      //      txNew.vout.resize(i + 1);
+        //    txNew.vout[i].scriptPubKey = payee;
+          //  txNew.vout[i].nValue = masternodePayment;
+
+            //subtract mn payment from the stake reward
+        //    txNew.vout[i - 1].nValue -= masternodePayment;
+ //   txNew.vout[1].nValue -= (mastern
+    txNew.vout[1].nValue -= masternodePayment;
+
+}
     txoutMasternodeRet = CTxOut(masternodePayment, payee);
     txNew.vout.push_back(txoutMasternodeRet);
 
@@ -1118,6 +1130,8 @@ void CMasternodePayments::UpdatedBlockTip(const CBlockIndex *pindex, CConnman& c
 }
 void AdjustMasternodePayment(CMutableTransaction &tx, const CTxOut &txoutMasternodePayment)
 {
+return;
+/*
     auto it = std::find(std::begin(tx.vout), std::end(tx.vout), txoutMasternodePayment);
 
     if(it != std::end(tx.vout))
@@ -1128,4 +1142,5 @@ void AdjustMasternodePayment(CMutableTransaction &tx, const CTxOut &txoutMastern
         long i = tx.vout.size() - 2;
         tx.vout[i].nValue -= masternodePayment; // last vout is mn payment.
     }
+*/
 }
