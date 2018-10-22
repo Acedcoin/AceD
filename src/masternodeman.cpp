@@ -565,7 +565,7 @@ mnpair1.second.setLastPaidBlock(lastblk);
 }
 //find the lowest blk height
     for (const auto& mnpair2 : mapMasternodes){
-if (mnpair2.second.IsValidForPayment() && mnpair2.second.GetLastPaidTime() <= nbestheight_mn){
+if (mnpair2.second.IsValidForPayment() && mnpair2.second.GetLastPaidTime() <= nbestheight_mn && GetUTXOConfirmations(mnpair2.first) >= nMnCount && mnpair2.second.sigTime + (nMnCount*2.6*60) < GetAdjustedTime()){
 
 nbestheight_mn = mnpair2.second.GetLastPaidTime();
 pBestMasternodee = mnpair2.second.GetInfo();

@@ -5,7 +5,7 @@ includedir=${prefix}/include
 
 Name: AceD Core consensus library
 Description: Library for the Bitcoin consensus protocol.
-Version: 1.10.0
+Version: 1.11.0
 Libs: -L${libdir} -lpolisconsensus
 Cflags: -I${includedir}
 Requires.private: libcrypto

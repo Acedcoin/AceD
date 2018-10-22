@@ -18,7 +18,7 @@
 #define CLIENT_VERSION_MAJOR 1
 
 /* Minor version */
-#define CLIENT_VERSION_MINOR 10
+#define CLIENT_VERSION_MINOR 11
 
 /* Build revision */
 #define CLIENT_VERSION_REVISION 0
@@ -319,7 +319,7 @@
 #define PACKAGE_NAME "AceD Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "AceD Core 1.10.0"
+#define PACKAGE_STRING "AceD Core 1.11.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "acedcore"
@@ -328,7 +328,7 @@
 #define PACKAGE_URL "https://acedpay.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.10.0"
+#define PACKAGE_VERSION "1.11.0"
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
