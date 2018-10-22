@@ -133,13 +133,6 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
     return COLLATERAL_OK;
 }
 
-void CMasternode::SetBlk(int blk)
-{
-    AssertLockHeld(cs_main);
-    LOCK(cs);
-nTimeLastPaid = blk;
-return;
-}
 void CMasternode::Check(bool fForce)
 {
     AssertLockHeld(cs_main);
