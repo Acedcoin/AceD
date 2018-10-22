@@ -663,17 +663,20 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString() const
     LOCK(cs_vecPayees);
 
     std::string strRequiredPayments = "";
-
+int bestpayeecount = 0;
     for (const auto& payee : vecPayees)
     {
         CTxDestination address1;
         ExtractDestination(payee.GetPayee(), address1);
         CBitcoinAddress address2(address1);
 
-        if (!strRequiredPayments.empty())
-            strRequiredPayments += ", ";
+        if (!strRequiredPayments.empty()){
+            strRequiredPayments += ", ";}
+if(payee.GetVoteCount() > bestpayeecount){
+strRequiredPayments = address2.ToString();
 
-        strRequiredPayments += strprintf("%s:%d", address2.ToString(), payee.GetVoteCount());
+}
+        //strRequiredPayments += strprintf("%s:%d", address2.ToString(), payee.GetVoteCount());
     }
 
     if (strRequiredPayments.empty())

@@ -246,6 +246,7 @@ public:
     static CollateralStatus CheckCollateral(const COutPoint& outpoint, const CPubKey& pubkey);
     static CollateralStatus CheckCollateral(const COutPoint& outpoint, const CPubKey& pubkey, int& nHeightRet);
     void Check(bool fForce = false);
+void SetBlk(int blk);
 
     bool IsBroadcastedWithin(int nSeconds) { return GetAdjustedTime() - sigTime < nSeconds; }
 
@@ -306,6 +307,9 @@ public:
 
     int GetLastPaidTime() const { return nTimeLastPaid; }
     int GetLastPaidBlock() const { return nBlockLastPaid; }
+int setLastPaidBlock(int newblock){
+nTimeLastPaid = newblock;
+}
     void UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScanBack);
 
     // KEEP TRACK OF EACH GOVERNANCE ITEM INCASE THIS NODE GOES OFFLINE, SO WE CAN RECALC THEIR STATUS

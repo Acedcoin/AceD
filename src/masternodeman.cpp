@@ -544,6 +544,45 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
 	}
     }
 }
+//const CMasternode pBestMasternodee = NULL;
+masternode_info_t pBestMasternodee = masternode_info_t();
+int nbestheight_mn = 0;
+int lastblk = chainActive.Height() - 1;
+std::string strPayment = GetRequiredPaymentsString(lastblk);
+    for (auto& mnpair1 : mapMasternodes){
+//get last block's masternode winner
+//int lastblk = chainActive.Height() - 1;
+//std::string strPayment = GetRequiredPaymentsString(lastblk);
+//mnpair.second.nTimeLastPaid = chainActi
+CBitcoinAddress address(mnpair1.second.pubKeyCollateralAddress.GetID());
+        std::string strPayee = address.ToString(); 
+//set mn's last paid block
+if (strPayment == strPayee){
+mnpair1.second.nTimeLastPaid = lastblk;
+mnpair1.second.SetBlk(lastblk);
+mnpair1.second.setLastPaidBlock(lastblk);
+}
+}
+//find the lowest blk height
+    for (const auto& mnpair2 : mapMasternodes){
+if (mnpair2.second.IsValidForPayment() && mnpair2.second.GetLastPaidTime() <= nbestheight_mn){
+
+nbestheight_mn = mnpair2.second.GetLastPaidTime();
+pBestMasternodee = mnpair2.second.GetInfo();
+  //      mnInfoRet = pBestMasternode->GetInfo();
+//return true;
+}
+}
+    if (pBestMasternodee.fInfoValid) {
+        mnInfoRet = pBestMasternodee;
+    }
+    return mnInfoRet.fInfoValid;
+
+
+//        mnInfoRet = mnpair.second.GetInfo();
+
+
+
 
     for (const auto& mnpair : mapMasternodes) {
         if(!mnpair.second.IsValidForPayment()) continue;

@@ -133,6 +133,13 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
     return COLLATERAL_OK;
 }
 
+void CMasternode::SetBlk(int blk)
+{
+    AssertLockHeld(cs_main);
+    LOCK(cs);
+nTimeLastPaid = blk;
+return;
+}
 void CMasternode::Check(bool fForce)
 {
     AssertLockHeld(cs_main);
@@ -338,7 +345,7 @@ void CMasternode::UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScan
                 continue; // shouldn't really happen
             const auto& coinbaseTransaction = (BlockReading->nHeight > Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
 
-            CAmount nMasternodePayment = GetMasternodePayment(BlockReading->nHeight, block.vtx[0]->GetValueOut());
+            CAmount nMasternodePayment = GetMasternodePayment(BlockReading->nHeight, BlockReading->nMint);
 
             for (const auto& txout : coinbaseTransaction->vout)
                 if(mnpayee == txout.scriptPubKey && nMasternodePayment == txout.nValue) {
