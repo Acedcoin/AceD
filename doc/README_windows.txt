@@ -1,4 +1,4 @@
-Polis Core 0.12.1
+Polis Core 1.4.4
 =====================
 
 Intro
