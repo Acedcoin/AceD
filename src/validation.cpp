@@ -3596,7 +3596,9 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
     BlockMap::iterator miSelf = mapBlockIndex.find(hash);
     CBlockIndex *pindex = NULL;
 
+
     // TODO : ENABLE BLOCK CACHE IN SPECIFIC CASES
+
     if (hash != chainparams.GetConsensus().hashGenesisBlock) {
 
         if (miSelf != mapBlockIndex.end()) {
@@ -3604,8 +3606,11 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
             pindex = miSelf->second;
             if (ppindex)
                 *ppindex = pindex;
-            if (pindex->nStatus & BLOCK_FAILED_MASK)
-                return state.Invalid(error("%s: block %s is marked invalid", __func__, hash.ToString()), 0, "duplicate");
+            if (!(pindex->nHeight >= chainparams.GetConsensus().nLastPoWBlock)) {
+                if (pindex->nStatus & BLOCK_FAILED_MASK)
+                    return state.Invalid(error("%s: block %s is marked invalid", __func__, hash.ToString()), 0, "duplicate");
+            }
+
             return true;
         }
 
@@ -3618,8 +3623,10 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
         if (mi == mapBlockIndex.end())
             return state.DoS(10, error("%s: prev block not found", __func__), 0, "bad-prevblk");
         pindexPrev = (*mi).second;
-        if (pindexPrev->nStatus & BLOCK_FAILED_MASK)
-            return state.DoS(100, error("%s: prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
+        if (!(pindexPrev->nHeight >= chainparams.GetConsensus().nLastPoWBlock)) {
+            if (pindexPrev->nStatus & BLOCK_FAILED_MASK)
+                return state.DoS(100, error("%s: prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
+        }
 
         assert(pindexPrev);
         if (fCheckpointsEnabled && !CheckIndexAgainstCheckpoint(pindexPrev, state, chainparams, hash))
