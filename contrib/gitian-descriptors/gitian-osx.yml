@@ -1,5 +1,5 @@
 ---
-name: "polis-osx-1.4.2"
+name: "polis-osx-1.4.4"
 enable_cache: true
 suites:
 - "trusty"
