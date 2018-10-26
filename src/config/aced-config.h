@@ -341,10 +341,10 @@
 /* #undef QT_QPA_PLATFORM_WINDOWS */
 
 /* Define this symbol if the qt platform is xcb */
-#define QT_QPA_PLATFORM_XCB 1
+/* #undef QT_QPA_PLATFORM_XCB */
 
 /* Define this symbol if qt plugins are static */
-#define QT_STATICPLUGIN 1
+/* #undef QT_STATICPLUGIN */
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -353,10 +353,10 @@
 #define STRERROR_R_CHAR_P 1
 
 /* Define if dbus support should be compiled in */
-#define USE_DBUS 1
+/* #undef USE_DBUS */
 
 /* Define if QR support should be compiled in */
-#define USE_QRCODE 1
+/* #undef USE_QRCODE */
 
 /* UPnP support not compiled if undefined, otherwise value (0 or 1) determines
    default state */
