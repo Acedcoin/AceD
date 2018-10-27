@@ -1140,16 +1140,13 @@ bool GetAddressUnspent(uint160 addressHash, int type,
 bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus::Params& consensusParams, uint256 &hashBlock, bool fAllowSlow)
 {
     CBlockIndex *pindexSlow = NULL;
-
     LOCK(cs_main);
-
     CTransactionRef ptx = mempool.get(hash);
     if (ptx)
     {
         txOut = ptx;
         return true;
     }
-
     if (fTxIndex) {
         CDiskTxPos postx;
         if (pblocktree->ReadTxIndex(hash, postx)) {
@@ -1169,7 +1166,6 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
                 return error("%s: txid mismatch", __func__);
             return true;
         }
-
         // transaction not found in index, nothing more can be done
         return false;
     }
@@ -3606,7 +3602,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
             pindex = miSelf->second;
             if (ppindex)
                 *ppindex = pindex;
-            if (!(pindex->nHeight >= chainparams.GetConsensus().nLastPoWBlock)) {
+            if (pindex->nHeight <= chainparams.GetConsensus().nLastPoWBlock) {
                 if (pindex->nStatus & BLOCK_FAILED_MASK)
                     return state.Invalid(error("%s: block %s is marked invalid", __func__, hash.ToString()), 0, "duplicate");
             }
@@ -3623,7 +3619,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
         if (mi == mapBlockIndex.end())
             return state.DoS(10, error("%s: prev block not found", __func__), 0, "bad-prevblk");
         pindexPrev = (*mi).second;
-        if (!(pindexPrev->nHeight >= chainparams.GetConsensus().nLastPoWBlock)) {
+        if (pindexPrev->nHeight <= chainparams.GetConsensus().nLastPoWBlock) {
             if (pindexPrev->nStatus & BLOCK_FAILED_MASK)
                 return state.DoS(100, error("%s: prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
         }
