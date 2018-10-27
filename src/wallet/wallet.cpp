@@ -2439,7 +2439,6 @@ CAmount CWallet::GetStake() const
         }
     }
 
-    LogPrintf("StakeBalance = %i \n", nTotal);
     return nTotal;
 }
 
@@ -2447,7 +2446,6 @@ int CWallet::GetStakeInputs() const
 {
     static StakeCoinsSet setStakeCoins;
     int StakeInputs = (int) setStakeCoins.size();
-    LogPrintf("StakeInputs = %i \n", setStakeCoins.size());
     return StakeInputs;
 }
 
