@@ -87,7 +87,6 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     int64_t nActualSpacing = 0;
     if (pindexLast->nHeight != 0){
         nActualSpacing = pindexLast->GetBlockTime() - pindexLast->pprev->GetBlockTime();
-        //LogPrintf("PoSWorkRequired:: nActualSpacing: %d", nActualSpacing);
     }
 
     if (nActualSpacing < 0)
@@ -101,7 +100,6 @@ unsigned int static PoSWorkRequired(const CBlockIndex* pindexLast, const Consens
     bnNew /= ((nInterval + 1) * nTargetSpacing);
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
-    LogPrintf("PoSWorkRequired:: bnNew value: %d", bnNew.GetCompact());
     return bnNew.GetCompact();
 }
 

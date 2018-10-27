@@ -1,5 +1,5 @@
 ---
-name: "polis-raspberry-1.4.2"
+name: "polis-raspberry-1.4.4"
 enable_cache: true
 suites:
 - "precise"

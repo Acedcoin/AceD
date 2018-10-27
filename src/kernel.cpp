@@ -40,7 +40,10 @@ unsigned int getIntervalVersion(bool fTestNet)
 //}
 // Hard checkpoints of stake modifiers to ensure they are deterministic
 static std::map<int, unsigned int> mapStakeModifierCheckpoints =
-        boost::assign::map_list_of(0, 0x0000000000000000);
+        boost::assign::map_list_of
+                (0, 0x0000000000000000);
+
+
 // Get time weight
 int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd)
 {
@@ -267,7 +270,6 @@ static bool GetKernelStakeModifierV05(unsigned int nTimeTx, uint64_t& nStakeModi
         }
     }
     nStakeModifier = pindex->nStakeModifier;
-    LogPrintf("Kernel::GetKernelStakeModifierV05 PrevIndexNStakeModifier %d", nStakeModifier);
     return true;
 }
 // Get the stake modifier specified by the protocol to hash for a stake kernel
@@ -342,8 +344,11 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-    if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake))
-        return error("Failed to get kernel stake modifier");
+
+
+    //if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake))
+    //    return error("Failed to get kernel stake modifier");
+
     ss << nStakeModifier;
     ss << nTimeBlockFrom << nTxPrevOffset << txPrevTime << prevout.n << nTimeTx;
     hashProofOfStake = Hash(ss.begin(), ss.end());
@@ -400,7 +405,6 @@ bool CheckKernelScript(CScript scriptVin, CScript scriptVout)
     };
     return extractKeyID(scriptVin) == extractKeyID(scriptVout);
 }
-// Check kernel hash target and coinstake signature
 bool CheckProofOfStake(const CBlock &block, uint256& hashProofOfStake)
 {
     const CTransactionRef tx = block.vtx[1];
@@ -413,7 +417,8 @@ bool CheckProofOfStake(const CBlock &block, uint256& hashProofOfStake)
     CTransactionRef txPrev;
     const auto &cons = Params().GetConsensus();
     if (!GetTransaction(txin.prevout.hash, txPrev, cons, hashBlock, true))
-        return error("CheckProofOfStake() : INFO: read txPrev failed");
+        return ("CheckProofOfStake() : INFO: read txPrev failed");
+    CTxOut prevTxOut = txPrev->vout[txin.prevout.n];
     CBlockIndex* pindex = NULL;
     BlockMap::iterator it = mapBlockIndex.find(hashBlock);
     if (it != mapBlockIndex.end())
@@ -424,10 +429,10 @@ bool CheckProofOfStake(const CBlock &block, uint256& hashProofOfStake)
     CBlock blockprev;
     if (!ReadBlockFromDisk(blockprev, pindex->GetBlockPos(), cons))
         return error("CheckProofOfStake(): INFO: failed to find block");
-    if(!CheckKernelScript(txPrev->vout[txin.prevout.n].scriptPubKey, tx->vout[1].scriptPubKey))
+    if(!CheckKernelScript(prevTxOut.scriptPubKey, tx->vout[1].scriptPubKey))
         return error("CheckProofOfStake() : INFO: check kernel script failed on coinstake %s, hashProof=%s \n", tx->GetHash().ToString().c_str(), hashProofOfStake.ToString().c_str());
     unsigned int nTime = block.nTime;
-    if (!CheckStakeKernelHash(block.nBits, blockprev, /*postx.nTxOffset + */sizeof(CBlock), txPrev, txin.prevout, nTime, hashProofOfStake, fDebug))
+    if (!CheckStakeKernelHash(block.nBits, blockprev, /*postx->nTxOffset + */sizeof(CBlock), txPrev, txin.prevout, nTime, hashProofOfStake, fDebug))
         return error("CheckProofOfStake() : INFO: check kernel failed on coinstake %s, hashProof=%s \n", tx->GetHash().ToString().c_str(), hashProofOfStake.ToString().c_str()); // may occur during initial download or if behind on block chain sync
     return true;
 }
@@ -452,8 +457,6 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
 // Check stake modifier hard checkpoints
 bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierChecksum)
 {
-    if (fTestNet) return true; // Testnet has no checkpoints
-    LogPrintf("Kernel::CheckStakeModifierCheckpoints Height: %d nSMC: %d mSMC: %d\n", nHeight, nStakeModifierChecksum, mapStakeModifierCheckpoints[nHeight]);
     if (mapStakeModifierCheckpoints.count(nHeight)){
         return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
     }
