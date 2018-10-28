@@ -16,6 +16,7 @@
 #include "keystore.h"
 #include "kernel.h"
 #include "masternode-payments.h"
+#include "masternodeconfig.h"
 #include "validation.h"
 #include "net.h"
 #include "policy/policy.h"
@@ -2439,6 +2440,7 @@ CAmount CWallet::GetStake() const
         }
     }
 
+    nTotal = nTotal - (masternodeConfig.getCount() * 1000);
     return nTotal;
 }
 
