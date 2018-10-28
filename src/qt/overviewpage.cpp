@@ -30,6 +30,8 @@
 #define NUM_ITEMS 7
 #define NUM_ITEMS_ADV 7
 
+extern int64_t nLastCoinStakeSearchInterval;
+
 class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
@@ -221,7 +223,7 @@ void OverviewPage::setBlockChainInfo(int count, const QDateTime& blockDate, doub
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Wallet is locked</font>") );
     } else if (!pwalletMain->MintableCoins()){
         ui->labelStakeStatus->setText(tr("<font color='darkred'>No mintable coins</font>") );
-    } else {
+    } else if (nLastCoinStakeSearchInterval > 0) {
         ui->labelStakeStatus->setText(tr("<font color='darkgreen'>Staking</font>") );
     }
 
