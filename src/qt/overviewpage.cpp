@@ -226,11 +226,11 @@ void OverviewPage::setBlockChainInfo(int count, const QDateTime& blockDate, doub
     } else if (nLastCoinStakeSearchInterval > 0) {
         ui->labelStakeStatus->setText(tr("<font color='darkgreen'>Staking</font>") );
     }
-
     if (!headers) {
         ui->labelBlocks->setText(QString::number(count));
     }
 }
+
 
 // show/hide watch-only labels
 void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
@@ -263,6 +263,7 @@ void OverviewPage::setClientModel(ClientModel *model)
         updateAlerts(model->getStatusBarWarnings());
         setBlockChainInfo(model->getNumBlocks(), model->getLastBlockDate(), model->getVerificationProgress(NULL), false);
         connect(model, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(setBlockChainInfo(int,QDateTime,double,bool)));
+
     }
 }
 
