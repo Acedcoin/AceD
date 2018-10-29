@@ -16,6 +16,7 @@
 #include "keystore.h"
 #include "kernel.h"
 #include "masternode-payments.h"
+#include "masternodeconfig.h"
 #include "validation.h"
 #include "net.h"
 #include "policy/policy.h"
@@ -52,7 +53,7 @@ bool bBIP69Enabled = true;
 const char * DEFAULT_WALLET_DAT = "wallet.dat";
 
 /** 
- * Fees smaller than this (in duffs) are considered zero fee (for transaction creation)
+ * Fees smaller than this (in politoshis) are considered zero fee (for transaction creation)
  * Override with -mintxfee
  */
 CFeeRate CWallet::minTxFee = CFeeRate(DEFAULT_TRANSACTION_MINFEE);
@@ -2439,6 +2440,7 @@ CAmount CWallet::GetStake() const
         }
     }
 
+    nTotal = nTotal - (masternodeConfig.getCount() * 1000);
     return nTotal;
 }
 

@@ -1,5 +1,5 @@
 ---
-name: "polis-win-1.4.4"
+name: "polis-win-1.4.5"
 enable_cache: true
 suites:
 - "trusty"

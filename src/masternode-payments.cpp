@@ -593,7 +593,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransactionRef& txNew) co
     int nMaxSignatures = 0;
     std::string strPayeesPossible = "";
 
-    CAmount nMasternodePayment = GetMasternodePayment(nBlockHeight, txNew->GetValueOut());
+    CAmount nMasternodePayment = GetMasternodePayment(nBlockHeight, GetBlockSubsidy(nBlockHeight, Params().GetConsensus()));
 
     //require at least MNPAYMENTS_SIGNATURES_REQUIRED signatures
 
@@ -655,20 +655,27 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString() const
     return strRequiredPayments;
 }
 
-std::string CMasternodePayments::GetRequiredPaymentsString(int nBlockHeight) const
+std::string CMasternodePayments::GetRequiredPaymentsString(int nBlockHeight)
 {
     LOCK(cs_mapMasternodeBlocks);
 
-    const auto it = mapMasternodeBlocks.find(nBlockHeight);
-    return it == mapMasternodeBlocks.end() ? "Unknown" : it->second.GetRequiredPaymentsString();
+    if(mapMasternodeBlocks.count(nBlockHeight)){
+        return mapMasternodeBlocks[nBlockHeight].GetRequiredPaymentsString();
+    }
+
+    return "Unknown";
 }
 
-bool CMasternodePayments::IsTransactionValid(const CTransactionRef& txNew, int nBlockHeight) const
+
+bool CMasternodePayments::IsTransactionValid(const CTransactionRef& txNew, int nBlockHeight)
 {
     LOCK(cs_mapMasternodeBlocks);
 
-    const auto it = mapMasternodeBlocks.find(nBlockHeight);
-    return it == mapMasternodeBlocks.end() ? true : it->second.IsTransactionValid(txNew);
+    if(mapMasternodeBlocks.count(nBlockHeight)){
+        return mapMasternodeBlocks[nBlockHeight].IsTransactionValid(txNew);
+    }
+
+    return true;
 }
 
 void CMasternodePayments::CheckAndRemove()

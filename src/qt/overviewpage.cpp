@@ -30,6 +30,8 @@
 #define NUM_ITEMS 7
 #define NUM_ITEMS_ADV 7
 
+extern int64_t nLastCoinStakeSearchInterval;
+
 class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
@@ -217,18 +219,18 @@ void OverviewPage::setBlockChainInfo(int count, const QDateTime& blockDate, doub
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Staking hasn't started</font>") );
     } else if (!masternodeSync.IsSynced()) {
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Masternode list not synced</font>") );
-    } else if (pwalletMain->IsLocked()){
+    } else if (pwalletMain->IsLocked(true)){
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Wallet is locked</font>") );
     } else if (!pwalletMain->MintableCoins()){
         ui->labelStakeStatus->setText(tr("<font color='darkred'>No mintable coins</font>") );
-    } else {
+    } else if (nLastCoinStakeSearchInterval > 0) {
         ui->labelStakeStatus->setText(tr("<font color='darkgreen'>Staking</font>") );
     }
-
     if (!headers) {
         ui->labelBlocks->setText(QString::number(count));
     }
 }
+
 
 // show/hide watch-only labels
 void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
@@ -261,6 +263,7 @@ void OverviewPage::setClientModel(ClientModel *model)
         updateAlerts(model->getStatusBarWarnings());
         setBlockChainInfo(model->getNumBlocks(), model->getLastBlockDate(), model->getVerificationProgress(NULL), false);
         connect(model, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(setBlockChainInfo(int,QDateTime,double,bool)));
+
     }
 }
 
