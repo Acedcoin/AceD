@@ -219,7 +219,7 @@ void OverviewPage::setBlockChainInfo(int count, const QDateTime& blockDate, doub
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Staking hasn't started</font>") );
     } else if (!masternodeSync.IsSynced()) {
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Masternode list not synced</font>") );
-    } else if (pwalletMain->IsLocked()){
+    } else if (pwalletMain->IsLocked(true)){
         ui->labelStakeStatus->setText(tr("<font color='darkred'>Wallet is locked</font>") );
     } else if (!pwalletMain->MintableCoins()){
         ui->labelStakeStatus->setText(tr("<font color='darkred'>No mintable coins</font>") );

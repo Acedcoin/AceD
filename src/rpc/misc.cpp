@@ -1153,7 +1153,7 @@ UniValue getstakingstatus(const JSONRPCRequest& request)
     obj.push_back(Pair("validtime", chainActive.Tip()->nTime > 1471482000));
     obj.push_back(Pair("haveconnections", g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) > 0));
     if (pwalletMain) {
-        obj.push_back(Pair("walletunlocked", !pwalletMain->IsLocked()));
+        obj.push_back(Pair("walletunlocked", !pwalletMain->IsLocked(true)));
         obj.push_back(Pair("mintablecoins", pwalletMain->MintableCoins()));
         obj.push_back(Pair("enoughcoins", pwalletMain->GetBalance() > 0));
     }

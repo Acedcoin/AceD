@@ -1997,20 +1997,20 @@ UniValue walletpassphrase(const JSONRPCRequest& request)
 
     if (pwalletMain->IsCrypted() && (request.fHelp || request.params.size() < 2 || request.params.size() > 3))
         throw std::runtime_error(
-            "walletpassphrase \"passphrase\" timeout ( mixingonly )\n"
+            "walletpassphrase \"passphrase\" timeout ( stakingonly )\n"
             "\nStores the wallet decryption key in memory for 'timeout' seconds.\n"
             "This is needed prior to performing transactions related to private keys such as sending poliss\n"
             "\nArguments:\n"
             "1. \"passphrase\"        (string, required) The wallet passphrase\n"
             "2. timeout             (numeric, required) The time to keep the decryption key in seconds.\n"
-            "3. mixingonly          (boolean, optional, default=false) If is true sending functions are disabled.\n"
+            "3. stakingonly          (boolean, optional, default=false) If is true sending functions are disabled.\n"
             "\nNote:\n"
             "Issuing the walletpassphrase command while the wallet is already unlocked will set a new unlock\n"
             "time that overrides the old one.\n"
             "\nExamples:\n"
             "\nUnlock the wallet for 60 seconds\n"
             + HelpExampleCli("walletpassphrase", "\"my pass phrase\" 60") +
-            "\nUnlock the wallet for 60 seconds but allow PrivateSend mixing only\n"
+            "\nUnlock the wallet for 60 seconds but allow Staking only\n"
             + HelpExampleCli("walletpassphrase", "\"my pass phrase\" 60 true") +
             "\nLock the wallet again (before 60 seconds)\n"
             + HelpExampleCli("walletlock", "") +
@@ -2039,7 +2039,7 @@ UniValue walletpassphrase(const JSONRPCRequest& request)
         fForMixingOnly = request.params[2].get_bool();
 
     if (fForMixingOnly && !pwalletMain->IsLocked(true) && pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_ALREADY_UNLOCKED, "Error: Wallet is already unlocked for mixing only.");
+        throw JSONRPCError(RPC_WALLET_ALREADY_UNLOCKED, "Error: Wallet is already unlocked for staking only.");
 
     if (!pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_ALREADY_UNLOCKED, "Error: Wallet is already fully unlocked.");
