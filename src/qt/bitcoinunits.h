@@ -60,7 +60,7 @@ public:
         POLIS,
         mPOLIS,
         uPOLIS,
-        duffs
+        politoshis
     };
 
     enum SeparatorStyle

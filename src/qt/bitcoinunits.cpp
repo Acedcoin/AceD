@@ -22,7 +22,7 @@ QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
     unitlist.append(POLIS);
     unitlist.append(mPOLIS);
     unitlist.append(uPOLIS);
-    unitlist.append(duffs);
+    unitlist.append(politoshis);
     return unitlist;
 }
 
@@ -33,7 +33,7 @@ bool BitcoinUnits::valid(int unit)
     case POLIS:
     case mPOLIS:
     case uPOLIS:
-    case duffs:
+    case politoshis:
         return true;
     default:
         return false;
@@ -49,7 +49,7 @@ QString BitcoinUnits::name(int unit)
             case POLIS: return QString("POLIS");
             case mPOLIS: return QString("mPOLIS");
             case uPOLIS: return QString::fromUtf8("μPOLIS");
-            case duffs: return QString("duffs");
+            case politoshis: return QString("politoshis");
             default: return QString("???");
         }
     }
@@ -60,7 +60,7 @@ QString BitcoinUnits::name(int unit)
             case POLIS: return QString("tPOLIS");
             case mPOLIS: return QString("mtPOLIS");
             case uPOLIS: return QString::fromUtf8("μtPOLIS");
-            case duffs: return QString("tduffs");
+            case politoshis: return QString("tpolitoshis");
             default: return QString("???");
         }
     }
@@ -75,7 +75,7 @@ QString BitcoinUnits::description(int unit)
             case POLIS: return QString("Polis");
             case mPOLIS: return QString("Milli-Polis (1 / 1" THIN_SP_UTF8 "000)");
             case uPOLIS: return QString("Micro-Polis (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-Polis (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case politoshis: return QString("Ten Nano-Polis (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -86,7 +86,7 @@ QString BitcoinUnits::description(int unit)
             case POLIS: return QString("TestPoliss");
             case mPOLIS: return QString("Milli-TestPolis (1 / 1" THIN_SP_UTF8 "000)");
             case uPOLIS: return QString("Micro-TestPolis (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-TestPolis (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case politoshis: return QString("Ten Nano-TestPolis (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -99,7 +99,7 @@ qint64 BitcoinUnits::factor(int unit)
     case POLIS:  return 100000000;
     case mPOLIS: return 100000;
     case uPOLIS: return 100;
-    case duffs: return 1;
+    case politoshis: return 1;
     default:   return 100000000;
     }
 }
@@ -111,7 +111,7 @@ int BitcoinUnits::decimals(int unit)
     case POLIS: return 8;
     case mPOLIS: return 5;
     case uPOLIS: return 2;
-    case duffs: return 0;
+    case politoshis: return 0;
     default: return 0;
     }
 }
