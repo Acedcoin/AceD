@@ -429,6 +429,7 @@ libpolis_util_a_SOURCES = \
 
 if GLIBC_BACK_COMPAT
 libpolis_util_a_SOURCES += compat/glibc_compat.cpp
+AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
 # cli: shared between polis-cli and polis-qt
