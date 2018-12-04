@@ -89,6 +89,16 @@ Then build using:
     CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/
     make
 
+If the compilation process shows that there are some unknown references, change to the posix implementation as stated in the following [dash issue](https://github.com/dashpay/dash/issues/1751).
+
+Commands
+
+``` console
+sudo update-alternatives --config i686-w64-mingw32-gcc
+sudo update-alternatives --config i686-w64-mingw32-g++
+```
+And select posix implementation at each.
+
 ## Depends system
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
