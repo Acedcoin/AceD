@@ -3153,8 +3153,6 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     }
 
     // ppcoin: compute stake modifier
-    if (pindexNew->IsProofOfStake()) {
-
         uint64_t nStakeModifier = 0;
         bool fGeneratedStakeModifier = false;
         if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
@@ -3163,7 +3161,6 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
         pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
         if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
             LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
-    }
 
     setDirtyBlockIndex.insert(pindexNew);
 
@@ -3712,7 +3709,6 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         return error("%s: %s", __func__, FormatStateMessage(state));
     }
 
-    AcceptProofOfStakeBlock(block, pindex);
 
 
     // Header is valid/has work, merkle tree is good...RELAY NOW
@@ -4279,6 +4275,7 @@ static bool AddGenesisBlock(const CChainParams& chainparams, const CBlock& block
     if (!WriteBlockToDisk(block, blockPos, chainparams.MessageStart()))
         return error("%s: writing genesis block to disk failed", __func__);
     CBlockIndex *pindex = AddToBlockIndex(block);
+    AcceptProofOfStakeBlock(block, pindex);
     if (!ReceivedBlockTransactions(block, state, pindex, blockPos))
         return error("%s: genesis block not accepted", __func__);
     return true;
