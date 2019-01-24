@@ -14,6 +14,8 @@
 #include "init.h"
 #include "validation.h"
 #include <numeric>
+#include "spork.h"
+
 #define PRI64x  "llx"
 using namespace std;
 bool fTestNet = false; //Params().NetworkID() == CBaseChainParams::TESTNET;
@@ -264,7 +266,6 @@ static bool GetKernelStakeModifierV05(unsigned int nTimeTx, uint64_t& nStakeModi
         pindex = pindex->pprev;
         if (pindex->GeneratedStakeModifier())
         {
-            LogPrintf("Kernel::GetKernelStakeModifierV05 PrevIndexGeneratedStakeModifier TRUE");
             nStakeModifierHeight = pindex->nHeight;
             nStakeModifierTime = pindex->GetBlockTime();
         }
@@ -345,9 +346,10 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
 
-
-    //if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake))
-    //    return error("Failed to get kernel stake modifier");
+    if (sporkManager.GetSporkValue(SPORK_18_ENFORCE_STAKEMODIFIER) > nTimeTx) {
+        if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake))
+            return error("Failed to get kernel stake modifier");
+    }
 
     ss << nStakeModifier;
     ss << nTimeBlockFrom << nTxPrevOffset << txPrevTime << prevout.n << nTimeTx;
@@ -369,6 +371,8 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     // Now check if proof-of-stake hash meets target protocol
     if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
         return false;
+
+
     if (fDebug && fPrintProofOfStake)
     {
         LogPrintf("CheckStakeKernelHash() : Generated using modifier 0x%016" PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
@@ -382,7 +386,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
                   nTimeBlockFrom, nTxPrevOffset, txPrevTime, prevout.n, nTimeTx,
                   hashProofOfStake.ToString().c_str());
     }
-    return true;
+        return true;
 }
 bool CheckKernelScript(CScript scriptVin, CScript scriptVout)
 {
