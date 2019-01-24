@@ -346,7 +346,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
 
-    if (sporkManager.GetSporkValue(SPORK_18_ENFORCE_STAKEMODIFIER) > nTimeTx) {
+    if (sporkManager.GetSporkValue(SPORK_18_ENFORCE_STAKEMODIFIER) < nTimeTx) {
         if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake))
             return error("Failed to get kernel stake modifier");
     }
