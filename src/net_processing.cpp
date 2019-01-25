@@ -847,6 +847,14 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew, const CB
     nTimeBestReceived = GetTime();
 }
 
+int GetPeerProtocol() {
+    if (sporkManager.IsSporkActive(SPORK_18_ENFORCE_PEER_PROTOCOL)) {
+        return MIN_PEER_PROTO_VERSION_2;
+    } else {
+        return MIN_PEER_PROTO_VERSION_1;
+    }
+}
+
 void PeerLogicValidation::BlockChecked(const CBlock& block, const CValidationState& state) {
     LOCK(cs_main);
 
@@ -1389,13 +1397,13 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             pfrom->fDisconnect = true;
             return false;
         }
-
-        if (nVersion < MIN_PEER_PROTO_VERSION)
+        int minProtocol = GetPeerProtocol();
+        if (nVersion < minProtocol)
         {
             // disconnect from peers older than this proto version
             LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, nVersion);
             connman.PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", minProtocol)));
             pfrom->fDisconnect = true;
             return false;
         }
