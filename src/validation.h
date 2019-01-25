@@ -508,7 +508,9 @@ void ReprocessBlocks(int nBlocks);
 /** Context-independent validity checks */
 bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view);
 bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache);
-bool CheckProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams);
+bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams);
+bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams);
+bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams);
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true);
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
 

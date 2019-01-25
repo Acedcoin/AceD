@@ -44,9 +44,6 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
-        if (IsProofOfStake()) {
-            READWRITE(prevoutStake);
-        }
 
     }
 
@@ -69,30 +66,12 @@ public:
 
     uint256 GetHash() const;
 
-    virtual bool IsProofOfStake() const
-    {
-        return !prevoutStake.IsNull();
-    }
-
-    virtual bool IsProofOfWork() const
-    {
-        return !IsProofOfStake();
-    }
-
 
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
     }
-    virtual uint32_t StakeTime() const
-    {
-        uint32_t ret = 0;
-        if(IsProofOfStake())
-        {
-            ret = nTime;
-        }
-        return ret;
-    }
+
 };
 
 

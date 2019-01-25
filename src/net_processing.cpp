@@ -848,7 +848,7 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew, const CB
 }
 
 int GetPeerProtocol() {
-    if (sporkManager.IsSporkActive(SPORK_18_ENFORCE_PEER_PROTOCOL)) {
+    if (sporkManager.IsSporkActive(SPORK_20_ENFORCE_PEER_PROTOCOL)) {
         return MIN_PEER_PROTO_VERSION_2;
     } else {
         return MIN_PEER_PROTO_VERSION_1;

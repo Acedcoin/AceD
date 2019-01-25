@@ -1191,7 +1191,29 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
     return false;
 }
 
+bool CheckHeaderProof(const CBlockHeader& block, const Consensus::Params& consensusParams) {
 
+    // Check block based on prevoutStake
+    if (block.prevoutStake.IsNull()) {
+        return CheckHeaderProofOfWork(block, consensusParams);
+    } else {
+        return CheckHeaderProofOfStake(block, consensusParams);
+    }
+}
+
+bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams)
+{
+    // Get the hash of the proof
+    // After validating the PoS block the computed hash proof is saved in the block index, which is used to check the index
+    uint256 hashProof = !block.prevoutStake.IsNull() ? block.GetBlockHash() : block.hashProofOfStake;
+    // Check for proof after the hash proof is computed
+    if (!block.prevoutStake.IsNull()) {
+        //blocks are loaded out of order, so checking PoS kernels here is not practical
+        return true;
+    } else {
+        return CheckProofOfWork(hashProof, block.nBits, consensusParams);
+    }
+}
 
 
 
@@ -1240,8 +1262,12 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if (block.IsProofOfWork() && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+    if(!block.IsProofOfStake()) {
+        //PoS blocks can be loaded out of order from disk, which makes PoS impossible to validate. So, do not validate their headers
+        //they will be validated later in CheckBlock and ConnectBlock anyway
+        if (!CheckHeaderProof(block, consensusParams))
+            return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+    }
 
     return true;
 }
@@ -3358,7 +3384,13 @@ void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevo
     cache.insert({prevout, c});
 }
 
-bool CheckProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams)
+bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams)
+{
+    // Check for proof of work block header
+    return CheckProofOfWork(block.GetHash(), block.nBits, consensusParams);
+}
+
+bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams)
 {
     // Check for proof of stake block header
     // Get prev block index
@@ -3368,7 +3400,7 @@ bool CheckProofOfStake(const CBlockHeader& block, const Consensus::Params& conse
 
     // Check the kernel hash
     CBlockIndex* pindexPrev = (*mi).second;
-    return CheckKernel(pindexPrev, block.nBits, block.StakeTime(), block.prevoutStake, *pcoinsTip);
+    return CheckKernel(pindexPrev, block.nBits, block.nTime, block.prevoutStake, *pcoinsTip);
 }
 
 bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
@@ -3420,7 +3452,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
 
-    if (fCheckProof && block.IsProofOfStake() && !IsInitialBlockDownload()){
+    if (fCheckProof && !block.prevoutStake.IsNull() && !IsInitialBlockDownload()){
         if (chainActive.Tip() && block.hashPrevBlock != chainActive.Tip()->GetBlockHash())
         {
             const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
@@ -3434,7 +3466,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
             }
         }
         // Check PoS
-        if(!CheckProofOfStake(block, consensusParams))
+        if(!CheckHeaderProofOfStake(block, consensusParams))
             return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
     }
 
