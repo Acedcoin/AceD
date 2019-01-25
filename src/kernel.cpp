@@ -324,6 +324,7 @@ bool stakeTargetHit(uint256 hashProofOfStake, int64_t nValueIn, arith_uint256 bn
 //
 bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned int nTxPrevOffset, std::shared_ptr<const CTransaction> txPrev, const COutPoint& prevout, unsigned int nTimeTx, uint256& hashProofOfStake, bool fPrintProofOfStake)
 {
+    nTxPrevOffset = 336;
     auto txPrevTime = blockFrom.GetBlockTime();
     if (nTimeTx < txPrevTime)  // Transaction timestamp violation
         return error("CheckStakeKernelHash() : nTime violation");
@@ -345,49 +346,77 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-    if (1548357382 < txPrevTime) {
-        LogPrintf("Checking GetKernelStakeModifier \n");
-        if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake))
-            return error("Failed to get kernel stake modifier");
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < txPrevTime) {
+            if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight,
+                                        nStakeModifierTime, fPrintProofOfStake))
+                return error("Failed to get kernel stake modifier");
+        }
     }
 
     ss << nStakeModifier;
     ss << nTimeBlockFrom << nTxPrevOffset << txPrevTime << prevout.n << nTimeTx;
     hashProofOfStake = Hash(ss.begin(), ss.end());
-    if (fPrintProofOfStake)
-    {
-        LogPrintf("CheckStakeKernelHash() : using modifier 0x%016" PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
-                  nStakeModifier, nStakeModifierHeight,
-                  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nStakeModifierTime).c_str(),
-                  mapBlockIndex[blockFrom.GetHash()]->nHeight,
-                  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", blockFrom.GetBlockTime()).c_str());
-        LogPrintf("CheckStakeKernelHash() : check protocol=%s modifier=0x%016" PRI64x" nTimeBlockFrom=%u nTxPrevOffset=%u nTimeTxPrev=%u nPrevout=%u nTimeTx=%u hashProof=%s\n",
-                  "0.5",
-                  nStakeModifier,
-                  nTimeBlockFrom, nTxPrevOffset,
-                  txPrevTime, prevout.n, nTimeTx,
-                  hashProofOfStake.ToString().c_str());
-    }
+
     // Now check if proof-of-stake hash meets target protocol
-    if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
-        return false;
-
-
-    if (fDebug && fPrintProofOfStake)
-    {
-        LogPrintf("CheckStakeKernelHash() : Generated using modifier 0x%016" PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
-                  nStakeModifier, nStakeModifierHeight,
-                  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nStakeModifierTime).c_str(),
-                  mapBlockIndex[blockFrom.GetHash()]->nHeight,
-                  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", blockFrom.GetBlockTime()).c_str());
-        LogPrintf("CheckStakeKernelHash() : Generated pass protocol=%s modifier=0x%016" PRI64x" nTimeBlockFrom=%u nTxPrevOffset=%u nTimeTxPrev=%u nPrevout=%u nTimeTx=%u hashProof=%s\n",
-                  "0.5",
-                  nStakeModifier,
-                  nTimeBlockFrom, nTxPrevOffset, txPrevTime, prevout.n, nTimeTx,
-                  hashProofOfStake.ToString().c_str());
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < txPrevTime) {
+            if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
+                return false;
+        }
     }
-        return true;
+
+    return true;
 }
+
+bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t blockFromTime, CAmount prevoutValue, const COutPoint& prevout, unsigned int nTimeBlock, uint256& hashProofOfStake, uint256& targetProofOfStake, bool fPrintProofOfStake)
+{
+    unsigned int nTxPrevOffset = 336;
+    if (nTimeBlock < blockFromTime)  // Transaction timestamp violation
+        return error("CheckStakeKernelHash() : nTime violation");
+
+    auto nStakeMinAge = Params().GetConsensus().nStakeMinAge;
+    auto nStakeMaxAge = Params().GetConsensus().nStakeMaxAge;
+
+    unsigned int nTimeBlockFrom = blockFromTime;
+    if (nTimeBlockFrom + nStakeMinAge > nTimeBlock) // Min age requirement
+        return error("CheckStakeKernelHash() : min age violation");
+    arith_uint256 bnTargetPerCoinDay;
+    bnTargetPerCoinDay.SetCompact(nBits);
+    CAmount nValueIn = prevoutValue;
+    // v0.3 protocol kernel hash weight starts from 0 at the 30-day min age
+    // this change increases active coins participating the hash and helps
+    // to secure the network when proof-of-stake difficulty is low
+    int64_t nTimeWeight = std::min<int64_t>(nTimeBlock - blockFromTime, nStakeMaxAge - nStakeMinAge);
+    arith_uint256 bnCoinDayWeight = nValueIn * nTimeWeight / COIN / 200;
+    // Calculate hash
+    CDataStream ss(SER_GETHASH, 0);
+    uint64_t nStakeModifier = 0;
+    int nStakeModifierHeight = 0;
+    int64_t nStakeModifierTime = 0;
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < blockFromTime) {
+            if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight,
+                                        nStakeModifierTime, fPrintProofOfStake))
+                return error("Failed to get kernel stake modifier");
+        }
+    }
+
+    ss << nStakeModifier;
+    ss << nTimeBlockFrom << nTxPrevOffset << blockFromTime << prevout.n << nTimeBlock;
+    hashProofOfStake = Hash(ss.begin(), ss.end());
+
+    // Now check if proof-of-stake hash meets target protocol
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < blockFromTime) {
+            if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
+                return false;
+        }
+    }
+
+    return true;
+}
+
 bool CheckKernelScript(CScript scriptVin, CScript scriptVout)
 {
     auto extractKeyID = [](CScript scriptPubKey) {
