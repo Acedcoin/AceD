@@ -45,41 +45,41 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
     CAmount nNet = nCredit - nDebit;
     uint256 hash = wtx.GetHash();
     std::map<std::string, std::string> mapValue = wtx.mapValue;
-
-
     if(wtx.tx->IsCoinStake())
     {
         TransactionRecord sub(hash, nTime);
         CTxDestination address;
         if (!ExtractDestination(wtx.tx->vout[1].scriptPubKey, address))
             return parts;
+
         if (!IsMine(*wallet, address))
         {
-            {
+            //if the address is not yours then it means you have a tx sent to you in someone elses coinstake tx
+            // this might be masternode reward, or tpos block reward.
+
+            // if last output was ours, it means that it's tpos reward
                 for (unsigned int i = 1; i < wtx.tx->vout.size(); i++) {
                     CTxDestination outAddress;
                     if (ExtractDestination(wtx.tx->vout[i].scriptPubKey, outAddress)) {
-                        if (IsMine(*wallet, outAddress)) {
-                            isminetype mine = wallet->IsMine(wtx.tx->vout[i]);
+                        isminetype mine = IsMine(*wallet, outAddress);
+                        if (mine) {
+                            //isminetype mine = wallet->IsMine(wtx.tx->vout[i]);
                             sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                             sub.type = TransactionRecord::MNReward;
                             sub.address = CBitcoinAddress(outAddress).ToString();
                             sub.credit = wtx.tx->vout[i].nValue;
                         }
                     }
-                }
             }
         }
         else
         {
             //stake reward
-            CBitcoinAddress merchantAddress;
-            isminetype mine = wallet->IsMine(wtx.tx->vout[1]);
+            isminetype mine = IsMine(*wallet, address);
             sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
             sub.address = CBitcoinAddress(address).ToString();
-            sub.credit = wtx.GetCredit(ISMINE_SPENDABLE) - wtx.GetDebit(ISMINE_SPENDABLE);
+            sub.credit = nCredit - nDebit;
             sub.type = TransactionRecord::StakeMint;
-
 
         }
         parts.append(sub);
@@ -184,14 +184,23 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             }
             else
             {
-                for (unsigned int nOut = 0; nOut < wtx.tx->vout.size(); nOut++)
+                sub.idx = parts.size();
+                if(wtx.tx->vin.size() == 1 && wtx.tx->vout.size() == 1
+                   && CPrivateSend::IsCollateralAmount(nDebit)
+                   && CPrivateSend::IsCollateralAmount(nCredit)
+                   && CPrivateSend::IsCollateralAmount(-nNet))
                 {
-                    const CTxOut& txout = wtx.tx->vout[nOut];
-                    sub.idx = parts.size();
-
-                    if(txout.nValue == CPrivateSend::GetMaxCollateralAmount()) sub.type = TransactionRecord::PrivateSendMakeCollaterals;
-                    if(CPrivateSend::IsDenominatedAmount(txout.nValue)) sub.type = TransactionRecord::PrivateSendCreateDenominations;
-                    if(nDebit - wtx.tx->GetValueOut() == CPrivateSend::GetCollateralAmount()) sub.type = TransactionRecord::PrivateSendCollateralPayment;
+                    sub.type = TransactionRecord::PrivateSendCollateralPayment;
+                } else {
+                    for (const auto& txout : wtx.tx->vout) {
+                        if (txout.nValue == CPrivateSend::GetMaxCollateralAmount()) {
+                            sub.type = TransactionRecord::PrivateSendMakeCollaterals;
+                            continue; // Keep looking, could be a part of PrivateSendCreateDenominations
+                        } else if (CPrivateSend::IsDenominatedAmount(txout.nValue)) {
+                            sub.type = TransactionRecord::PrivateSendCreateDenominations;
+                            break; // Done, it's definitely a tx creating mixing denoms, no need to look any further
+                        }
+                    }
                 }
             }
 
@@ -209,7 +218,21 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             //
             CAmount nTxFee = nDebit - wtx.tx->GetValueOut();
 
-            for (unsigned int nOut = 0; nOut < wtx.tx->vout.size(); nOut++)
+            bool fDone = false;
+            if(wtx.tx->vin.size() == 1 && wtx.tx->vout.size() == 1
+               && CPrivateSend::IsCollateralAmount(nDebit)
+               && nCredit == 0 // OP_RETURN
+               && CPrivateSend::IsCollateralAmount(-nNet))
+            {
+                TransactionRecord sub(hash, nTime);
+                sub.idx = 0;
+                sub.type = TransactionRecord::PrivateSendCollateralPayment;
+                sub.debit = -nDebit;
+                parts.append(sub);
+                fDone = true;
+            }
+
+            for (unsigned int nOut = 0; nOut < wtx.tx->vout.size() && !fDone; nOut++)
             {
                 const CTxOut& txout = wtx.tx->vout[nOut];
                 TransactionRecord sub(hash, nTime);
@@ -280,10 +303,10 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
 
     // Sort order, unrecorded transactions sort to the top
     status.sortKey = strprintf("%010d-%01d-%010u-%03d",
-        (pindex ? pindex->nHeight : std::numeric_limits<int>::max()),
-        (wtx.IsCoinBase() ? 1 : 0),
-        wtx.nTimeReceived,
-        idx);
+                               (pindex ? pindex->nHeight : std::numeric_limits<int>::max()),
+                               (wtx.IsCoinBase() ? 1 : 0),
+                               wtx.nTimeReceived,
+                               idx);
     status.countsForBalance = wtx.IsTrusted() && !(wtx.GetBlocksToMaturity() > 0);
     status.depth = wtx.GetDepthInMainChain();
     status.cur_num_blocks = chainActive.Height();
@@ -303,7 +326,8 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
         }
     }
     // For generated transactions, determine maturity
-    else if(type == TransactionRecord::Generated)
+    else if(type == TransactionRecord::Generated || type == TransactionRecord::StakeMint
+            || type == TransactionRecord::MNReward)
     {
         if (wtx.GetBlocksToMaturity() > 0)
         {

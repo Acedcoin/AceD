@@ -38,12 +38,12 @@ public:
     void showOutOfSyncWarning(bool fShow);
 
 public Q_SLOTS:
-    void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance,
-                    const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance, const CAmount& stakeBalance, const int stakeInputs);
+            void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance,
+                            const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance, const CAmount& stakeBalance, const int stakeInputs);
     void setBlockChainInfo(int count, const QDateTime& blockDate, double nVerificationProgress, bool headers);
 
-Q_SIGNALS:
-    void transactionClicked(const QModelIndex &index);
+    Q_SIGNALS:
+            void transactionClicked(const QModelIndex &index);
     void outOfSyncWarningClicked();
 
 
@@ -67,12 +67,10 @@ private:
     TxViewDelegate *txdelegate;
     std::unique_ptr<TransactionFilterProxy> filter;
 
-    void SetupTransactionList(int nNumItems);
-    void DisablePrivateSendCompletely();
+    void SetupTransactionList();
 
 private Q_SLOTS:
-    void updateDisplayUnit();
-    void updateAdvancedPSUI(bool fShowAdvancedPSUI);
+            void updateDisplayUnit();
     void handleTransactionClicked(const QModelIndex &index);
     void updateAlerts(const QString &warnings);
     void updateWatchOnlyLabels(bool showWatchOnly);

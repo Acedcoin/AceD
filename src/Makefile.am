@@ -1,5 +1,6 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
-# Copyright (c) 2014-2018 The Polis Core developers
+# Copyright (c) 2013-2017 The Bitcoin Core developers
+# Copyright (c) 2014-2018 The Dash Core developers
+# Copyright (c) 2018-2019 The Polis Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -192,6 +193,7 @@ BITCOIN_CORE_H = \
   wallet/rpcwallet.h \
   wallet/wallet.h \
   wallet/walletdb.h \
+  wallet/authhelper.h \
   warnings.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h\
@@ -295,6 +297,7 @@ libpolis_wallet_a_SOURCES = \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
+  wallet/authhelper.cpp \
   policy/rbf.cpp \
   $(BITCOIN_CORE_H)
 

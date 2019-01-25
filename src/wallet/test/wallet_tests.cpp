@@ -19,7 +19,7 @@
 #include <univalue.h>
 
 extern UniValue importmulti(const JSONRPCRequest& request);
-extern UniValue dumpwallet(const JSONRPCRequest& request);
+extern UniValue dumpwallet(const UniValue& params, bool fHelp);
 extern UniValue importwallet(const JSONRPCRequest& request);
 
 // how many times to run all the tests to have a chance to catch errors that only show up with particular random shuffles
@@ -460,8 +460,9 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
         JSONRPCRequest request;
         request.params.setArray();
         request.params.push_back("wallet.backup");
+
         ::pwalletMain = &wallet;
-        ::dumpwallet(request);
+        ::dumpwallet(request.params, false);
     }
 
     // Call importwallet RPC and verify all blocks with timestamps >= BLOCK_TIME

@@ -16,6 +16,8 @@
 #include <utility>
 #include <vector>
 
+#include <validation.h> // temp
+
 #include <boost/function.hpp>
 
 class CBlockIndex;

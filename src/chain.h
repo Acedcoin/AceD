@@ -267,6 +267,7 @@ public:
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
+        prevoutStake   = block.prevoutStake;
 
         //Proof of Stake
         bnChainTrust = uint256();
@@ -314,6 +315,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.prevoutStake   = prevoutStake;
         return block;
     }
 
@@ -473,6 +475,7 @@ public:
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
         READWRITE(nBits);
+        READWRITE(prevoutStake);
         READWRITE(nNonce);
     }
 
@@ -487,6 +490,7 @@ public:
         block.nTime           = nTime;
         block.nBits           = nBits;
         block.nNonce          = nNonce;
+        block.prevoutStake    = prevoutStake;
         return block.GetHash();
     }
 
