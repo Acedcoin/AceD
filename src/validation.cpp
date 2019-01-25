@@ -3335,12 +3335,109 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
     return true;
 }
 
-bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW)
+void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view){
+    if(cache.find(prevout) != cache.end()){
+        //already in cache
+        return;
+    }
+
+    Coin coinPrev;
+    if(!view.GetCoin(prevout, coinPrev)){
+        return;
+    }
+
+    if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
+        return;
+    }
+    CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
+    if(!blockFrom) {
+        return;
+    }
+
+    CStakeCache c(blockFrom->nTime, coinPrev.out.nValue);
+    cache.insert({prevout, c});
+}
+
+bool CheckProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams)
+{
+    // Check for proof of stake block header
+    // Get prev block index
+    BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
+    if (mi == mapBlockIndex.end())
+        return false;
+
+    // Check the kernel hash
+    CBlockIndex* pindexPrev = (*mi).second;
+    return CheckKernel(pindexPrev, block.nBits, block.StakeTime(), block.prevoutStake, *pcoinsTip);
+}
+
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
+{
+    std::map<COutPoint, CStakeCache> tmp;
+    return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view, tmp);
+}
+
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache)
+{
+    uint256 hashProofOfStake, targetProofOfStake;
+    auto it=cache.find(prevout);
+    if(it == cache.end()) {
+        //not found in cache (shouldn't happen during staking, only during verification which does not use cache)
+        Coin coinPrev;
+        if(!view.GetCoin(prevout, coinPrev)){
+            return false;
+        }
+
+        if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
+            return false;
+        }
+        CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
+        if(!blockFrom) {
+            return false;
+        }
+        if(coinPrev.IsSpent()){
+            return false;
+        }
+
+        return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout,
+                                    nTimeBlock, hashProofOfStake, targetProofOfStake);
+    }else{
+        //found in cache
+        const CStakeCache& stake = it->second;
+        if(CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout,
+                                nTimeBlock, hashProofOfStake, targetProofOfStake)){
+            //Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
+            return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
+        }
+    }
+    return false;
+}
+
+bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckProof)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+    if (fCheckProof && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
+
+    if (fCheckProof && block.IsProofOfStake() && !IsInitialBlockDownload()){
+        if (chainActive.Tip() && block.hashPrevBlock != chainActive.Tip()->GetBlockHash())
+        {
+            const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
+
+            int64_t deltaTime = block.GetBlockTime() - pcheckpoint->nTime;
+            std::cout << block.GetBlockTime() << " || " << pcheckpoint->nTime << " || " << deltaTime << std::endl;
+            std::cout << block.GetHash().ToString() << " || " << pcheckpoint->GetBlockHash().ToString() << std::endl;
+            if (deltaTime < 0)
+            {
+                return state.DoS(50, false, REJECT_INVALID, "older-than-checkpoint", false,"CheckBlockHeader(): Block with a timestamp before last checkpoint");
+            }
+        }
+        // Check PoS
+        if(!CheckProofOfStake(block, consensusParams))
+            return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
+    }
+
     // Check timestamp
     if (block.GetBlockTime() > GetAdjustedTime() + 2 * 60 * 60)
         return state.Invalid(error("CheckBlockHeader(): block timestamp too far in the future"),

@@ -388,6 +388,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     }
         return true;
 }
+
 bool CheckKernelScript(CScript scriptVin, CScript scriptVout)
 {
     auto extractKeyID = [](CScript scriptPubKey) {

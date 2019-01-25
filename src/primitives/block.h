@@ -27,6 +27,7 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
+    COutPoint prevoutStake;
 
     CBlockHeader()
     {
@@ -43,6 +44,10 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
+        if (IsProofOfStake()) {
+            READWRITE(prevoutStake);
+        }
+
     }
 
     void SetNull()
@@ -53,6 +58,8 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
+        prevoutStake.SetNull();
+
     }
 
     bool IsNull() const
@@ -62,9 +69,29 @@ public:
 
     uint256 GetHash() const;
 
+    virtual bool IsProofOfStake() const
+    {
+        return !prevoutStake.IsNull();
+    }
+
+    virtual bool IsProofOfWork() const
+    {
+        return !IsProofOfStake();
+    }
+
+
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
+    }
+    virtual uint32_t StakeTime() const
+    {
+        uint32_t ret = 0;
+        if(IsProofOfStake())
+        {
+            ret = nTime;
+        }
+        return ret;
     }
 };
 
@@ -109,6 +136,11 @@ public:
         fChecked = false;
     }
 
+    std::pair<COutPoint, unsigned int> GetProofOfStake() const
+    {
+        return IsProofOfStake()? std::make_pair(prevoutStake, nTime) : std::make_pair(COutPoint(), (unsigned int)0);
+    }
+
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
@@ -118,6 +150,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.prevoutStake   = prevoutStake;
         return block;
     }
     bool IsProofOfStake() const;

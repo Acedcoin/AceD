@@ -6,6 +6,7 @@
 #include "uint256.h"
 #include "streams.h"
 #include "arith_uint256.h"
+#include "coins.h"
 
 class CBlock;
 class CWallet;
