@@ -1274,6 +1274,11 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
 
 bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
 {
+    if (pindex->IsProofOfStake()) {
+        if (pindex->nStakeModifier == 0) {
+            return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): nStakeModifier = 0 reindex forced");
+        }
+    }
     if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
         return false;
     if (block.GetHash() != pindex->GetBlockHash())
