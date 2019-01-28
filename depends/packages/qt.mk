@@ -1,20 +1,21 @@
 PACKAGE=qt
-$(package)_version=5.9.7
-$(package)_download_path=https://download.qt.io/official_releases/qt/5.9/$($(package)_version)/submodules
+$(package)_version=5.10.0
+$(package)_download_path=https://download.qt.io/official_releases/qt/5.10/$($(package)_version)/submodules
 $(package)_suffix=opensource-src-$($(package)_version).tar.xz
-$(package)_file_name=qtbase-$($(package)_suffix)
-$(package)_sha256_hash=36dd9574f006eaa1e5af780e4b33d11fe39d09fd7c12f3b9d83294174bd28f00
+$(package)_suffix2=everywhere-src-$($(package)_version).tar.xz
+$(package)_file_name=qtbase-$($(package)_suffix2)
+$(package)_sha256_hash=fd5578cd320a13617c12cf2b19439386b203d6d45548e855f94e07be9829f762
 $(package)_dependencies=openssl zlib
 $(package)_linux_dependencies=freetype fontconfig libxcb libX11 xproto libXext
 $(package)_build_subdir=qtbase
 $(package)_qt_libs=corelib network widgets gui plugins testlib
 $(package)_patches=fix_qt_pkgconfig.patch mac-qmake.conf fix_configure_mac.patch fix_no_printer.patch fix_rcc_determinism.patch fix_riscv64_arch.patch xkb-default.patch
 
-$(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
-$(package)_qttranslations_sha256_hash=b36da7d93c3ab6fca56b32053bb73bc619c8b192bb89b74e3bcde2705f1c2a14
+$(package)_qttranslations_file_name=qttranslations-$($(package)_suffix2)
+$(package)_qttranslations_sha256_hash=ec4dbd3601afe06d1814f4bc81af9cffbbe7de2b9f4aef4eb4595b049c8eb9be
 
-$(package)_qttools_file_name=qttools-$($(package)_suffix)
-$(package)_qttools_sha256_hash=d62e0f70d99645d6704dbb8976fb2222443061743689943d40970c52c49367a1
+$(package)_qttools_file_name=qttools-$($(package)_suffix2)
+$(package)_qttools_sha256_hash=1ff5dc747b7935de85257673424dfdffb231f3409f09a5f833d37e2f625cfe32
 
 $(package)_extra_sources  = $($(package)_qttranslations_file_name)
 $(package)_extra_sources += $($(package)_qttools_file_name)
