@@ -25,7 +25,9 @@ packages:
   - "libbz2-dev"
   - "python"
   - "python-dev"
-  - "python-setuptools"
+  - "python3"
+  - "python3-dev"
+  - "python3-setuptools"
   - "fonts-tuffy"
 remotes:
   - "url": "https://github.com/polispay/polis.git"
@@ -34,12 +36,11 @@ files:
   - "MacOSX10.11.sdk.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
-  HOSTS="x86_64-apple-darwin14"
+  HOSTS="x86_64-apple-darwin11"
   CONFIGFLAGS="--enable-reduce-exports --disable-bench --disable-gui-tests GENISOIMAGE=$WRAP_DIR/genisoimage"
   FAKETIME_HOST_PROGS=""
   FAKETIME_PROGS="ar ranlib date dmg genisoimage"
   export QT_RCC_TEST=1
-  export QT_RCC_SOURCE_DATE_OVERRIDE=1
   export GZIP="-9n"
   export TAR_OPTIONS="--mtime="$REFERENCE_DATE\\\ $REFERENCE_TIME""
   export TZ="UTC"
@@ -47,29 +48,45 @@ script: |
   mkdir -p ${WRAP_DIR}
   if test -n "$GBUILD_CACHE_ENABLED"; then
     export SOURCES_PATH=${GBUILD_COMMON_CACHE}
-    export BASE_CACHE=${GBUILD_PACKAGE_CACHE}
+    export BASE_CACHE=${GBUILD_PACKAGE_CACHE}/depends
     mkdir -p ${BASE_CACHE} ${SOURCES_PATH}
+    # Setup ccache to use correct cache directories
+    CONFIGFLAGS="${CONFIGFLAGS} --enable-ccache"
+    export CCACHE_DIR=${GBUILD_PACKAGE_CACHE}/ccache
+    if [ -f ${GBUILD_PACKAGE_CACHE}/ccache.tar ]; then
+      pushd ${GBUILD_PACKAGE_CACHE}
+      tar xf ccache.tar
+      rm ccache.tar
+      popd
+    fi
+    # instead of compressing ccache.tar, we let ccache handle it by itself
+    # Otherwise we end up uncompressing/compressing a lot of cache files which we actually never use
+    export CCACHE_COMPRESS=1
+  else
+    CONFIGFLAGS="${CONFIGFLAGS} --disable-ccache"
   fi
   export ZERO_AR_DATE=1
   function create_global_faketime_wrappers {
   for prog in ${FAKETIME_PROGS}; do
-    echo '#!/usr/bin/env bash' > ${WRAP_DIR}/${prog}
+    echo '#!/bin/bash' > ${WRAP_DIR}/${prog}
     echo "REAL=\`which -a ${prog} | grep -v ${WRAP_DIR}/${prog} | head -1\`" >> ${WRAP_DIR}/${prog}
     echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${prog}
     echo "export FAKETIME=\"$1\"" >> ${WRAP_DIR}/${prog}
     echo "\$REAL \$@" >> $WRAP_DIR/${prog}
     chmod +x ${WRAP_DIR}/${prog}
+    touch -d "${REFERENCE_DATETIME}" ${WRAP_DIR}/${prog}
   done
   }
   function create_per-host_faketime_wrappers {
   for i in $HOSTS; do
     for prog in ${FAKETIME_HOST_PROGS}; do
-        echo '#!/usr/bin/env bash' > ${WRAP_DIR}/${i}-${prog}
+        echo '#!/bin/bash' > ${WRAP_DIR}/${i}-${prog}
         echo "REAL=\`which -a ${i}-${prog} | grep -v ${WRAP_DIR}/${i}-${prog} | head -1\`" >> ${WRAP_DIR}/${i}-${prog}
         echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${i}-${prog}
         echo "export FAKETIME=\"$1\"" >> ${WRAP_DIR}/${i}-${prog}
         echo "\$REAL \$@" >> $WRAP_DIR/${i}-${prog}
         chmod +x ${WRAP_DIR}/${i}-${prog}
+        touch -d "${REFERENCE_DATETIME}" ${WRAP_DIR}/${i}-${prog}
     done
   done
   }
@@ -103,8 +120,6 @@ script: |
   tar xf ../$SOURCEDIST
   find poliscore-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   popd
-  # Workaround for tarball not building with the bare tag version (prep)
-  make -C src obj/build.h
   ORIGPATH="$PATH"
   # Extract the release tarball into a dir for each host and build
   for i in ${HOSTS}; do
@@ -114,11 +129,7 @@ script: |
     INSTALLPATH=`pwd`/installed/${DISTNAME}
     mkdir -p ${INSTALLPATH}
     tar --strip-components=1 -xf ../$SOURCEDIST
-    # Workaround for tarball not building with the bare tag version
-    echo '#!/bin/true' >share/genbuild.sh
-    mkdir src/obj
-    cp ../src/obj/build.h src/obj/
-    CONFIG_SITE=${BASEPREFIX}/${i}/share/config.site ./configure --prefix=/ --disable-ccache --disable-maintainer-mode --disable-dependency-tracking ${CONFIGFLAGS}
+    CONFIG_SITE=${BASEPREFIX}/${i}/share/config.site ./configure --prefix=/ --disable-maintainer-mode --disable-dependency-tracking ${CONFIGFLAGS}
     make ${MAKEOPTS}
     make install-strip DESTDIR=${INSTALLPATH}
     make osx_volname
@@ -147,3 +158,10 @@ script: |
   mkdir -p $OUTDIR/src
   mv $SOURCEDIST $OUTDIR/src
   mv ${OUTDIR}/${DISTNAME}-x86_64-*.tar.gz ${OUTDIR}/${DISTNAME}-osx64.tar.gz
+  # Compress ccache (otherwise the assert file will get too huge)
+  if [ "$CCACHE_DIR" != "" ]; then
+    pushd ${GBUILD_PACKAGE_CACHE}
+    tar cf ccache.tar ccache
+    rm -rf ccache
+    popd
+  fi
