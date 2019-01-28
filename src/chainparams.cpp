@@ -212,10 +212,7 @@ public:
             assert(genesis.hashMerkleRoot == uint256S("0x5dc9bcf5d1e4802dad0045a88849e3ad97d07a5b8aaee1114ed5ae03b98c4bfc"));
 
             vSeeds.push_back(CDNSSeedData("dnsseed.poliscentral.org", "dnsseed.poliscentral.org"));
-            vSeeds.push_back(CDNSSeedData("dnsseed2.poliscentral.org", "dnsseed2.poliscentral.org"));
-            vSeeds.push_back(CDNSSeedData("dnsseed3.poliscentral.org", "dnsseed3.poliscentral.org"));
-            vSeeds.push_back(CDNSSeedData("polis.seeds.mn.zone", "polis.seeds.mn.zone"));
-            vSeeds.push_back(CDNSSeedData("polis.mnseeds.com", "polis.mnseeds.com"));
+            vSeeds.push_back(CDNSSeedData("dnsseed.polispay.org", "dnsseed.polispay.org"));
 
             // polis addresses start with 'P'
             base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,55);
