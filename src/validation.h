@@ -47,6 +47,18 @@ class CValidationInterface;
 class CValidationState;
 struct ChainTxData;
 
+
+/** StakeCache */
+
+struct CStakeCache{
+    CStakeCache(uint32_t blockFromTime_, CAmount amount_) : blockFromTime(blockFromTime_), amount(amount_){
+    }
+    uint32_t blockFromTime;
+    CAmount amount;
+};
+
+void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view);
+
 struct LockPoints;
 
 /** Default for accepting alerts from the P2P network. */
@@ -134,6 +146,7 @@ static const unsigned int DEFAULT_BYTES_PER_SIGOP = 20;
 static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
 static const bool DEFAULT_TXINDEX = true;
 static const bool DEFAULT_STAKING = false;
+static const bool DEFAULT_STAKE_CACHE = true;
 static const bool DEFAULT_ADDRESSINDEX = false;
 static const bool DEFAULT_TIMESTAMPINDEX = false;
 static const bool DEFAULT_SPENTINDEX = false;
@@ -493,6 +506,11 @@ bool DisconnectBlocks(int blocks);
 void ReprocessBlocks(int nBlocks);
 
 /** Context-independent validity checks */
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view);
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache);
+bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams);
+bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams);
+bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams);
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true);
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
 
@@ -577,5 +595,6 @@ void DumpMempool();
 
 /** Load the mempool from disk. */
 bool LoadMempool();
+
 
 #endif // BITCOIN_VALIDATION_H

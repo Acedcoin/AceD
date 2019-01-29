@@ -212,6 +212,7 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
 {
     unsigned int nTryTime = 0;
     uint256 hashProofOfStake;
+
     if (blockFrom.GetBlockTime() + Params().GetConsensus().nStakeMinAge + nHashDrift > nTimeTx) // Min age requirement
         return false;
     for(unsigned int i = 0; i < nHashDrift; ++i)
@@ -230,6 +231,9 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
             kernelScript.clear();
             kernelScript = stakeScript;
             nTimeTx = nTryTime;
+            return true;
+        }
+        if (chainActive.Tip()->nHeight < 277730) {
             return true;
         }
     }
@@ -4042,6 +4046,7 @@ bool CWallet::CreateCoinStake(unsigned int nBits,
     // The following split & combine thresholds are important to security
     // Should not be adjusted if you don't understand the consequences
     //int64_t nCombineThreshold = 0;
+    CBlockIndex* pindexPrev = pindexBestHeader;
     txNew.vin.clear();
     txNew.vout.clear();
     // Mark coin stake transaction
@@ -4073,6 +4078,22 @@ bool CWallet::CreateCoinStake(unsigned int nBits,
         MilliSleep(10000);
     bool fKernelFound = false;
     CAmount nCredit = 0;
+
+    static std::map<COutPoint, CStakeCache> stakeCache;
+    if(stakeCache.size() > setStakeCoins.size() + 100){
+        //Determining if the cache is still valid is harder than just clearing it when it gets too big, so instead just clear it
+        //when it has more than 100 entries more than the actual setCoins.
+        stakeCache.clear();
+    }
+    if(GetBoolArg("-stakecache", DEFAULT_STAKE_CACHE)) {
+
+        for(const std::pair<const CWalletTx*,unsigned int> &pcoin : setStakeCoins)
+        {
+            boost::this_thread::interruption_point();
+            COutPoint prevoutStake = COutPoint(pcoin.first->GetHash(), pcoin.second);
+            CacheKernel(stakeCache, prevoutStake, pindexPrev, *pcoinsTip); //this will do a 2 disk loads per op
+        }
+    }
     for(const std::pair<const CWalletTx*, unsigned int> &pcoin : setStakeCoins)
     {
         //make sure that enough time has elapsed between

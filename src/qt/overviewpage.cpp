@@ -25,10 +25,9 @@
 #include <QSettings>
 #include <QTimer>
 
-#define ICON_OFFSET 12
-#define DECORATION_SIZE 54
+#define ICON_OFFSET 15
+#define DECORATION_SIZE 50
 #define NUM_ITEMS 7
-#define NUM_ITEMS_ADV 7
 
 extern int64_t nLastCoinStakeSearchInterval;
 
@@ -37,8 +36,8 @@ class TxViewDelegate : public QAbstractItemDelegate
     Q_OBJECT
 public:
     TxViewDelegate(const PlatformStyle *_platformStyle, QObject *parent=nullptr):
-        QAbstractItemDelegate(), unit(BitcoinUnits::POLIS),
-        platformStyle(_platformStyle)
+            QAbstractItemDelegate(), unit(BitcoinUnits::POLIS),
+            platformStyle(_platformStyle)
     {
 
     }
@@ -121,20 +120,20 @@ public:
 #include "overviewpage.moc"
 
 OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) :
-    QWidget(parent),
-    timer(nullptr),
-    ui(new Ui::OverviewPage),
-    clientModel(0),
-    walletModel(0),
-    currentBalance(-1),
-    currentUnconfirmedBalance(-1),
-    currentStakeInputs(-1),
-    currentStakeBalance(-1),
-    currentImmatureBalance(-1),
-    currentWatchOnlyBalance(-1),
-    currentWatchUnconfBalance(-1),
-    currentWatchImmatureBalance(-1),
-    txdelegate(new TxViewDelegate(platformStyle, this))
+        QWidget(parent),
+        timer(nullptr),
+        ui(new Ui::OverviewPage),
+        clientModel(0),
+        walletModel(0),
+        currentBalance(-1),
+        currentUnconfirmedBalance(-1),
+        currentStakeInputs(-1),
+        currentStakeBalance(-1),
+        currentImmatureBalance(-1),
+        currentWatchOnlyBalance(-1),
+        currentWatchUnconfBalance(-1),
+        currentWatchImmatureBalance(-1),
+        txdelegate(new TxViewDelegate(platformStyle, this))
 {
     ui->setupUi(this);
     QString theme = GUIUtil::getThemeName();
@@ -281,8 +280,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
-        updateAdvancedPSUI(model->getOptionsModel()->getShowAdvancedPSUI());
-
+        SetupTransactionList();
     }
 }
 
@@ -357,15 +355,9 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 
 
 
-void OverviewPage::updateAdvancedPSUI(bool fShowAdvancedPSUI) {
-    int nNumItems = (fLiteMode || !fShowAdvancedPSUI) ? NUM_ITEMS : NUM_ITEMS_ADV;
-    SetupTransactionList(nNumItems);
-
-}
-
-void OverviewPage::SetupTransactionList(int nNumItems) {
+void OverviewPage::SetupTransactionList() {
+    int nNumItems = NUM_ITEMS;
     ui->listTransactions->setMinimumHeight(nNumItems * (DECORATION_SIZE + 2));
-
     if(walletModel && walletModel->getOptionsModel()) {
         // Set up transaction list
         filter.reset(new TransactionFilterProxy());
@@ -375,7 +367,6 @@ void OverviewPage::SetupTransactionList(int nNumItems) {
         filter->setSortRole(Qt::EditRole);
         filter->setShowInactive(false);
         filter->sort(TransactionTableModel::Date, Qt::DescendingOrder);
-
         ui->listTransactions->setModel(filter.get());
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
     }
