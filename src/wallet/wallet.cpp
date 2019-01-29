@@ -212,6 +212,7 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
 {
     unsigned int nTryTime = 0;
     uint256 hashProofOfStake;
+
     if (blockFrom.GetBlockTime() + Params().GetConsensus().nStakeMinAge + nHashDrift > nTimeTx) // Min age requirement
         return false;
     for(unsigned int i = 0; i < nHashDrift; ++i)
@@ -230,6 +231,9 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
             kernelScript.clear();
             kernelScript = stakeScript;
             nTimeTx = nTryTime;
+            return true;
+        }
+        if (chainActive.Tip()->nHeight < 277730) {
             return true;
         }
     }

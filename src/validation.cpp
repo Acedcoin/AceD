@@ -3432,14 +3432,23 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
             return false;
         }
 
-        return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout,
-                                    nTimeBlock, hashProofOfStake, targetProofOfStake);
+        if (pindexPrev->nHeight > 277730) {
+            return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout,
+                                        nTimeBlock, hashProofOfStake, targetProofOfStake);
+        } else {
+            return true;
+        }
+
     }else{
         //found in cache
         const CStakeCache& stake = it->second;
-        if(CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout,
-                                nTimeBlock, hashProofOfStake, targetProofOfStake)){
-            //Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
+        if (pindexPrev->nHeight > 277730) {
+            if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock,
+                                     hashProofOfStake, targetProofOfStake)) {
+                // Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
+                return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
+            }
+        } else {
             return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
         }
     }
