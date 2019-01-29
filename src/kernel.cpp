@@ -346,21 +346,25 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-        if (1548695537 < txPrevTime) {
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < txPrevTime) {
             if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight,
                                         nStakeModifierTime, fPrintProofOfStake))
                 return error("Failed to get kernel stake modifier");
         }
+    }
 
     ss << nStakeModifier;
     ss << nTimeBlockFrom << nTxPrevOffset << txPrevTime << prevout.n << nTimeTx;
     hashProofOfStake = Hash(ss.begin(), ss.end());
 
     // Now check if proof-of-stake hash meets target protocol
-        if (1548695537 < txPrevTime) {
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < txPrevTime) {
             if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
                 return false;
         }
+    }
 
     return true;
 }
@@ -390,10 +394,12 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-    if (1548695537 < blockFromTime) {
-        if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight,
-                nStakeModifierTime, fPrintProofOfStake))
-            return error("Failed to get kernel stake modifier");
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < blockFromTime) {
+            if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight,
+                                        nStakeModifierTime, fPrintProofOfStake))
+                return error("Failed to get kernel stake modifier");
+        }
     }
 
     ss << nStakeModifier;
@@ -401,9 +407,11 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     hashProofOfStake = Hash(ss.begin(), ss.end());
 
     // Now check if proof-of-stake hash meets target protocol
-    if (1548695537 < blockFromTime) {
-           if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
-               return false;
+    if (sporkManager.IsSporkActive(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER)) {
+        if (sporkManager.GetSporkValue(SPORK_19_ENFORCE_KERNEL_STAKEMODIFIER) < blockFromTime) {
+            if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
+                return false;
+        }
     }
 
     return true;
