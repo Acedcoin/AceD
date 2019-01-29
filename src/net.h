@@ -308,7 +308,7 @@ public:
 
     void RelayTransaction(const CTransaction& tx);
     void RelayTransaction(const CTransaction& tx, const CDataStream& ss);
-    void RelayInv(CInv &inv, const int minProtoVersion = MIN_PEER_PROTO_VERSION_1);
+    void RelayInv(CInv &inv, const int minProtoVersion = MIN_PEER_PROTO_VERSION);
 
     // Addrman functions
     size_t GetAddressCount() const;
