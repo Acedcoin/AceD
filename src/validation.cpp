@@ -3180,14 +3180,14 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     }
 
     // ppcoin: compute stake modifier
-        uint64_t nStakeModifier = 0;
-        bool fGeneratedStakeModifier = false;
-        if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
-            LogPrintf("AcceptProofOfStakeBlock() : ComputeNextStakeModifier() failed \n");
-        pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
-        pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-        if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-            LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+    uint64_t nStakeModifier = 0;
+    bool fGeneratedStakeModifier = false;
+    if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
+        LogPrintf("AcceptProofOfStakeBlock() : ComputeNextStakeModifier() failed \n");
+    pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
+    pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
+    if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
+        LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
 
     setDirtyBlockIndex.insert(pindexNew);
 
@@ -3432,37 +3432,28 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
             return false;
         }
 
-        if (pindexPrev->nHeight > 277730) {
-            return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout,
-                                        nTimeBlock, hashProofOfStake, targetProofOfStake);
-        } else {
-            return true;
-        }
+        return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake);
 
     }else{
         //found in cache
         const CStakeCache& stake = it->second;
-        if (pindexPrev->nHeight > 277730) {
-            if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock,
-                                     hashProofOfStake, targetProofOfStake)) {
-                // Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
-                return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
-            }
-        } else {
+        if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock,
+                hashProofOfStake)) {
+            // Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
             return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
         }
     }
     return false;
 }
 
-bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckProof)
+bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS)
 {
-    // Check proof of work matches claimed amount
-    if (fCheckProof && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
-                         REJECT_INVALID, "high-hash");
 
-    if (fCheckProof && !block.prevoutStake.IsNull() && !IsInitialBlockDownload()){
+    // Check proof of work matches claimed amount
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+        return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+
+    if (fCheckPOS && !IsInitialBlockDownload()){
         if (chainActive.Tip() && block.hashPrevBlock != chainActive.Tip()->GetBlockHash())
         {
             const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
@@ -3502,11 +3493,12 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
     if (block.fChecked)
         return true;
-
+    bool IsProofOfStake = block.vtx.size() > 1 && block.vtx[1]->IsCoinStake();
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW && block.IsProofOfWork()))
+    if (!CheckBlockHeader(block, state, consensusParams, !IsProofOfStake, IsProofOfStake))
         return false;
+
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -3746,8 +3738,11 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
             return true;
         }
 
-        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), false))
+
+        bool IsProofOfStake = block.nTime >= 1540526903;
+        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), !IsProofOfStake, IsProofOfStake))
             return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+
 
         // Get prev block index
         CBlockIndex* pindexPrev = NULL;
@@ -3862,7 +3857,7 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         return error("%s: %s", __func__, FormatStateMessage(state));
     }
 
-
+    AcceptProofOfStakeBlock(block, pindex);
 
     // Header is valid/has work, merkle tree is good...RELAY NOW
     // (but if it does not build on our best tip, let the SendMessages loop relay it)
@@ -3870,7 +3865,6 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
     int nHeight = pindex->nHeight;
-    AcceptProofOfStakeBlock(block, pindex);
 
     // Write block to history file
     try {
