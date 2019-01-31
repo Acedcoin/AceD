@@ -387,9 +387,11 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     ss << nTimeBlockFrom << nTxPrevOffset << blockFromTime << prevout.n << nTimeBlock;
     hashProofOfStake = Hash(ss.begin(), ss.end());
 
-    // Now check if proof-of-stake hash meets target protocol
-    if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
-        return false;
+    if (pindexPrev->nHeight > 300000) {
+        // Now check if proof-of-stake hash meets target protocol
+        if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay)
+            return false;
+    }
 
     return true;
 }
