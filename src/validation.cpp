@@ -3396,8 +3396,10 @@ bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params&
     // Check for proof of stake block header
     // Get prev block index
     BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
-    if (mi == mapBlockIndex.end())
+    if (mi == mapBlockIndex.end()) {
+        LogPrintf("CheckHeaderProofOfStake(): Unable to find block on mapBlockIndex");
         return false;
+    }
 
     // Check the kernel hash
     CBlockIndex* pindexPrev = (*mi).second;
@@ -3415,29 +3417,30 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
     uint256 hashProofOfStake, targetProofOfStake;
     auto it=cache.find(prevout);
     if(it == cache.end()) {
-        //not found in cache (shouldn't happen during staking, only during verification which does not use cache)
+        // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
         Coin coinPrev;
         if(!view.GetCoin(prevout, coinPrev)){
+            LogPrintf("CheckKernel(): null GetCoinCache");
             return false;
         }
 
         if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-            LogPrintf("CheckKernel(): Failed non-mature spent")
+            LogPrintf("CheckKernel(): Failed non-mature spent");
             return false;
         }
         CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
         if(!blockFrom) {
-            LogPrintf("CheckKernel(): Failed null blockFrom")
+            LogPrintf("CheckKernel(): Failed null blockFrom");
             return false;
         }
         if(coinPrev.IsSpent()){
-            LogPrintf("CheckKernel(): coinPrev is spent")
+            LogPrintf("CheckKernel(): coinPrev is spent");
             return false;
         }
 
         return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake);
 
-    }else{
+    } else {
         //found in cache
         const CStakeCache& stake = it->second;
         if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock,
@@ -3470,8 +3473,8 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
             }
         }
         // Check PoS
-        if(!CheckHeaderProofOfStake(block, consensusParams))
-            return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
+        //if(!CheckHeaderProofOfStake(block, consensusParams))
+        //    return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
     }
 
     // Check timestamp

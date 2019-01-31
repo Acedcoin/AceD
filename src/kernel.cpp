@@ -390,7 +390,7 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     if (pindexPrev->nHeight > 300000) {
         // Now check if proof-of-stake hash meets target protocol
         if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay) {
-            LogPrintf("CheckStakeKernelHash(): proof-of-stake hash doesn't match target protocol")
+            LogPrintf("CheckStakeKernelHash(): proof-of-stake hash doesn't match target protocol");
             return false;
         }
 
