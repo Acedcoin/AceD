@@ -3443,8 +3443,7 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
     } else {
         //found in cache
         const CStakeCache& stake = it->second;
-        if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock,
-                hashProofOfStake, false)) {
+        if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock, hashProofOfStake, false)) {
             // Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
             return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
         }
@@ -3473,8 +3472,8 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
             }
         }
         // Check PoS
-        //if(!CheckHeaderProofOfStake(block, consensusParams))
-        //    return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
+        if(!CheckHeaderProofOfStake(block, consensusParams))
+            return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
     }
 
     // Check timestamp

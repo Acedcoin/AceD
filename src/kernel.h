@@ -25,7 +25,7 @@ static const int MODIFIER_INTERVAL_RATIO = 3;
 bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeModifier, bool& fGeneratedStakeModifier);
 // Check whether stake kernel meets hash target
 // Sets hashProofOfStake on success return
-bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t blockFromTime, CAmount prevoutAmount, const COutPoint& prevout, unsigned int nTimeTx, uint256& hashProofOfStake, bool fPrintProofOfStake=false, bool fMinting);
+bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t blockFromTime, CAmount prevoutAmount, const COutPoint& prevout, unsigned int nTimeTx, uint256& hashProofOfStake, bool fMinting);
 // Check kernel hash target and coinstake signature
 // Sets hashProofOfStake on success return
 bool CheckProofOfStake(const CBlock &block, uint256& hashProofOfStake);
