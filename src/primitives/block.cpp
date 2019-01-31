@@ -15,15 +15,6 @@ uint256 CBlockHeader::GetHash() const
     return HashX11(BEGIN(nVersion), END(nNonce));
 }
 
-bool CBlock::IsProofOfStake() const
-{
-    return (vtx.size() > 1 && vtx[1]->IsCoinStake());
-}
-bool CBlock::IsProofOfWork() const
-{
-    return !IsProofOfStake();
-}
-
 
 std::string CBlock::ToString() const
 {

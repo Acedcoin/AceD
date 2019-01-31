@@ -47,6 +47,7 @@ public:
 
     }
 
+
     void SetNull()
     {
         nVersion = 0;
@@ -71,6 +72,7 @@ public:
     {
         return (int64_t)nTime;
     }
+
 
 };
 
@@ -115,10 +117,6 @@ public:
         fChecked = false;
     }
 
-    std::pair<COutPoint, unsigned int> GetProofOfStake() const
-    {
-        return IsProofOfStake()? std::make_pair(prevoutStake, nTime) : std::make_pair(COutPoint(), (unsigned int)0);
-    }
 
     CBlockHeader GetBlockHeader() const
     {
@@ -132,8 +130,15 @@ public:
         block.prevoutStake   = prevoutStake;
         return block;
     }
-    bool IsProofOfStake() const;
-    bool IsProofOfWork() const;
+    bool IsProofOfStake() const
+    {
+        return (vtx.size() > 1 && vtx[1]->IsCoinStake());
+    }
+
+    bool IsProofOfWork() const
+    {
+        return !IsProofOfStake();
+    }
 
     std::string ToString() const;
 };
