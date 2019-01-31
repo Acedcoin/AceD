@@ -3422,13 +3422,16 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
         }
 
         if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
+            LogPrintf("CheckKernel(): Failed non-mature spent")
             return false;
         }
         CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
         if(!blockFrom) {
+            LogPrintf("CheckKernel(): Failed null blockFrom")
             return false;
         }
         if(coinPrev.IsSpent()){
+            LogPrintf("CheckKernel(): coinPrev is spent")
             return false;
         }
 
