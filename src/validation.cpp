@@ -3383,48 +3383,30 @@ bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params&
 
 bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
 {
-    std::map<COutPoint, CStakeCache> tmp;
-    return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view, tmp);
-}
-
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache)
-{
     uint256 hashProofOfStake, targetProofOfStake;
-    auto it=cache.find(prevout);
-    if(it == cache.end()) {
-        // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
-        Coin coinPrev;
-/*        if(!view.GetCoin(prevout, coinPrev)){
-            LogPrintf("CheckKernel(): null GetCoinCache \n");
-            return false;
-        }*/
+    // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
+    Coin coinPrev;
+/*    if(!view.GetCoin(prevout, coinPrev)){
+        LogPrintf("CheckKernel(): null GetCoinCache \n");
+        return false;
+    }*/
 
-        if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-            LogPrintf("CheckKernel(): Failed non-mature spent \n");
-            return false;
-        }
-        CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
-        if(!blockFrom) {
-            LogPrintf("CheckKernel(): Failed null blockFrom \n");
-            return false;
-        }
-/*        if(coinPrev.IsSpent()){
-            LogPrintf("CheckKernel(): coinPrev is spent \n");
-            return false;
-        }*/
-
-        return true;
-        //return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
-
-    } else {
-        //found in cache
-        const CStakeCache& stake = it->second;
-        if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock, hashProofOfStake, false)) {
-            // Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
-            return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
-        }
+    if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
+        LogPrintf("CheckKernel(): Failed non-mature spent \n");
+        return false;
     }
-    return false;
+    CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
+    if(!blockFrom) {
+        LogPrintf("CheckKernel(): Failed null blockFrom \n");
+        return false;
+    }
+/*    if(coinPrev.IsSpent()){
+        LogPrintf("CheckKernel(): coinPrev is spent \n");
+        return false;
+    }*/
+
+    return true;
+    //return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
 }
 
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS)

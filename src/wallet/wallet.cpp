@@ -212,14 +212,13 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
 {
     unsigned int nTryTime = 0;
     uint256 hashProofOfStake;
-    CBlockIndex* pindexPrev = pindexBestHeader;
 
     if (blockFrom.GetBlockTime() + Params().GetConsensus().nStakeMinAge + nHashDrift > nTimeTx) // Min age requirement
         return false;
     for(unsigned int i = 0; i < nHashDrift; ++i)
     {
         nTryTime = nTimeTx - i;
-        if (CheckStakeKernelHash(pindexPrev, nBits, blockFrom.nTime, txPrev->vout[prevout.n].nValue, prevout, nTryTime, hashProofOfStake, true))
+        if (CheckStakeKernelHash(nBits, blockFrom, nTxPrevOffset, txPrev, prevout, nTryTime, hashProofOfStake, true))
         {
             //Double check that this will pass time requirements
             if (nTryTime <= chainActive.Tip()->GetMedianTimePast()) {
