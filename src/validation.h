@@ -48,16 +48,7 @@ class CValidationState;
 struct ChainTxData;
 
 
-/** StakeCache */
 
-struct CStakeCache{
-    CStakeCache(uint32_t blockFromTime_, CAmount amount_) : blockFromTime(blockFromTime_), amount(amount_){
-    }
-    uint32_t blockFromTime;
-    CAmount amount;
-};
-
-void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view);
 
 struct LockPoints;
 
@@ -506,8 +497,6 @@ bool DisconnectBlocks(int blocks);
 void ReprocessBlocks(int nBlocks);
 
 /** Context-independent validity checks */
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view);
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache);
 bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams);
 bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams);
 bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams);

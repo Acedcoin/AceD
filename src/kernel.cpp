@@ -250,13 +250,6 @@ static bool GetKernelStakeModifierV05(unsigned int nTimeTx, uint64_t& nStakeModi
     nStakeModifierHeight = pindex->nHeight;
     nStakeModifierTime = pindex->GetBlockTime();
     int64_t nStakeModifierSelectionInterval = GetStakeModifierSelectionInterval();
-    if(fPrintProofOfStake)
-    {
-        LogPrintf("stake modifier time: %s interval: %d, time: %s\n",
-                  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nStakeModifierTime).c_str(),
-                  nStakeModifierSelectionInterval,
-                  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nTimeTx).c_str());
-    }
     while (nStakeModifierTime + nStakeMinAge - nStakeModifierSelectionInterval > nTimeTx)
     {
         if (!pindex->pprev)
@@ -336,7 +329,7 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-    if (nTimeBlock > 1548723001 || fMinting) {
+    if (nTimeBlock > 1549044800 || fMinting) {
         if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
             return error("Failed to get kernel stake modifier");
         ss << nStakeModifierTime;
