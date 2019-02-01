@@ -1195,8 +1195,7 @@ bool CheckHeaderProof(const CBlockHeader& block, const Consensus::Params& consen
 
     // Check block based on prevoutStake
     if (block.nTime >= 1540526903 ) {
-        return true;
-        // return CheckHeaderProofOfStake(block, consensusParams);
+        return CheckHeaderProofOfStake(block, consensusParams);
     } else {
         return CheckHeaderProofOfWork(block, consensusParams);
     }
@@ -1207,9 +1206,10 @@ bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensu
 {
     // Get the hash of the proof
     // After validating the PoS block the computed hash proof is saved in the block index, which is used to check the index
-    uint256 hashProof = !block.prevoutStake.IsNull() ? block.GetBlockHash() : block.hashProofOfStake;
+    bool IsPosBlock = block.nTime >= 1540526903;
+    uint256 hashProof = IsPosBlock ? block.GetBlockHash() : block.hashProofOfStake;
     // Check for proof after the hash proof is computed
-    if (!block.prevoutStake.IsNull()) {
+    if (IsPosBlock ) {
         //blocks are loaded out of order, so checking PoS kernels here is not practical
         return true;
     } else {
@@ -3366,7 +3366,7 @@ bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& 
     return CheckProofOfWork(block.GetHash(), block.nBits, consensusParams);
 }
 
-/*bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams)
+bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams)
 {
     // Check for proof of stake block header
     // Get prev block index
@@ -3378,10 +3378,10 @@ bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& 
 
     // Check the kernel hash
     CBlockIndex* pindexPrev = (*mi).second;
-    return CheckStakeKernelHash(pindexPrev, block.nBits, block->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
-}*/
+    return CheckKernel(pindexPrev, block.nBits, block.nTime, block.prevoutStake, *pcoinsTip);
+}
 
-/*bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
 {
     std::map<COutPoint, CStakeCache> tmp;
     return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view, tmp);
@@ -3394,10 +3394,10 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
     if(it == cache.end()) {
         // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
         Coin coinPrev;
-*//*        if(!view.GetCoin(prevout, coinPrev)){
+/*        if(!view.GetCoin(prevout, coinPrev)){
             LogPrintf("CheckKernel(): null GetCoinCache \n");
             return false;
-        }*//*
+        }*/
 
         if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
             LogPrintf("CheckKernel(): Failed non-mature spent \n");
@@ -3408,12 +3408,13 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
             LogPrintf("CheckKernel(): Failed null blockFrom \n");
             return false;
         }
-       *//* if(coinPrev.IsSpent()){
+/*        if(coinPrev.IsSpent()){
             LogPrintf("CheckKernel(): coinPrev is spent \n");
             return false;
-        }*//*
+        }*/
 
-        return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
+        return true;
+        //return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
 
     } else {
         //found in cache
@@ -3424,7 +3425,7 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
         }
     }
     return false;
-}*/
+}
 
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS)
 {
