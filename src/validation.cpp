@@ -3362,29 +3362,6 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
     return true;
 }
 
-void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view){
-    if(cache.find(prevout) != cache.end()){
-        //already in cache
-        return;
-    }
-
-    Coin coinPrev;
-    if(!view.GetCoin(prevout, coinPrev)){
-        return;
-    }
-
-    if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-        return;
-    }
-    CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
-    if(!blockFrom) {
-        return;
-    }
-
-    CStakeCache c(blockFrom->nTime, coinPrev.out.nValue);
-    cache.insert({prevout, c});
-}
-
 bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams)
 {
     // Check for proof of work block header
