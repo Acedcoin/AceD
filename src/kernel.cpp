@@ -332,7 +332,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
 
-    if (txPrevTime > 1549047500 || fMinting) {
+    if (nTimeTx > 1549047500 || fMinting) {
         if (!GetKernelStakeModifier(blockFrom.GetHash(), nTimeTx, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
             return error("Failed to get kernel stake modifier");
         ss << nStakeModifier;
