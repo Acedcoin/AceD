@@ -43,7 +43,7 @@ unsigned int getIntervalVersion(bool fTestNet)
 // Hard checkpoints of stake modifiers to ensure they are deterministic
 static std::map<int, unsigned int> mapStakeModifierCheckpoints =
         boost::assign::map_list_of
-                (0, 0x0000000000000000);
+                (0, 0xfd11f4e7u);
 
 
 // Get time weight
@@ -338,20 +338,16 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-
-    if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
-        return error("Failed to get kernel stake modifier");
-
-    ss << nStakeModifier;
-    ss << nTimeBlockFrom << nTxPrevOffset << blockFromTime << prevout.n << nTimeBlock;
-    hashProofOfStake = Hash(ss.begin(), ss.end());
-
-    if (pindexPrev->nHeight > 277730|| fMinting) {
+    if (1548973603 < nTimeBlock) {
+        if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
+            return error("Failed to get kernel stake modifier");
+        ss << nBits;
+        ss << nTimeBlockFrom << nTxPrevOffset << blockFromTime << prevout.n << nTimeBlock;
+        hashProofOfStake = Hash(ss.begin(), ss.end());
         // Now check if proof-of-stake hash meets target protocol
         if (UintToArith256(hashProofOfStake) > bnCoinDayWeight * bnTargetPerCoinDay) {
             return false;
         }
-
     }
 
     return true;
