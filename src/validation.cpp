@@ -3396,24 +3396,24 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
     if(it == cache.end()) {
         // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
         Coin coinPrev;
-        if(!view.GetCoin(prevout, coinPrev)){
-            LogPrintf("CheckKernel(): null GetCoinCache");
+/*        if(!view.GetCoin(prevout, coinPrev)){
+            LogPrintf("CheckKernel(): null GetCoinCache \n");
             return false;
-        }
+        }*/
 
         if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-            LogPrintf("CheckKernel(): Failed non-mature spent");
+            LogPrintf("CheckKernel(): Failed non-mature spent \n");
             return false;
         }
         CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
         if(!blockFrom) {
-            LogPrintf("CheckKernel(): Failed null blockFrom");
+            LogPrintf("CheckKernel(): Failed null blockFrom \n");
             return false;
         }
-        if(coinPrev.IsSpent()){
-            LogPrintf("CheckKernel(): coinPrev is spent");
+       /* if(coinPrev.IsSpent()){
+            LogPrintf("CheckKernel(): coinPrev is spent \n");
             return false;
-        }
+        }*/
 
         return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
 
@@ -3449,8 +3449,8 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
             }
         }
         // Check PoS
-        if(!CheckHeaderProofOfStake(block, consensusParams))
-            return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
+       /* if(!CheckHeaderProofOfStake(block, consensusParams))
+            return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");*/
     }
 
     // Check timestamp
@@ -3475,6 +3475,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
     if (block.fChecked)
         return true;
+
     bool IsProofOfStake = block.vtx.size() > 1 && block.vtx[1]->IsCoinStake();
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
