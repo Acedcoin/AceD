@@ -1194,8 +1194,13 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
 bool CheckHeaderProof(const CBlockHeader& block, const Consensus::Params& consensusParams) {
 
     // Check block based on prevoutStake
-    return CheckHeaderProofOfWork(block, consensusParams);
-    // return CheckHeaderProofOfStake(block, consensusParams);
+    if (block.nTime >= 1540526903 ) {
+        return true;
+        // return CheckHeaderProofOfStake(block, consensusParams);
+    } else {
+        return CheckHeaderProofOfWork(block, consensusParams);
+    }
+
 }
 
 bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams)
@@ -1259,12 +1264,8 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if(!block.IsProofOfStake()) {
-        //PoS blocks can be loaded out of order from disk, which makes PoS impossible to validate. So, do not validate their headers
-        //they will be validated later in CheckBlock and ConnectBlock anyway
-        if (!CheckHeaderProof(block, consensusParams))
-            return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
-    }
+    if (!CheckHeaderProof(block, consensusParams))
+        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
 }
@@ -3377,7 +3378,7 @@ bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& 
 
     // Check the kernel hash
     CBlockIndex* pindexPrev = (*mi).second;
-    return CheckKernel(pindexPrev, block.nBits, block.nTime, block.prevoutStake, *pcoinsTip);
+    return CheckStakeKernelHash(pindexPrev, block.nBits, block->nTime, coinPrev.out.nValue, prevout, nTimeBlock, hashProofOfStake, false);
 }*/
 
 /*bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
