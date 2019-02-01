@@ -329,7 +329,7 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t 
     uint64_t nStakeModifier = 0;
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
-    if (nTimeBlock > 1549046800 || fMinting) {
+    if (nTimeBlock > 1549047500 || fMinting) {
         if (!GetKernelStakeModifier(pindexPrev->GetBlockHash(), nTimeBlock, nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
             return error("Failed to get kernel stake modifier");
         ss << nStakeModifierTime;
