@@ -174,7 +174,6 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(CWallet *wallet, 
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
         CMutableTransaction coinstakeTx;
         int64_t nSearchTime = pblock->nTime; // search to current time
-        pblock->prevoutStake.n=0;
         bool fStakeFound = false;
         if (nSearchTime >= nLastCoinStakeSearchTime) {
             unsigned int nTxNewTime = 0;

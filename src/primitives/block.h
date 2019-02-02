@@ -27,7 +27,6 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
-    COutPoint prevoutStake;
 
     CBlockHeader()
     {
@@ -56,7 +55,6 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
-        prevoutStake.SetNull();
 
     }
 
@@ -127,7 +125,6 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-        block.prevoutStake   = prevoutStake;
         return block;
     }
     bool IsProofOfStake() const

@@ -1193,7 +1193,6 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
 
 bool CheckHeaderProof(const CBlockHeader& block, const Consensus::Params& consensusParams) {
 
-    // Check block based on prevoutStake
     if (block.nTime >= 1540526903 ) {
         return CheckHeaderProofOfStake(block, consensusParams);
     } else {
@@ -3187,6 +3186,7 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
         LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
 
+
     setDirtyBlockIndex.insert(pindexNew);
 
 }
@@ -3378,10 +3378,10 @@ bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params&
 
     // Check the kernel hash
     CBlockIndex* pindexPrev = (*mi).second;
-    return CheckKernel(pindexPrev, block.nBits, block.nTime, block.prevoutStake, *pcoinsTip);
+    return CheckKernel(pindexPrev, block.nBits, block.nTime, /*block.prevoutStake,  */ *pcoinsTip);
 }
 
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, /*const COutPoint& prevout ,*/ CCoinsViewCache& view)
 {
     uint256 hashProofOfStake, targetProofOfStake;
     // not found in cache (shouldn't happen during staking, only during verification which does not use cache)

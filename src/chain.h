@@ -270,8 +270,14 @@ public:
         nMoneySupply        = 0;
         nStakeModifier      = 0;
         hashProofOfStake    = uint256();
-        prevoutStake        = block.prevoutStake;
-
+        if (block.IsProofOfStake()) {
+            SetProofOfStake();
+            prevoutStake = block.vtx[1]->vin[0].prevout;
+            nStakeTime = block.nTime;
+        } else {
+            prevoutStake.SetNull();
+            nStakeTime = 0;
+        }
     }
 
     CDiskBlockPos GetBlockPos() const {
@@ -302,7 +308,6 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-        block.prevoutStake   = prevoutStake;
         return block;
     }
 
@@ -440,6 +445,7 @@ public:
             READWRITE(VARINT(nDataPos));
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
+
         READWRITE(nMint);
         READWRITE(nMoneySupply);
         READWRITE(nFlags);
@@ -462,7 +468,6 @@ public:
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(prevoutStake);
         READWRITE(nNonce);
     }
 
@@ -477,7 +482,6 @@ public:
         block.nTime           = nTime;
         block.nBits           = nBits;
         block.nNonce          = nNonce;
-        block.prevoutStake    = prevoutStake;
         return block.GetHash();
     }
 
