@@ -50,15 +50,6 @@ struct ChainTxData;
 
 /** StakeCache */
 
-struct CStakeCache{
-    CStakeCache(uint32_t blockFromTime_, CAmount amount_) : blockFromTime(blockFromTime_), amount(amount_){
-    }
-    uint32_t blockFromTime;
-    CAmount amount;
-};
-
-void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view);
-
 struct LockPoints;
 
 /** Default for accepting alerts from the P2P network. */
@@ -506,12 +497,11 @@ bool DisconnectBlocks(int blocks);
 void ReprocessBlocks(int nBlocks);
 
 /** Context-independent validity checks */
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view);
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache);
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, /* const COutPoint& prevout , */CCoinsViewCache& view);
 bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams);
 bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams);
 bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams);
-bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true);
+bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS);
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
 
 /** Context-dependent validity checks.
