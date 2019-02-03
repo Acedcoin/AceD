@@ -174,7 +174,6 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(CWallet *wallet, 
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
         CMutableTransaction coinstakeTx;
         int64_t nSearchTime = pblock->nTime; // search to current time
-        pblock->prevoutStake.n=0;
         bool fStakeFound = false;
         if (nSearchTime >= nLastCoinStakeSearchTime) {
             unsigned int nTxNewTime = 0;
@@ -697,7 +696,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman,
                 // on an obsolete chain. In regtest mode we expect to fly solo.
                 do {
                     bool fvNodesEmpty = connman.GetNodeCount(CConnman::CONNECTIONS_ALL) == 0;
-                    if (!fvNodesEmpty /*&& masternodeSync.IsSynced()*/)
+                    if (!fvNodesEmpty  && !IsInitialBlockDownload()  /*&& masternodeSync.IsSynced()*/)
                         break;
                     MilliSleep(1000);
                 } while (true);

@@ -218,7 +218,7 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
     for(unsigned int i = 0; i < nHashDrift; ++i)
     {
         nTryTime = nTimeTx - i;
-        if (CheckStakeKernelHash(nBits, blockFrom, nTxPrevOffset, txPrev, prevout, nTryTime, hashProofOfStake, fPrintProofOfStake))
+        if (CheckStakeKernelHash(nBits, blockFrom, nTxPrevOffset, txPrev, prevout, nTryTime, hashProofOfStake, true, false))
         {
             //Double check that this will pass time requirements
             if (nTryTime <= chainActive.Tip()->GetMedianTimePast()) {
@@ -231,9 +231,6 @@ bool CWallet::CreateCoinStakeKernel(CScript &kernelScript, const CScript &stakeS
             kernelScript.clear();
             kernelScript = stakeScript;
             nTimeTx = nTryTime;
-            return true;
-        }
-        if (chainActive.Tip()->nHeight < 277730) {
             return true;
         }
     }
@@ -4079,21 +4076,6 @@ bool CWallet::CreateCoinStake(unsigned int nBits,
     bool fKernelFound = false;
     CAmount nCredit = 0;
 
-    static std::map<COutPoint, CStakeCache> stakeCache;
-    if(stakeCache.size() > setStakeCoins.size() + 100){
-        //Determining if the cache is still valid is harder than just clearing it when it gets too big, so instead just clear it
-        //when it has more than 100 entries more than the actual setCoins.
-        stakeCache.clear();
-    }
-    if(GetBoolArg("-stakecache", DEFAULT_STAKE_CACHE)) {
-
-        for(const std::pair<const CWalletTx*,unsigned int> &pcoin : setStakeCoins)
-        {
-            boost::this_thread::interruption_point();
-            COutPoint prevoutStake = COutPoint(pcoin.first->GetHash(), pcoin.second);
-            CacheKernel(stakeCache, prevoutStake, pindexPrev, *pcoinsTip); //this will do a 2 disk loads per op
-        }
-    }
     for(const std::pair<const CWalletTx*, unsigned int> &pcoin : setStakeCoins)
     {
         //make sure that enough time has elapsed between

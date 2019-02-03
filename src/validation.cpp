@@ -1193,21 +1193,22 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
 
 bool CheckHeaderProof(const CBlockHeader& block, const Consensus::Params& consensusParams) {
 
-    // Check block based on prevoutStake
-    if (block.prevoutStake.IsNull()) {
-        return CheckHeaderProofOfWork(block, consensusParams);
-    } else {
+    if (block.nTime >= 1540526903 ) {
         return CheckHeaderProofOfStake(block, consensusParams);
+    } else {
+        return CheckHeaderProofOfWork(block, consensusParams);
     }
+
 }
 
 bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams)
 {
     // Get the hash of the proof
     // After validating the PoS block the computed hash proof is saved in the block index, which is used to check the index
-    uint256 hashProof = !block.prevoutStake.IsNull() ? block.GetBlockHash() : block.hashProofOfStake;
+    bool IsPosBlock = block.nTime >= 1540526903;
+    uint256 hashProof = IsPosBlock ? block.GetBlockHash() : block.hashProofOfStake;
     // Check for proof after the hash proof is computed
-    if (!block.prevoutStake.IsNull()) {
+    if (IsPosBlock ) {
         //blocks are loaded out of order, so checking PoS kernels here is not practical
         return true;
     } else {
@@ -1262,12 +1263,8 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if(!block.IsProofOfStake()) {
-        //PoS blocks can be loaded out of order from disk, which makes PoS impossible to validate. So, do not validate their headers
-        //they will be validated later in CheckBlock and ConnectBlock anyway
-        if (!CheckHeaderProof(block, consensusParams))
-            return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
-    }
+    if (!CheckHeaderProof(block, consensusParams))
+        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
 }
@@ -3180,14 +3177,15 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     }
 
     // ppcoin: compute stake modifier
-        uint64_t nStakeModifier = 0;
-        bool fGeneratedStakeModifier = false;
-        if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
-            LogPrintf("AcceptProofOfStakeBlock() : ComputeNextStakeModifier() failed \n");
-        pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
-        pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-        if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-            LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+    uint64_t nStakeModifier = 0;
+    bool fGeneratedStakeModifier = false;
+    if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
+        LogPrintf("AcceptProofOfStakeBlock() : ComputeNextStakeModifier() failed \n");
+    pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
+    pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
+    if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
+        LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+
 
     setDirtyBlockIndex.insert(pindexNew);
 
@@ -3362,29 +3360,6 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
     return true;
 }
 
-void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view){
-    if(cache.find(prevout) != cache.end()){
-        //already in cache
-        return;
-    }
-
-    Coin coinPrev;
-    if(!view.GetCoin(prevout, coinPrev)){
-        return;
-    }
-
-    if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-        return;
-    }
-    CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
-    if(!blockFrom) {
-        return;
-    }
-
-    CStakeCache c(blockFrom->nTime, coinPrev.out.nValue);
-    cache.insert({prevout, c});
-}
-
 bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams)
 {
     // Check for proof of work block header
@@ -3396,73 +3371,55 @@ bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params&
     // Check for proof of stake block header
     // Get prev block index
     BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
-    if (mi == mapBlockIndex.end())
+    if (mi == mapBlockIndex.end()) {
+        LogPrintf("CheckHeaderProofOfStake(): Unable to find block on mapBlockIndex");
         return false;
+    }
 
     // Check the kernel hash
     CBlockIndex* pindexPrev = (*mi).second;
-    return CheckKernel(pindexPrev, block.nBits, block.nTime, block.prevoutStake, *pcoinsTip);
+    return CheckKernel(pindexPrev, block.nBits, block.nTime, /*block.prevoutStake,  */ *pcoinsTip);
 }
 
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view)
-{
-    std::map<COutPoint, CStakeCache> tmp;
-    return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view, tmp);
-}
-
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, const COutPoint& prevout, CCoinsViewCache& view, const std::map<COutPoint, CStakeCache>& cache)
+bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, /*const COutPoint& prevout ,*/ CCoinsViewCache& view)
 {
     uint256 hashProofOfStake, targetProofOfStake;
-    auto it=cache.find(prevout);
-    if(it == cache.end()) {
-        //not found in cache (shouldn't happen during staking, only during verification which does not use cache)
-        Coin coinPrev;
-        if(!view.GetCoin(prevout, coinPrev)){
-            return false;
-        }
 
-        if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-            return false;
-        }
-        CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
-        if(!blockFrom) {
-            return false;
-        }
-        if(coinPrev.IsSpent()){
-            return false;
-        }
+    // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
+    Coin coinPrev;
+/*    if(!view.GetCoin(prevout, coinPrev)){
+        LogPrintf("CheckKernel(): null GetCoinCache \n");
+        return false;
+    }*/
 
-        if (pindexPrev->nHeight > 277730) {
-            return CheckStakeKernelHash(pindexPrev, nBits, blockFrom->nTime, coinPrev.out.nValue, prevout,
-                                        nTimeBlock, hashProofOfStake, targetProofOfStake);
-        } else {
-            return true;
-        }
-
-    }else{
-        //found in cache
-        const CStakeCache& stake = it->second;
-        if (pindexPrev->nHeight > 277730) {
-            if (CheckStakeKernelHash(pindexPrev, nBits, stake.blockFromTime, stake.amount, prevout, nTimeBlock,
-                                     hashProofOfStake, targetProofOfStake)) {
-                // Cache could potentially cause false positive stakes in the event of deep reorgs, so check without cache also
-                return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
-            }
-        } else {
-            return CheckKernel(pindexPrev, nBits, nTimeBlock, prevout, view);
-        }
+    if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
+        LogPrintf("CheckKernel(): Failed non-mature spent \n");
+        return false;
     }
-    return false;
+
+    CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
+/*    if(!blockFrom) {
+        LogPrintf("CheckKernel(): Failed null blockFrom \n");
+        return false;
+    }*/
+
+/*    if(coinPrev.IsSpent()){
+        LogPrintf("CheckKernel(): coinPrev is spent \n");
+        return false;
+    }*/
+
+    return true;
+    //return CheckStakeKernelHash(nBits, blockFrom, sizeof(blockFrom), prevout, nTimeBlock, hashProofOfStake, false, true);
 }
 
-bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckProof)
+bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS)
 {
-    // Check proof of work matches claimed amount
-    if (fCheckProof && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
-                         REJECT_INVALID, "high-hash");
 
-    if (fCheckProof && !block.prevoutStake.IsNull() && !IsInitialBlockDownload()){
+    // Check proof of work matches claimed amount
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+        return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+
+    if (fCheckPOS && !IsInitialBlockDownload()){
         if (chainActive.Tip() && block.hashPrevBlock != chainActive.Tip()->GetBlockHash())
         {
             const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
@@ -3476,8 +3433,8 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
             }
         }
         // Check PoS
-        if(!CheckHeaderProofOfStake(block, consensusParams))
-            return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
+       // if(!CheckHeaderProofOfStake(block, consensusParams))
+       //     return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
     }
 
     // Check timestamp
@@ -3503,10 +3460,12 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (block.fChecked)
         return true;
 
+    bool IsProofOfStake = block.vtx.size() > 1 && block.vtx[1]->IsCoinStake();
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW && block.IsProofOfWork()))
+    if (!CheckBlockHeader(block, state, consensusParams, !IsProofOfStake, IsProofOfStake))
         return false;
+
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -3746,8 +3705,11 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
             return true;
         }
 
-        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), false))
+
+        bool IsProofOfStake = block.nTime >= 1540526903;
+        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), !IsProofOfStake, IsProofOfStake))
             return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+
 
         // Get prev block index
         CBlockIndex* pindexPrev = NULL;
@@ -3862,7 +3824,7 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         return error("%s: %s", __func__, FormatStateMessage(state));
     }
 
-
+    AcceptProofOfStakeBlock(block, pindex);
 
     // Header is valid/has work, merkle tree is good...RELAY NOW
     // (but if it does not build on our best tip, let the SendMessages loop relay it)
@@ -3870,7 +3832,6 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
     int nHeight = pindex->nHeight;
-    AcceptProofOfStakeBlock(block, pindex);
 
     // Write block to history file
     try {
