@@ -3420,18 +3420,6 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
     if (fCheckPOS && !IsInitialBlockDownload()){
-        if (chainActive.Tip() && block.hashPrevBlock != chainActive.Tip()->GetBlockHash())
-        {
-            const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
-
-            int64_t deltaTime = block.GetBlockTime() - pcheckpoint->nTime;
-            std::cout << block.GetBlockTime() << " || " << pcheckpoint->nTime << " || " << deltaTime << std::endl;
-            std::cout << block.GetHash().ToString() << " || " << pcheckpoint->GetBlockHash().ToString() << std::endl;
-            if (deltaTime < 0)
-            {
-                return state.DoS(50, false, REJECT_INVALID, "older-than-checkpoint", false,"CheckBlockHeader(): Block with a timestamp before last checkpoint");
-            }
-        }
         // Check PoS
        // if(!CheckHeaderProofOfStake(block, consensusParams))
        //     return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
@@ -3586,8 +3574,6 @@ static bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidati
     CBlockIndex* pcheckpoint = Checkpoints::GetLastCheckpoint(chainparams.Checkpoints());
     if (pcheckpoint && nHeight < pcheckpoint->nHeight)
         return state.DoS(100, error("%s: forked chain older than last checkpoint (height %d)", __func__, nHeight));
-    if (!Checkpoints::CheckSync(nHeight))
-        return state.DoS(1, error("%s: forked chain older than synchronized checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-synch-checkpoint");
 
     return true;
 }
@@ -3750,18 +3736,6 @@ bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, CValidatio
         LOCK(cs_main);
         for (const CBlockHeader& header : headers) {
             CBlockIndex *pindex = NULL; // Use a temp pindex instead of ppindex to avoid a const_cast
-            // Check for the checkpoint
-            if (header.hashPrevBlock != chainActive.Tip()->GetBlockHash())
-            {
-                // Extra checks to prevent "fill up memory by spamming with bogus blocks"
-                const CBlockIndex* pcheckpoint = Checkpoints::AutoSelectSyncCheckpoint();
-                int64_t deltaTime = header.GetBlockTime() - pcheckpoint->nTime;
-                if (deltaTime < 0)
-                {
-                    return state.DoS(1, false, REJECT_INVALID, "older-than-checkpoint", false,
-                                     "ProcessNewBlockHeaders(): Block with a timestamp before last checkpoint");
-                }
-            }
             if (!AcceptBlockHeader(header, state, chainparams, &pindex)) {
                 return false;
             }
