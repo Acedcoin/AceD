@@ -94,7 +94,7 @@ def sign():
 
     if args.windows:
         print('\nSigning ' + args.version + ' Windows')
-        subprocess.check_call('cp inputs/polis-' + args.version + '-win-unsigned.tar.gz inputs/poliscore-win-unsigned.tar.gz', shell=True)
+        #subprocess.check_call('cp inputs/polis-' + args.version + '-win-unsigned.tar.gz inputs/poliscore-win-unsigned.tar.gz', shell=True)
         subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../polis/contrib/gitian-descriptors/gitian-win-signer.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-signed', '--destination', '../gitian.sigs/', '../polis/contrib/gitian-descriptors/gitian-win-signer.yml'])
         subprocess.check_call('mv build/out/poliscore-*win64-setup.exe ../poliscore-binaries/'+args.version, shell=True)
@@ -102,7 +102,7 @@ def sign():
 
     if args.macos:
         print('\nSigning ' + args.version + ' MacOS')
-        subprocess.check_call('cp inputs/poliscore-' + args.version + '-osx-unsigned.tar.gz inputs/poliscore-osx-unsigned.tar.gz', shell=True)
+        #subprocess.check_call('cp inputs/poliscore-' + args.version + '-osx-unsigned.tar.gz inputs/poliscore-osx-unsigned.tar.gz', shell=True)
         subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../polis/contrib/gitian-descriptors/gitian-osx-signer.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs/', '../polis/contrib/gitian-descriptors/gitian-osx-signer.yml'])
         subprocess.check_call('mv build/out/poliscore-osx-signed.dmg ../poliscore-binaries/'+args.version+'/poliscore-'+args.version+'-osx.dmg', shell=True)
