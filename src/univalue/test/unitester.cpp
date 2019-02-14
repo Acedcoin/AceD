@@ -17,8 +17,7 @@
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 #endif
 
-using namespace std;
-string srcdir(JSON_TEST_SRC);
+std::string srcdir(JSON_TEST_SRC);
 static bool test_failed = false;
 
 #define d_assert(expr) { if (!(expr)) { test_failed = true; fprintf(stderr, "%s failed\n", filename.c_str()); } }
@@ -30,52 +29,52 @@ static std::string rtrim(std::string s)
     return s;
 }
 
-static void runtest(string filename, const string& jdata)
+static void runtest(std::string filename, const std::string& jdata)
 {
-        string prefix = filename.substr(0, 4);
+    std::string prefix = filename.substr(0, 4);
 
-        bool wantPass = (prefix == "pass") || (prefix == "roun");
-        bool wantFail = (prefix == "fail");
-        bool wantRoundTrip = (prefix == "roun");
-        assert(wantPass || wantFail);
+    bool wantPass = (prefix == "pass") || (prefix == "roun");
+    bool wantFail = (prefix == "fail");
+    bool wantRoundTrip = (prefix == "roun");
+    assert(wantPass || wantFail);
 
-        UniValue val;
-        bool testResult = val.read(jdata);
+    UniValue val;
+    bool testResult = val.read(jdata);
 
-        if (wantPass) {
-            d_assert(testResult == true);
-        } else {
-            d_assert(testResult == false);
-        }
+    if (wantPass) {
+        d_assert(testResult == true);
+    } else {
+        d_assert(testResult == false);
+    }
 
-        if (wantRoundTrip) {
-            std::string odata = val.write(0, 0);
-            assert(odata == rtrim(jdata));
-        }
+    if (wantRoundTrip) {
+        std::string odata = val.write(0, 0);
+        assert(odata == rtrim(jdata));
+    }
 }
 
 static void runtest_file(const char *filename_)
 {
-        string basename(filename_);
-        string filename = srcdir + "/" + basename;
-        FILE *f = fopen(filename.c_str(), "r");
-        assert(f != NULL);
+    std::string basename(filename_);
+    std::string filename = srcdir + "/" + basename;
+    FILE *f = fopen(filename.c_str(), "r");
+    assert(f != NULL);
 
-        string jdata;
+    std::string jdata;
 
-        char buf[4096];
-        while (!feof(f)) {
-                int bread = fread(buf, 1, sizeof(buf), f);
-                assert(!ferror(f));
-
-                string s(buf, bread);
-                jdata += s;
-        }
-
+    char buf[4096];
+    while (!feof(f)) {
+        int bread = fread(buf, 1, sizeof(buf), f);
         assert(!ferror(f));
-        fclose(f);
 
-        runtest(basename, jdata);
+        std::string s(buf, bread);
+        jdata += s;
+    }
+
+    assert(!ferror(f));
+    fclose(f);
+
+    runtest(basename, jdata);
 }
 
 static const char *filenames[] = {
@@ -113,6 +112,8 @@ static const char *filenames[] = {
         "fail39.json",               // invalid unicode: only second half of surrogate pair
         "fail40.json",               // invalid unicode: broken UTF-8
         "fail41.json",               // invalid unicode: unfinished UTF-8
+        "fail42.json",               // valid json with garbage following a nul byte
+        "fail44.json",               // unterminated string
         "fail3.json",
         "fail4.json",                // extra comma
         "fail5.json",
@@ -125,6 +126,11 @@ static const char *filenames[] = {
         "pass3.json",
         "round1.json",              // round-trip test
         "round2.json",              // unicode
+        "round3.json",              // bare string
+        "round4.json",              // bare number
+        "round5.json",              // bare true
+        "round6.json",              // bare false
+        "round7.json",              // bare null
 };
 
 // Test \u handling
@@ -160,4 +166,3 @@ int main (int argc, char *argv[])
 
     return test_failed ? 1 : 0;
 }
-
