@@ -7,20 +7,20 @@ import sys
 
 def setup():
     global args, workdir
-    programs = ['ruby', 'git', 'make', 'wget']
-    if args.lxc:
-        programs += ['apt-cacher-ng', 'lxc', 'debootstrap']
-    elif args.kvm:
-        programs += ['apt-cacher-ng', 'python-vm-builder', 'qemu-kvm', 'qemu-utils']
-    elif args.docker and not os.path.isfile('/lib/systemd/system/docker.service'):
+    programs = ['ruby', 'git', 'apt-cacher-ng', 'make', 'wget']
+    if args.kvm:
+        programs += ['python-vm-builder', 'qemu-kvm', 'qemu-utils']
+    elif args.docker:
         dockers = ['docker.io', 'docker-ce']
         for i in dockers:
             return_code = subprocess.call(['sudo', 'apt-get', 'install', '-qq', i])
             if return_code == 0:
                 break
         if return_code != 0:
-            print('Cannot find any way to install Docker', file=sys.stderr)
+            print('Cannot find any way to install docker', file=sys.stderr)
             exit(1)
+    else:
+        programs += ['lxc', 'debootstrap']
     subprocess.check_call(['sudo', 'apt-get', 'install', '-qq'] + programs)
     if not os.path.isdir('gitian.sigs'):
         subprocess.check_call(['git', 'clone', 'https://github.com/polispay/gitian.sigs.git'])
@@ -34,7 +34,7 @@ def setup():
     make_image_prog = ['bin/make-base-vm', '--suite', 'bionic', '--arch', 'amd64']
     if args.docker:
         make_image_prog += ['--docker']
-    elif args.lxc:
+    elif not args.kvm:
         make_image_prog += ['--lxc']
     subprocess.check_call(make_image_prog)
     os.chdir(workdir)
@@ -53,8 +53,8 @@ def build():
 
     subprocess.check_call(['wget', '-N', '-P', 'inputs', 'https://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz'])
     subprocess.check_call(['wget', '-N', '-P', 'inputs', 'https://bitcoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch'])
-    subprocess.check_output(["echo 'a8c4e9cafba922f89de0df1f2152e7be286aba73f78505169bc351a7938dd911 inputs/osslsigncode-Backports-to-1.7.1.patch' | sha256sum -c"], shell=True)
-    subprocess.check_output(["echo 'f9a8cdb38b9c309326764ebc937cba1523a3a751a7ab05df3ecc99d18ae466c9 inputs/osslsigncode-1.7.1.tar.gz' | sha256sum -c"], shell=True)
+    subprocess.check_call(["echo 'a8c4e9cafba922f89de0df1f2152e7be286aba73f78505169bc351a7938dd911 inputs/osslsigncode-Backports-to-1.7.1.patch' | sha256sum -c"], shell=True)
+    subprocess.check_call(["echo 'f9a8cdb38b9c309326764ebc937cba1523a3a751a7ab05df3ecc99d18ae466c9 inputs/osslsigncode-1.7.1.tar.gz' | sha256sum -c"], shell=True)
     subprocess.check_call(['make', '-C', '../polis/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
 
     if args.linux:
@@ -67,16 +67,14 @@ def build():
         print('\nCompiling ' + args.version + ' Windows')
         subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'polis='+args.commit, '--url', 'polis='+args.url, '../polis/contrib/gitian-descriptors/gitian-win.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-unsigned', '--destination', '../gitian.sigs/', '../polis/contrib/gitian-descriptors/gitian-win.yml'])
-        subprocess.check_call('mv build/out/poliscore-*-win-unsigned.tar.gz inputs/poliscore-win-unsigned.tar.gz', shell=True)
+        subprocess.check_call('mv build/out/poliscore-*-win-unsigned.tar.gz inputs/', shell=True)
         subprocess.check_call('mv build/out/poliscore-*.zip build/out/poliscore-*.exe ../poliscore-binaries/'+args.version, shell=True)
 
     if args.macos:
         print('\nCompiling ' + args.version + ' MacOS')
-        subprocess.check_call(['wget', '-N', '-P', 'inputs', 'https://bitcoincore.org/depends-sources/sdks/MacOSX10.11.sdk.tar.gz'])
-        subprocess.check_output(["echo 'bec9d089ebf2e2dd59b1a811a38ec78ebd5da18cbbcd6ab39d1e59f64ac5033f inputs/MacOSX10.11.sdk.tar.gz' | sha256sum -c"], shell=True)
         subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'polis='+args.commit, '--url', 'polis='+args.url, '../polis/contrib/gitian-descriptors/gitian-osx.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-unsigned', '--destination', '../gitian.sigs/', '../polis/contrib/gitian-descriptors/gitian-osx.yml'])
-        subprocess.check_call('mv build/out/poliscore-*-osx-unsigned.tar.gz inputs/poliscore-osx-unsigned.tar.gz', shell=True)
+        subprocess.check_call('mv build/out/poliscore-*-osx-unsigned.tar.gz inputs/', shell=True)
         subprocess.check_call('mv build/out/poliscore-*.tar.gz build/out/poliscore-*.dmg ../poliscore-binaries/'+args.version, shell=True)
 
     os.chdir(workdir)
@@ -96,6 +94,7 @@ def sign():
 
     if args.windows:
         print('\nSigning ' + args.version + ' Windows')
+        subprocess.check_call('cp inputs/poliscore-' + args.version + '-win-unsigned.tar.gz inputs/poliscore-win-unsigned.tar.gz', shell=True)
         subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../polis/contrib/gitian-descriptors/gitian-win-signer.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-signed', '--destination', '../gitian.sigs/', '../polis/contrib/gitian-descriptors/gitian-win-signer.yml'])
         subprocess.check_call('mv build/out/poliscore-*win64-setup.exe ../poliscore-binaries/'+args.version, shell=True)
@@ -103,6 +102,7 @@ def sign():
 
     if args.macos:
         print('\nSigning ' + args.version + ' MacOS')
+        subprocess.check_call('cp inputs/poliscore-' + args.version + '-osx-unsigned.tar.gz inputs/poliscore-osx-unsigned.tar.gz', shell=True)
         subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../polis/contrib/gitian-descriptors/gitian-osx-signer.yml'])
         subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs/', '../polis/contrib/gitian-descriptors/gitian-osx-signer.yml'])
         subprocess.check_call('mv build/out/poliscore-osx-signed.dmg ../poliscore-binaries/'+args.version+'/poliscore-'+args.version+'-osx.dmg', shell=True)
@@ -122,15 +122,15 @@ def verify():
     os.chdir('gitian-builder')
 
     print('\nVerifying v'+args.version+' Linux\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-linux', '../polis/contrib/gitian-descriptors/gitian-linux.yml'])
+    subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-linux', '../polis/contrib/gitian-descriptors/gitian-linux.yml'])
     print('\nVerifying v'+args.version+' Windows\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-unsigned', '../polis/contrib/gitian-descriptors/gitian-win.yml'])
+    subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-unsigned', '../polis/contrib/gitian-descriptors/gitian-win.yml'])
     print('\nVerifying v'+args.version+' MacOS\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-unsigned', '../polis/contrib/gitian-descriptors/gitian-osx.yml'])
+    subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-unsigned', '../polis/contrib/gitian-descriptors/gitian-osx.yml'])
     print('\nVerifying v'+args.version+' Signed Windows\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-signed', '../polis/contrib/gitian-descriptors/gitian-win-signer.yml'])
+    subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-signed', '../polis/contrib/gitian-descriptors/gitian-win-signer.yml'])
     print('\nVerifying v'+args.version+' Signed MacOS\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-signed', '../polis/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+    subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-signed', '../polis/contrib/gitian-descriptors/gitian-osx-signer.yml'])
 
     os.chdir(workdir)
 
@@ -148,8 +148,9 @@ def main():
     parser.add_argument('-o', '--os', dest='os', default='lwm', help='Specify which Operating Systems the build is for. Default is %(default)s. l for Linux, w for Windows, m for MacOS')
     parser.add_argument('-j', '--jobs', dest='jobs', default='2', help='Number of processes to use. Default %(default)s')
     parser.add_argument('-m', '--memory', dest='memory', default='2000', help='Memory to allocate in MiB. Default %(default)s')
-    parser.add_argument('-V', '--virtualization', dest='virtualization', default='docker', help='Specify virtualization technology to use: lxc for LXC, kvm for KVM, docker for Docker. Default is %(default)s')
-    parser.add_argument('-S', '--setup', action='store_true', dest='setup', help='Set up the Gitian building environment. Only works on Debian-based systems (Ubuntu, Debian)')
+    parser.add_argument('-k', '--kvm', action='store_true', dest='kvm', help='Use KVM instead of LXC')
+    parser.add_argument('-d', '--docker', action='store_true', dest='docker', help='Use Docker instead of LXC')
+    parser.add_argument('-S', '--setup', action='store_true', dest='setup', help='Set up the Gitian building environment. Uses LXC. If you want to use KVM, use the --kvm option. Only works on Debian-based systems (Ubuntu, Debian)')
     parser.add_argument('-D', '--detach-sign', action='store_true', dest='detach_sign', help='Create the assert file for detached signing. Will not commit anything.')
     parser.add_argument('-n', '--no-commit', action='store_false', dest='commit_files', help='Do not commit anything to git')
     parser.add_argument('signer', help='GPG signer to sign each build assert file')
@@ -165,36 +166,30 @@ def main():
     args.is_bionic = b'bionic' in subprocess.check_output(['lsb_release', '-cs'])
 
     if args.buildsign:
-        args.build = True
-        args.sign = True
+        args.build=True
+        args.sign=True
+
+    if args.kvm and args.docker:
+        raise Exception('Error: cannot have both kvm and docker')
 
     args.sign_prog = 'true' if args.detach_sign else 'gpg --detach-sign'
 
-    args.lxc = (args.virtualization == 'lxc')
-    args.kvm = (args.virtualization == 'kvm')
-    args.docker = (args.virtualization == 'docker')
+    # Set environment variable USE_LXC or USE_DOCKER, let gitian-builder know that we use lxc or docker
+    if args.docker:
+        os.environ['USE_DOCKER'] = '1'
+    elif not args.kvm:
+        os.environ['USE_LXC'] = '1'
+        if not 'GITIAN_HOST_IP' in os.environ.keys():
+            os.environ['GITIAN_HOST_IP'] = '10.0.3.1'
+        if not 'LXC_GUEST_IP' in os.environ.keys():
+            os.environ['LXC_GUEST_IP'] = '10.0.3.5'
+
+    # Disable for MacOS if no SDK found
+    if args.macos and not os.path.isfile('gitian-builder/inputs/MacOSX10.11.sdk.tar.gz'):
+        print('Cannot build for MacOS, SDK does not exist. Will build for other OSes')
+        args.macos = False
 
     script_name = os.path.basename(sys.argv[0])
-    # Set all USE_* environment variables for gitian-builder: USE_LXC, USE_DOCKER and USE_VBOX
-    os.environ['USE_VBOX'] = ''
-    if args.lxc:
-        os.environ['USE_LXC'] = '1'
-        os.environ['USE_DOCKER'] = ''
-        if 'GITIAN_HOST_IP' not in os.environ.keys():
-            os.environ['GITIAN_HOST_IP'] = '10.0.3.1'
-        if 'LXC_GUEST_IP' not in os.environ.keys():
-            os.environ['LXC_GUEST_IP'] = '10.0.3.5'
-    elif args.kvm:
-        os.environ['USE_LXC'] = ''
-        os.environ['USE_DOCKER'] = ''
-    elif args.docker:
-        os.environ['USE_LXC'] = ''
-        os.environ['USE_DOCKER'] = '1'
-    else:
-        print(script_name+': Wrong virtualization option.')
-        print('Try '+script_name+' --help for more information')
-        exit(1)
-
     # Signer and version shouldn't be empty
     if args.signer == '':
         print(script_name+': Missing signer.')
@@ -212,9 +207,6 @@ def main():
 
     if args.setup:
         setup()
-
-    if not args.build and not args.sign and not args.verify:
-        exit(0)
 
     os.chdir('polis')
     if args.pull:
