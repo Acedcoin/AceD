@@ -1,5 +1,5 @@
 ---
-name: "polis-win-1.4.9"
+name: "polis-win-1.4.10"
 enable_cache: true
 suites:
   - "bionic"
@@ -70,7 +70,7 @@ script: |
   }
   function create_per-host_linker_wrapper {
   # This is only needed for trusty, as the mingw linker leaks a few bytes of
-  # heap, causing non-determinism. See discussion in https://github.com/polispay/polis/pull/6900
+  # heap, causing non-determinism. See discussion in https://github.com/bitcoin/bitcoin/pull/6900
   for i in $HOSTS; do
     mkdir -p ${WRAP_DIR}/${i}
     for prog in collect2; do
