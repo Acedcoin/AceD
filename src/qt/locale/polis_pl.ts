@@ -62,12 +62,12 @@
         <translation>Adres odbiorczy</translation>
     </message>
     <message>
-        <source>These are your Polis addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>To są twoje adresy Polis, na które wysyłasz płatności. Zanim wyślesz środki, zawsze upewnij się, że kwota i adres są prawidłowe.</translation>
+        <source>These are your AceD addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>To są twoje adresy AceD, na które wysyłasz płatności. Zanim wyślesz środki, zawsze upewnij się, że kwota i adres są prawidłowe.</translation>
     </message>
     <message>
-        <source>These are your Polis addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>To są twoje adresy do otrzymywania Polisów. Zaleca się tworzyć nowy adres dla każdej transakcji.</translation>
+        <source>These are your AceD addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>To są twoje adresy do otrzymywania AceDów. Zaleca się tworzyć nowy adres dla każdej transakcji.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -172,7 +172,7 @@
         <translation>Potwierdź zaszyfrowanie portfela</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR POLIS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR ACED&lt;/b&gt;!</source>
         <translation>Ostrzeżenie: Jeśli zaszyfrujesz swój portfel i zgubisz hasło, &lt;b&gt;STRACISZ WSZYSTKIE ŚRODKI&lt;/b&gt;</translation>
     </message>
     <message>
@@ -242,12 +242,12 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Polis Core can no longer continue safely and will quit.</source>
-        <translation>Wystąpił błąd krytyczny. Polis Core nie może bezpiecznie kontynuować i zostanie zamknięty.</translation>
+        <source>A fatal error occurred. AceD Core can no longer continue safely and will quit.</source>
+        <translation>Wystąpił błąd krytyczny. AceD Core nie może bezpiecznie kontynuować i zostanie zamknięty.</translation>
     </message>
     <message>
-        <source>Polis Core</source>
-        <translation>Polis Core</translation>
+        <source>AceD Core</source>
+        <translation>AceD Core</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -270,16 +270,16 @@
         <translation>Wyślij</translation>
     </message>
     <message>
-        <source>Send coins to a Polis address</source>
-        <translation>Wyślij monety na adres Polis</translation>
+        <source>Send coins to a AceD address</source>
+        <translation>Wyślij monety na adres AceD</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>Odbie&amp;rz</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and polis: URIs)</source>
-        <translation>Poproś o płatności (generuje kod QR oraz polis: link)</translation>
+        <source>Request payments (generates QR codes and aced: URIs)</source>
+        <translation>Poproś o płatności (generuje kod QR oraz aced: link)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -306,8 +306,8 @@
         <translation>Zamknij program</translation>
     </message>
     <message>
-        <source>Show information about Polis Core</source>
-        <translation>Pokaż informacje o Polis Core</translation>
+        <source>Show information about AceD Core</source>
+        <translation>Pokaż informacje o AceD Core</translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
@@ -378,16 +378,16 @@
         <translation>Podpisz wiado&amp;mość...</translation>
     </message>
     <message>
-        <source>Sign messages with your Polis addresses to prove you own them</source>
-        <translation>Podpisz wiadomości swoim adresem Polis, aby udowodnić, że jesteś ich właścicielem. </translation>
+        <source>Sign messages with your AceD addresses to prove you own them</source>
+        <translation>Podpisz wiadomości swoim adresem AceD, aby udowodnić, że jesteś ich właścicielem. </translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;Zweryfikuj wiadomość...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Polis addresses</source>
-        <translation>Zweryfikuj wiadomości, aby upewnić się, że zostały one podpisane wybranym adresem Polis</translation>
+        <source>Verify messages to ensure they were signed with specified AceD addresses</source>
+        <translation>Zweryfikuj wiadomości, aby upewnić się, że zostały one podpisane wybranym adresem AceD</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -474,15 +474,15 @@
         <translation>Otwórz &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a polis: URI or payment request</source>
-        <translation>Otwórz polis: Link lub żądanie zapłaty</translation>
+        <source>Open a aced: URI or payment request</source>
+        <translation>Otwórz aced: Link lub żądanie zapłaty</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Opcje konsoli</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Polis command-line options</source>
+        <source>Show the %1 help message to get a list with possible AceD command-line options</source>
         <translation>Pokaż pomoc %1 aby zobaczyć listę wszystkich opcji lnii poleceń.</translation>
     </message>
     <message>
@@ -518,8 +518,8 @@
         <translation>Pasek zakładek</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Polis network</source>
-        <translation><numerusform>%n aktywne połączenie z siecią Polis</numerusform><numerusform>%n aktywne połączenia z siecią Polis</numerusform><numerusform>%n aktywnych połączeń z siecią Polis</numerusform><numerusform>%n aktywne połączenia z siecią Polis</numerusform></translation>
+        <source>%n active connection(s) to AceD network</source>
+        <translation><numerusform>%n aktywne połączenie z siecią AceD</numerusform><numerusform>%n aktywne połączenia z siecią AceD</numerusform><numerusform>%n aktywnych połączeń z siecią AceD</numerusform><numerusform>%n aktywne połączenia z siecią AceD</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -857,28 +857,28 @@
         <translation>Proszę wybrać poziom prywatności.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 1000 POLIS</source>
-        <translation>Użyj 2 oddzielnych masternodów, aby wymieszać środki max. do 1000 POLIS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000 ACED</source>
+        <translation>Użyj 2 oddzielnych masternodów, aby wymieszać środki max. do 1000 ACED</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 1000 POLIS</source>
-        <translation>Użyj 8 oddzielnych masternodów, aby wymieszać środki max. do 1000 POLIS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000 ACED</source>
+        <translation>Użyj 8 oddzielnych masternodów, aby wymieszać środki max. do 1000 ACED</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Użyj 16 oddzielnych masternodów</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 POLIS to anonymize 1000 POLIS</source>
-        <translation>Ta opcja jest najszybsza i kosztuje około 0.025 POLIS za zanonimizowanie 1000 POLIS</translation>
+        <source>This option is the quickest and will cost about ~0.025 ACED to anonymize 1000 ACED</source>
+        <translation>Ta opcja jest najszybsza i kosztuje około 0.025 ACED za zanonimizowanie 1000 ACED</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 POLIS to anonymize 1000 POLIS</source>
-        <translation>Ta opcja jest w miarę szybka i kosztuje około 0.05 POLIS za zanonimizowanie 1000 POLIS</translation>
+        <source>This option is moderately fast and will cost about 0.05 ACED to anonymize 1000 ACED</source>
+        <translation>Ta opcja jest w miarę szybka i kosztuje około 0.05 ACED za zanonimizowanie 1000 ACED</translation>
     </message>
     <message>
-        <source>0.1 POLIS per 1000 POLIS you anonymize.</source>
-        <translation>0.1 POLIS za każde 1000 POLIS, które zanonimizujesz.</translation>
+        <source>0.1 ACED per 1000 ACED you anonymize.</source>
+        <translation>0.1 ACED za każde 1000 ACED, które zanonimizujesz.</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
@@ -889,16 +889,16 @@
         <translation>Konfiguracja PrivateSend</translation>
     </message>
     <message>
-        <source>PrivateSend was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening Polis's configuration screen.</source>
-        <translation>PrivateSend pomyślnie ustawiono na poziom podstawowy (%1 oraz 2 rundy). Możesz to zmienić w każdej chwili, otwierając ekran konfiguracji Polis.</translation>
+        <source>PrivateSend was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening AceD's configuration screen.</source>
+        <translation>PrivateSend pomyślnie ustawiono na poziom podstawowy (%1 oraz 2 rundy). Możesz to zmienić w każdej chwili, otwierając ekran konfiguracji AceD.</translation>
     </message>
     <message>
-        <source>PrivateSend was successfully set to high (%1 and 8 rounds). You can change this at any time by opening Polis's configuration screen.</source>
-        <translation>PrivateSend pomyślnie ustawiono na poziom wysoki (%1 oraz 8 rund). Możesz to zmienić w każdej chwili, otwierając ekran konfiguracji Polis.</translation>
+        <source>PrivateSend was successfully set to high (%1 and 8 rounds). You can change this at any time by opening AceD's configuration screen.</source>
+        <translation>PrivateSend pomyślnie ustawiono na poziom wysoki (%1 oraz 8 rund). Możesz to zmienić w każdej chwili, otwierając ekran konfiguracji AceD.</translation>
     </message>
     <message>
-        <source>PrivateSend was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening Polis's configuration screen.</source>
-        <translation>PrivateSend pomyślnie ustawiono na poziom najwyższy (%1 oraz 16 rund). Możesz to zmienić w każdej chwili, otwierając ekran konfiguracji Polis.</translation>
+        <source>PrivateSend was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening AceD's configuration screen.</source>
+        <translation>PrivateSend pomyślnie ustawiono na poziom najwyższy (%1 oraz 16 rund). Możesz to zmienić w każdej chwili, otwierając ekran konfiguracji AceD.</translation>
     </message>
 </context>
 <context>
@@ -940,8 +940,8 @@
         <translation>Zmień adres wysyłania</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Polis address.</source>
-        <translation>Wprowadzony adres "%1" nie jest właściwym adresem Polis.</translation>
+        <source>The entered address "%1" is not a valid AceD address.</source>
+        <translation>Wprowadzony adres "%1" nie jest właściwym adresem AceD.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1038,8 +1038,8 @@
         <translation>Informacje o PrivateSend</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;PrivateSend Basics&lt;/h3&gt; PrivateSend gives you true financial privacy by obscuring the origins of your funds. All the Polis in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; PrivateSend uses an innovative process to mix your inputs with the inputs of two other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The PrivateSend process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;PrivateSend begins by breaking your transaction inputs down into standard denominations. These denominations are 0.01 POLIS, 0.1 POLIS, 1 POLIS and 10 POLIS -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of PrivateSend makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be anonymized. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have PrivateSend disabled. &lt;hr&gt;For more info see &lt;a href="https://polispay.atlassian.net/wiki/display/DOC/PrivateSend"&gt;https://polispay.atlassian.net/wiki/display/DOC/PrivateSend&lt;/a&gt;         </source>
-        <translation>&lt;h3&gt;Podstawy PrivateSend&lt;/h3&gt; PrivateSend zapewnia prawdziwą prywatność poprzez ukrycie pochodzenia środków. Wszystkie polise w twoim portfelu składają się z różnych "kwot wejściowych", które można traktować jako oddzielne, indywidualne monety.&lt;br&gt; PrivateSend wykorzystuje rewolucyjny proces mieszania twoich "kwot wejściowych" z "kwotami wejściowymi" dwóch innych  użytkowników, przy czym twoje środki nigdy nie opuszczają twojego portfela. W każdej chwili zachowujesz nad nimi pełną kontrolę.&lt;hr&gt; &lt;b&gt;Proces PrivateSend przebiega w następujący sposób:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;Najpierw PrivateSend dzieli twoje kwoty wejściowe twoich transakcji na standardowe nominały. Są kwoty 0.01 POLIS, 0.1 POLIS, 1 POLIS oraz 10 POLIS – mniej  więcej jak banknoty, których codziennie używasz.&lt;/li&gt; &lt;li&gt;Następnie twój portfel wysyła żądania do specjalnie skonfigurowanych węzłów sieci, zwanych "masternodami." Masternody otrzymują komunikat, że jesteś zainteresowany wymieszaniem określonego nominału. Masternody nie otrzymują żadnych informacji pozwalających na identyfikację, w związku z tym nigdy nie wiedzą "kim" jesteś.&lt;/li&gt; &lt;li&gt;Kiedy dwaj inni użytkownicy wyślą podobne komunikaty, z żądanie wymieszanie takiego samego nominału, rozpocznie się sesja mieszania. Masternod wymiesza kwoty wejściowe i nakaże portfelom takich trzech użytkowników wypłacić sobie samemu przetworzone kwoty wejściowe. Twój portfel wpłaci dany nominał do siebie samego, jednak na inny adres (tzw. adres reszty).&lt;/li&gt; &lt;li&gt;W celu pełnego zaciemnienia pochodzenia środków, twój portfel musi powtórzyć te czynności dla każdego nominału określoną ilość razy.  Każde wykonanie tego procesu określamy mianem "rundy." Każda runda procesu PrivateSend wykładniczo zwiększa trudność ustalenia pochodzenia twoich środków.&lt;/li&gt; &lt;li&gt;Proces mieszania odbywa się w tle, bez dodatkowego zaangażowania z twojej strony. Kiedy zechcesz wykonać transakcję, twoje środki będą już zanonimizowane. Nie będzie konieczne dodatkowe oczekiwanie.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;UWAGA:&lt;/b&gt; Portfel zawiera tylko 1000 "adresów reszty." Każde mieszanie zużywa do 9 adresów. Oznacza to, że po 100 mieszaniach zużyjesz ok. 1000 adresów. Po wykorzystaniu 900 adresów, portfel musi wygenerować nowe adresy. Może not nastąpić jedynie, jeżeli włączone jest automatyczne tworzenie kopii zapasowych.&lt;br&gt; Dlatego też, PrivateSend jest wyłączone, jeżeli użytkownik wyłączył automatyczne tworzenie kopii zapasowych. &lt;hr&gt;Więcej informacji znajdziesz na stronie &lt;a href="https://polispay.atlassian.net/wiki/display/DOC/PrivateSend"&gt;https://polispay.atlassian.net/wiki/display/DOC/PrivateSend&lt;/a&gt;         </translation>
+        <source>&lt;h3&gt;PrivateSend Basics&lt;/h3&gt; PrivateSend gives you true financial privacy by obscuring the origins of your funds. All the AceD in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; PrivateSend uses an innovative process to mix your inputs with the inputs of two other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The PrivateSend process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;PrivateSend begins by breaking your transaction inputs down into standard denominations. These denominations are 0.01 ACED, 0.1 ACED, 1 ACED and 10 ACED -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of PrivateSend makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be anonymized. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have PrivateSend disabled. &lt;hr&gt;For more info see &lt;a href="https://acedpay.atlassian.net/wiki/display/DOC/PrivateSend"&gt;https://acedpay.atlassian.net/wiki/display/DOC/PrivateSend&lt;/a&gt;         </source>
+        <translation>&lt;h3&gt;Podstawy PrivateSend&lt;/h3&gt; PrivateSend zapewnia prawdziwą prywatność poprzez ukrycie pochodzenia środków. Wszystkie acede w twoim portfelu składają się z różnych "kwot wejściowych", które można traktować jako oddzielne, indywidualne monety.&lt;br&gt; PrivateSend wykorzystuje rewolucyjny proces mieszania twoich "kwot wejściowych" z "kwotami wejściowymi" dwóch innych  użytkowników, przy czym twoje środki nigdy nie opuszczają twojego portfela. W każdej chwili zachowujesz nad nimi pełną kontrolę.&lt;hr&gt; &lt;b&gt;Proces PrivateSend przebiega w następujący sposób:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;Najpierw PrivateSend dzieli twoje kwoty wejściowe twoich transakcji na standardowe nominały. Są kwoty 0.01 ACED, 0.1 ACED, 1 ACED oraz 10 ACED – mniej  więcej jak banknoty, których codziennie używasz.&lt;/li&gt; &lt;li&gt;Następnie twój portfel wysyła żądania do specjalnie skonfigurowanych węzłów sieci, zwanych "masternodami." Masternody otrzymują komunikat, że jesteś zainteresowany wymieszaniem określonego nominału. Masternody nie otrzymują żadnych informacji pozwalających na identyfikację, w związku z tym nigdy nie wiedzą "kim" jesteś.&lt;/li&gt; &lt;li&gt;Kiedy dwaj inni użytkownicy wyślą podobne komunikaty, z żądanie wymieszanie takiego samego nominału, rozpocznie się sesja mieszania. Masternod wymiesza kwoty wejściowe i nakaże portfelom takich trzech użytkowników wypłacić sobie samemu przetworzone kwoty wejściowe. Twój portfel wpłaci dany nominał do siebie samego, jednak na inny adres (tzw. adres reszty).&lt;/li&gt; &lt;li&gt;W celu pełnego zaciemnienia pochodzenia środków, twój portfel musi powtórzyć te czynności dla każdego nominału określoną ilość razy.  Każde wykonanie tego procesu określamy mianem "rundy." Każda runda procesu PrivateSend wykładniczo zwiększa trudność ustalenia pochodzenia twoich środków.&lt;/li&gt; &lt;li&gt;Proces mieszania odbywa się w tle, bez dodatkowego zaangażowania z twojej strony. Kiedy zechcesz wykonać transakcję, twoje środki będą już zanonimizowane. Nie będzie konieczne dodatkowe oczekiwanie.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;UWAGA:&lt;/b&gt; Portfel zawiera tylko 1000 "adresów reszty." Każde mieszanie zużywa do 9 adresów. Oznacza to, że po 100 mieszaniach zużyjesz ok. 1000 adresów. Po wykorzystaniu 900 adresów, portfel musi wygenerować nowe adresy. Może not nastąpić jedynie, jeżeli włączone jest automatyczne tworzenie kopii zapasowych.&lt;br&gt; Dlatego też, PrivateSend jest wyłączone, jeżeli użytkownik wyłączył automatyczne tworzenie kopii zapasowych. &lt;hr&gt;Więcej informacji znajdziesz na stronie &lt;a href="https://acedpay.atlassian.net/wiki/display/DOC/PrivateSend"&gt;https://acedpay.atlassian.net/wiki/display/DOC/PrivateSend&lt;/a&gt;         </translation>
     </message>
 </context>
 <context>
@@ -1057,7 +1057,7 @@
         <translation>Ponieważ jest to pierwsze uruchomienie programu, możesz wybrać gdzie %1 będzie przechowywał swoje dane.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Polis block chain. At least %2GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <source>%1 will download and store a copy of the AceD block chain. At least %2GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
         <translation>%1 ściągnie i zapisze kopię łańcucha bloków-blockchain na twoim dysku. Co najmniej %2GB danych zostanie zapisanych w tym katalogu, a z upływem czasu blockchain będzie stopniowo wymagał coraz więcej miejsca. Twój portfel również zostanie zapisany w tym katalogu.</translation>
     </message>
     <message>
@@ -1251,11 +1251,11 @@
         <translation>Forma</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Polis network, as detailed below.</source>
-        <translation>Ostatnie transakcje mogą jeszcze być niewidoczne i dlatego saldo portfela może być niepoprawne. Poprawne informacje pojawią się po zakończeniu synchronizacji z siecią Polis. Stan synchronizacji widzisz poniżej.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the AceD network, as detailed below.</source>
+        <translation>Ostatnie transakcje mogą jeszcze być niewidoczne i dlatego saldo portfela może być niepoprawne. Poprawne informacje pojawią się po zakończeniu synchronizacji z siecią AceD. Stan synchronizacji widzisz poniżej.</translation>
     </message>
     <message>
-        <source>Attempting to spend Polis that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend AceD that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>Próba wydania środków z transakcji wykonanych, ale jeszcze niewidocznych, nie zostanie zaakceptowana przez sieć.</translation>
     </message>
     <message>
@@ -1345,8 +1345,8 @@
         <translation>(0=auto, &lt;0 = zostaw tyle wolnych rdzeni)</translation>
     </message>
     <message>
-        <source>Amount of Polis to keep anonymized</source>
-        <translation>Ilość Polisów, które mają pozostać anonimowe.</translation>
+        <source>Amount of AceD to keep anonymized</source>
+        <translation>Ilość AceDów, które mają pozostać anonimowe.</translation>
     </message>
     <message>
         <source>W&amp;allet</source>
@@ -1401,8 +1401,8 @@
         <translation>Ta kwota działa jako próg po którego przekroczeniu PrivateSend zostaje wyłączony.</translation>
     </message>
     <message>
-        <source>Automatically open the Polis Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automatycznie otwórz port klienta Polis Core na ruterze. Opcja działa jedynie, jeżeli router obsługuje UPnP i funkcja UPnP jest włączona.</translation>
+        <source>Automatically open the AceD Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Automatycznie otwórz port klienta AceD Core na ruterze. Opcja działa jedynie, jeżeli router obsługuje UPnP i funkcja UPnP jest włączona.</translation>
     </message>
     <message>
         <source>Accept connections from outside</source>
@@ -1413,8 +1413,8 @@
         <translation>Zezwól na przychodzące połączenia</translation>
     </message>
     <message>
-        <source>Connect to the Polis network through a SOCKS5 proxy.</source>
-        <translation>Połącz się z siecią Polis przez proxy SOCKS5.</translation>
+        <source>Connect to the AceD network through a SOCKS5 proxy.</source>
+        <translation>Połącz się z siecią AceD przez proxy SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1501,8 +1501,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Polis network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Połącz się z siecią Polis przez oddzielne proxy SOCKS5 dla ukrytych usług Tor.</translation>
+        <source>Connect to the AceD network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Połącz się z siecią AceD przez oddzielne proxy SOCKS5 dla ukrytych usług Tor.</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services:</source>
@@ -1546,9 +1546,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/polis/</source>
-        <translation>Polis Core nie został przetłumaczony na twój język? Tłumaczenie jest niepełne lub niepoprawne? Możesz pomóc nam tłumaczyć tutaj:
-https://www.transifex.com/projects/p/polis/</translation>
+https://www.transifex.com/projects/p/aced/</source>
+        <translation>AceD Core nie został przetłumaczony na twój język? Tłumaczenie jest niepełne lub niepoprawne? Możesz pomóc nam tłumaczyć tutaj:
+https://www.transifex.com/projects/p/aced/</translation>
     </message>
     <message>
         <source>User Interface Theme:</source>
@@ -1626,8 +1626,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Formularz</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Polis network after a connection is established, but this process has not completed yet.</source>
-        <translation>Wyświetlona informacja może być przedawniona. Twój portfel automatycznie zsynchronizuje się z siecią Polis, gdy tylko zostanie ustanowione połączenie, jednak proces ten jeszcze się nie zakończył.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the AceD network after a connection is established, but this process has not completed yet.</source>
+        <translation>Wyświetlona informacja może być przedawniona. Twój portfel automatycznie zsynchronizuje się z siecią AceD, gdy tylko zostanie ustanowione połączenie, jednak proces ten jeszcze się nie zakończył.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1726,8 +1726,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Ilość oraz Rundy:</translation>
     </message>
     <message>
-        <source>0 POLIS / 0 Rounds</source>
-        <translation>0 POLIS / 0 Rund</translation>
+        <source>0 ACED / 0 Rounds</source>
+        <translation>0 ACED / 0 Rund</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1895,8 +1895,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Błąd żądania płatności</translation>
     </message>
     <message>
-        <source>Cannot start polis: click-to-pay handler</source>
-        <translation>Nie można włączyć polis: kliknij-aby-zapłacić ubsługującemu.</translation>
+        <source>Cannot start aced: click-to-pay handler</source>
+        <translation>Nie można włączyć aced: kliknij-aby-zapłacić ubsługującemu.</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -1911,8 +1911,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Nieprawidłowy adres płatności %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Polis address or malformed URI parameters.</source>
-        <translation>URI nie może zostać przeanalizowany! Mogło to być spowodowane przez niewłaściwy adres Polis lub niewłaściwe parametry URI</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid AceD address or malformed URI parameters.</source>
+        <translation>URI nie może zostać przeanalizowany! Mogło to być spowodowane przez niewłaściwy adres AceD lub niewłaściwe parametry URI</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -2001,8 +2001,8 @@ https://www.transifex.com/projects/p/polis/</translation>
 <context>
     <name>QObject</name>
     <message>
-        <source>Polis Core</source>
-        <translation>Polis Core</translation>
+        <source>AceD Core</source>
+        <translation>AceD Core</translation>
     </message>
     <message>
         <source>%1 didn't yet exit safely...</source>
@@ -2017,8 +2017,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Kwota</translation>
     </message>
     <message>
-        <source>Enter a Polis address (e.g. %1)</source>
-        <translation>Wpisz adres Polis (np. %1)</translation>
+        <source>Enter a AceD address (e.g. %1)</source>
+        <translation>Wpisz adres AceD (np. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2535,8 +2535,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Użyj istniejącego adresu odbiorczego (nie zalecane)</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Polis network.</source>
-        <translation>Opcjonalna wiadomość do żądania płatności. Wiadomość wyświetli się po otwarciu żądania. Pamiętaj: Wiadomość nie zostanie wysłana razem z płatnością poprzez sieć Polis.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the AceD network.</source>
+        <translation>Opcjonalna wiadomość do żądania płatności. Wiadomość wyświetli się po otwarciu żądania. Pamiętaj: Wiadomość nie zostanie wysłana razem z płatnością poprzez sieć AceD.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2547,8 +2547,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Opcjonalna etykieta do skojarzenia z nowym adresem odbiorczym.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Polis network.</source>
-        <translation>Opcjonalna wiadomość do żądania płatności. Wiadomość wyświetli się po otwarciu żądania.&lt;br&gt; Pamiętaj: Wiadomość nie zostanie wysłana razem z płatnością poprzez sieć Polis.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the AceD network.</source>
+        <translation>Opcjonalna wiadomość do żądania płatności. Wiadomość wyświetli się po otwarciu żądania.&lt;br&gt; Pamiętaj: Wiadomość nie zostanie wysłana razem z płatnością poprzez sieć AceD.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2816,7 +2816,7 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Jeśli ręcznie ustalona opłata wynosi 1000 Politoshisów, a sama transakcja ma tylko 250 bitów, to opłata "za kilobajt" wynosi tylko 250 politoshiów.&lt;br/&gt; Dzieje się tak dla każdej transakcji poniżej 1000 politoshiów. W przypadku transakcji większych niż jeden kilobajt opłata jest naliczana od kilobajta.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for polis transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for aced transactions than the network can process.</source>
         <translation>Uiszczanie minimalnej opłaty za transakcję jest ok, dopóki ilość transakcji nie przekracza dostępnego miejsca w bloku. &lt;br /&gt;Jeśli zostanie wysłanych więcej transakcji niż sieć może przetworzyć, to może się zdarzyć, że Twoja transakcja nigdy nie zostanie potwierdzona.</translation>
     </message>
     <message>
@@ -3004,8 +3004,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation><numerusform>Potwierdzenia zaczną się za około %n blok</numerusform><numerusform>Potwierdzenia zaczną się za około %n bloki</numerusform><numerusform>Potwierdzenia zaczną się za około %n bloków</numerusform><numerusform>Potwierdzenia zaczną się za około %n bloków</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Polis address</source>
-        <translation>Ostrzeżenie: adres Polis jest nieprawidlowy </translation>
+        <source>Warning: Invalid AceD address</source>
+        <translation>Ostrzeżenie: adres AceD jest nieprawidlowy </translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3035,8 +3035,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Zapłać &amp;dla:</translation>
     </message>
     <message>
-        <source>The Polis address to send the payment to</source>
-        <translation>Adres Polis na który wysłać fundusze</translation>
+        <source>The AceD address to send the payment to</source>
+        <translation>Adres AceD na który wysłać fundusze</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3071,7 +3071,7 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Su&amp;ma:</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Polis than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of AceD than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Opłata zostanie odliczona od wysyłanej kwoty. Odbiorca otrzyma mniej, niż wprowadziłeś w polu kwoty. W razie wielu odbiorców, opłata zostanie równo podzielona.</translation>
     </message>
     <message>
@@ -3083,8 +3083,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Wiadomość:</translation>
     </message>
     <message>
-        <source>A message that was attached to the polis: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Polis network.</source>
-        <translation>Wiadomość, która została dołączona do polis: Link, który zostanie zapisany wraz z transakcją do wglądu w przyszłości. Zauważ, że sama wiadomość nie zostanie wysłana przez sieć Polis.</translation>
+        <source>A message that was attached to the aced: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the AceD network.</source>
+        <translation>Wiadomość, która została dołączona do aced: Link, który zostanie zapisany wraz z transakcją do wglądu w przyszłości. Zauważ, że sama wiadomość nie zostanie wysłana przez sieć AceD.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3136,12 +3136,12 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Podpi&amp;sz Wiadomość</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Polis sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive AceD sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>Możesz podpisywać wiadomości swoimi adresami aby udowodnić, że jesteś ich właścicielem. Uważaj, aby nie podpisywać niczego co wzbudza Twoje podejrzenia, ponieważ ktoś może stosować phishing próbując nakłonić Cię do ich podpisania. Akceptuj i podpisuj tylko w pełni zrozumiałe komunikaty i wiadomości.</translation>
     </message>
     <message>
-        <source>The Polis address to sign the message with</source>
-        <translation>Adres Polis do podpisu wiadomości</translation>
+        <source>The AceD address to sign the message with</source>
+        <translation>Adres AceD do podpisu wiadomości</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3172,8 +3172,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Kopiuje aktualny podpis do schowka systemowego</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Polis address</source>
-        <translation>Podpisz wiadomość, aby udowodnić, że jesteś właścicielem adresu Polis.</translation>
+        <source>Sign the message to prove you own this AceD address</source>
+        <translation>Podpisz wiadomość, aby udowodnić, że jesteś właścicielem adresu AceD.</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3196,12 +3196,12 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Wpisz adres odbiorcy, podaj wiadomość (upewnij się, że dokładnie skopiujesz wszystkie zakończenia linii, spacje, tabulacje itp.) oraz podpis poniżej by sprawdzić wiadomość. Uważaj by nie dodać więcej do podpisu niż do samej podpisywanej wiadomości by uniknąć ataku man-in-the-middle (człowiek pośrodku)</translation>
     </message>
     <message>
-        <source>The Polis address the message was signed with</source>
-        <translation>Adres Polis, którym wiadomość została podpisana</translation>
+        <source>The AceD address the message was signed with</source>
+        <translation>Adres AceD, którym wiadomość została podpisana</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Polis address</source>
-        <translation>Zweryfikuj wiadomość, aby upewnić się, że została zapisana przez konkretny adres Polis</translation>
+        <source>Verify the message to ensure it was signed with the specified AceD address</source>
+        <translation>Zweryfikuj wiadomość, aby upewnić się, że została zapisana przez konkretny adres AceD</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3819,8 +3819,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Wyślij płatność</translation>
     </message>
     <message>
-        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 POLIS.</source>
-        <translation>InstantSend nie obsługuje jeszcze tak wielkich kwot. Transakcje są obecnie ograniczone do %1 POLIS</translation>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 ACED.</source>
+        <translation>InstantSend nie obsługuje jeszcze tak wielkich kwot. Transakcje są obecnie ograniczone do %1 ACED</translation>
     </message>
     <message>
         <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
@@ -3867,7 +3867,7 @@ https://www.transifex.com/projects/p/polis/</translation>
     </message>
 </context>
 <context>
-    <name>polis-core</name>
+    <name>aced-core</name>
     <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
         <translation>Związany z danym adresem oraz zawsze prowadzący na nim nasłuch.  Użyj [host]:oznaczenie dla IPv6</translation>
@@ -4481,8 +4481,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Utrzymuj najwyżej &lt;n&gt; niepodłączalnych transakcji w pamięci (domyślny: %u)</translation>
     </message>
     <message>
-        <source>Disable all Polis specific functionality (Masternodes, PrivateSend, InstantSend, Governance) (0-1, default: %u)</source>
-        <translation>Wyłącz wszystkie funkcjonalności charakterystyczne dla Polis (Masternody, PrivateSend, InstantSend, Governance) (0-1, domyślnie: %u)</translation>
+        <source>Disable all AceD specific functionality (Masternodes, PrivateSend, InstantSend, Governance) (0-1, default: %u)</source>
+        <translation>Wyłącz wszystkie funkcjonalności charakterystyczne dla AceD (Masternody, PrivateSend, InstantSend, Governance) (0-1, domyślnie: %u)</translation>
     </message>
     <message>
         <source>Discover own IP addresses (default: 1 when listening and no -externalip or -proxy)</source>
@@ -4525,8 +4525,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Jeżeli nie podano &lt;category&gt; lub jeżeli  &lt;category&gt; = 1, pokaż informacje o debugowaniu.</translation>
     </message>
     <message>
-        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 POLIS.</source>
-        <translation>InstantSend nie obsługuje jeszcze tak wielkich kwot. Transakcje są obecnie ograniczone do %1 POLIS</translation>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 ACED.</source>
+        <translation>InstantSend nie obsługuje jeszcze tak wielkich kwot. Transakcje są obecnie ograniczone do %1 ACED</translation>
     </message>
     <message>
         <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
@@ -4945,8 +4945,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Opcje serwera RPC:</translation>
     </message>
     <message>
-        <source>Polis Core</source>
-        <translation>Polis Core</translation>
+        <source>AceD Core</source>
+        <translation>AceD Core</translation>
     </message>
     <message>
         <source>The %s developers</source>
@@ -5153,8 +5153,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Nieważny adres spork ustawiony z -sporkaddr</translation>
     </message>
     <message>
-        <source>Keep N POLIS anonymized (%u-%u, default: %u)</source>
-        <translation>Trzymaj N POLIS zanonimizowane (%u-%u, domyślnie: %u)</translation>
+        <source>Keep N ACED anonymized (%u-%u, default: %u)</source>
+        <translation>Trzymaj N ACED zanonimizowane (%u-%u, domyślnie: %u)</translation>
     </message>
     <message>
         <source>Print this help message and exit</source>

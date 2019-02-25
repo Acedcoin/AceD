@@ -1,10 +1,10 @@
 // Copyright (c) 2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Polis Core developers
+// Copyright (c) 2014-2017 The AceD Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_TEST_TEST_POLIS_H
-#define BITCOIN_TEST_TEST_POLIS_H
+#ifndef BITCOIN_TEST_TEST_ACED_H
+#define BITCOIN_TEST_TEST_ACED_H
 
 #include "chainparamsbase.h"
 #include "key.h"

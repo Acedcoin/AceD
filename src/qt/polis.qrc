@@ -66,7 +66,7 @@
     </qresource>
     <qresource prefix="/images/light">
         <file alias="about">res/images/light/about.png</file>
-        <file alias="polis_logo_horizontal">res/images/light/polis_logo_horizontal.png</file>
+        <file alias="aced_logo_horizontal">res/images/light/aced_logo_horizontal.png</file>
         <file alias="unchecked">res/images/light/unchecked.png</file>
         <file alias="checked">res/images/light/checked.png</file>
         <file alias="drkblue_downArrow">res/images/light/drkblue_downArrow.png</file>

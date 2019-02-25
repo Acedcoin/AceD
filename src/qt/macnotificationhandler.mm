@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.polis.Polis-Qt";
+        return @"org.aced.AceD-Qt";
     } else {
         return [self __bundleIdentifier];
     }

@@ -2,9 +2,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#define BOOST_TEST_MODULE Polis Test Suite
+#define BOOST_TEST_MODULE AceD Test Suite
 
-#include "test_polis.h"
+#include "test_aced.h"
 
 #include "chainparams.h"
 #include "consensus/consensus.h"
@@ -61,7 +61,7 @@ TestingSetup::TestingSetup(const std::string& chainName) : BasicTestingSetup(cha
         // instead of unit tests, but for now we need these here.
         RegisterAllCoreRPCCommands(tableRPC);
         ClearDatadirCache();
-        pathTemp = GetTempPath() / strprintf("test_polis_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
+        pathTemp = GetTempPath() / strprintf("test_aced_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
         boost::filesystem::create_directories(pathTemp);
         ForceSetArg("-datadir", pathTemp.string());
         mempool.setSanityCheck(1.0);

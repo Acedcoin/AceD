@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Polis Core developers
+// Copyright (c) 2014-2017 The AceD Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -55,7 +55,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Polis Core cannot be compiled without assertions."
+# error "AceD Core cannot be compiled without assertions."
 #endif
 static std::map<uint256, uint256> mapProofOfStake;
 
@@ -1947,7 +1947,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("polis-scriptch");
+    RenameThread("aced-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2128,7 +2128,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
         }
     }
 
-    /// POLIS: Check superblock start
+    /// ACED: Check superblock start
 
     // make sure old budget is the real one
     if (pindex->nHeight == chainparams.GetConsensus().nSuperblockStartBlock &&
@@ -2137,7 +2137,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
         return state.DoS(100, error("ConnectBlock(): invalid superblock start"),
                          REJECT_INVALID, "bad-sb-start");
 
-    /// END POLIS
+    /// END ACED
 
     // BIP16 didn't become active until Apr 1 2012
     int64_t nBIP16SwitchTime = 1333238400;
@@ -2335,7 +2335,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTime3 - nTime2), 0.001 * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * 0.000001);
 
-    // POLIS : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
+    // ACED : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
 
     // It's possible that we simply don't have enough data and this could fail
     // (i.e. block itself could be a correct one and we need to store it),
@@ -2348,16 +2348,16 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
             : GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, expectedReward, pindex->nMint, strError)) {
-        return state.DoS(0, error("ConnectBlock(POLIS): %s", strError), REJECT_INVALID, "bad-cb-amount");
+        return state.DoS(0, error("ConnectBlock(ACED): %s", strError), REJECT_INVALID, "bad-cb-amount");
     }
     const auto& coinbaseTransaction = (pindex->nHeight >= Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
 
     if (!IsBlockPayeeValid(coinbaseTransaction, pindex->nHeight, expectedReward, pindex->nMint)) {
         //        mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
-        return state.DoS(0, error("ConnectBlock(POLIS): couldn't find masternode or superblock payments"),
+        return state.DoS(0, error("ConnectBlock(ACED): couldn't find masternode or superblock payments"),
                          REJECT_INVALID, "bad-cb-payee");
     }
-    // END POLIS
+    // END ACED
 
     if (!control.Wait())
         return state.DoS(100, false);
@@ -3485,7 +3485,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-multiple", false, "more than one coinbase");
 
 
-    // POLIS : CHECK TRANSACTIONS FOR INSTANTSEND
+    // ACED : CHECK TRANSACTIONS FOR INSTANTSEND
 
     if(sporkManager.IsSporkActive(SPORK_3_INSTANTSEND_BLOCK_FILTERING)) {
         // We should never accept block which conflicts with completed transaction lock,
@@ -3508,7 +3508,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
             }
         }
     } else {
-        LogPrintf("CheckBlock(POLIS): spork is off, skipping transaction locking checks\n");
+        LogPrintf("CheckBlock(ACED): spork is off, skipping transaction locking checks\n");
     }
 
 
@@ -3541,7 +3541,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
             mapProofOfStake.insert(std::make_pair(hash, hashProofOfStake));
     }
 
-    // END POLIS
+    // END ACED
 
     // Check transactions
     for (const auto& tx : block.vtx)

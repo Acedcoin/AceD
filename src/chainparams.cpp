@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Polis Core developers
+// Copyright (c) 2014-2017 The AceD Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -77,7 +77,7 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-        const char* pszTimestamp = "Polis, from people to people";
+        const char* pszTimestamp = "AceD, from people to people";
         const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
         return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -144,8 +144,8 @@ public:
             consensus.BIP66Height = 245817; // 00000000000b1fa2dfa312863570e13fae9ca7b5566cb27e55422620b469aefa
             consensus.DIP0001Height = 12096;
             consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-            consensus.nPowTargetTimespan = 24 * 60 * 60; // polis: 1 day
-            consensus.nPowTargetSpacing = 120 ; // polis: 2 minutes
+            consensus.nPowTargetTimespan = 24 * 60 * 60; // aced: 1 day
+            consensus.nPowTargetSpacing = 120 ; // aced: 2 minutes
             consensus.fPowAllowMinDifficultyBlocks = false;
             consensus.fPowNoRetargeting = false;
             consensus.nPowKGWHeight = 551;
@@ -211,21 +211,21 @@ public:
             assert(consensus.hashGenesisBlock == uint256S("0x000009701eb781a8113b1af1d814e2f060f6408a2c990db291bc5108a1345c1e"));
             assert(genesis.hashMerkleRoot == uint256S("0x5dc9bcf5d1e4802dad0045a88849e3ad97d07a5b8aaee1114ed5ae03b98c4bfc"));
 
-            vSeeds.push_back(CDNSSeedData("dnsseed.poliscentral.org", "dnsseed.poliscentral.org"));
-            vSeeds.push_back(CDNSSeedData("dnsseed.polispay.org", "dnsseed.polispay.org"));
+            vSeeds.push_back(CDNSSeedData("dnsseed.acedcentral.org", "dnsseed.acedcentral.org"));
+            vSeeds.push_back(CDNSSeedData("dnsseed.acedpay.org", "dnsseed.acedpay.org"));
 
-            // polis addresses start with 'P'
+            // aced addresses start with 'P'
             base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,55);
-            // polis script addresses start with '3'
+            // aced script addresses start with '3'
             base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,56);
-            // polis private keys start with '3' or 'p'
+            // aced private keys start with '3' or 'p'
             base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,60);
-            // polis BIP32 pubkeys start with 'ppub' (Polis Prefix)
+            // aced BIP32 pubkeys start with 'ppub' (AceD Prefix)
             base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x03)(0xE2)(0x5D)(0x7E).convert_to_container<std::vector<unsigned char> >();
-            // polis BIP32 prvkeys start with 'pprv' (Polis Prefix)
+            // aced BIP32 prvkeys start with 'pprv' (AceD Prefix)
             base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x03)(0xE2)(0x59)(0x45).convert_to_container<std::vector<unsigned char> >();
 
-            // polis BIP44 coin type is '5'
+            // aced BIP44 coin type is '5'
             nExtCoinType = 1997;
 
             vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
@@ -310,8 +310,8 @@ public:
             consensus.BIP66Height = 2075; // 0000002acdd29a14583540cb72e1c5cc83783560e38fa7081495d474fe1671f7
             consensus.DIP0001Height = 5500;
             consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-            consensus.nPowTargetTimespan = 60 * 60 * 24; // polis: 1 day
-            consensus.nPowTargetSpacing = 2 * 60; // polis: 2 minutes
+            consensus.nPowTargetTimespan = 60 * 60 * 24; // aced: 1 day
+            consensus.nPowTargetSpacing = 2 * 60; // aced: 2 minutes
             consensus.fPowAllowMinDifficultyBlocks = true;
             consensus.fPowNoRetargeting = false;
             consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -374,22 +374,22 @@ public:
 
 
 
-            vSeeds.push_back(CDNSSeedData("testnetseed.poliscentral.org", "testnetseed.poliscentral.org"));
-            vSeeds.push_back(CDNSSeedData("testnetseed2.poliscentral.org", "testnetseed2.poliscentral.org"));
+            vSeeds.push_back(CDNSSeedData("testnetseed.acedcentral.org", "testnetseed.acedcentral.org"));
+            vSeeds.push_back(CDNSSeedData("testnetseed2.acedcentral.org", "testnetseed2.acedcentral.org"));
 
 
-            // Testnet polis addresses start with 'y'
+            // Testnet aced addresses start with 'y'
             base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-            // Testnet polis script addresses start with '8' or '9'
+            // Testnet aced script addresses start with '8' or '9'
             base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
             // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
             base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-            // Testnet polis BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+            // Testnet aced BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
             base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-            // Testnet polis BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+            // Testnet aced BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
             base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-            // Testnet polis BIP44 coin type is '1' (All coin's testnet default)
+            // Testnet aced BIP44 coin type is '1' (All coin's testnet default)
             nExtCoinType = 1;
 
             fMiningRequiresPeers = true;
@@ -450,8 +450,8 @@ public:
             consensus.BIP66Height = 1; // BIP66 activated immediately on devnet
             consensus.DIP0001Height = 2; // DIP0001 activated immediately on devnet
             consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-            consensus.nPowTargetTimespan = 24 * 60 * 60; // Polis: 1 day
-            consensus.nPowTargetSpacing = 2.5 * 60; // Polis: 2.5 minutes
+            consensus.nPowTargetTimespan = 24 * 60 * 60; // AceD: 1 day
+            consensus.nPowTargetSpacing = 2.5 * 60; // AceD: 2.5 minutes
             consensus.fPowAllowMinDifficultyBlocks = true;
             consensus.fPowNoRetargeting = false;
             consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -517,20 +517,20 @@ public:
 
             vFixedSeeds.clear();
             vSeeds.clear();
-            //vSeeds.push_back(CDNSSeedData("polisevo.org",  "devnet-seed.polisevo.org"));
+            //vSeeds.push_back(CDNSSeedData("acedevo.org",  "devnet-seed.acedevo.org"));
 
-            // Testnet Polis addresses start with 'y'
+            // Testnet AceD addresses start with 'y'
             base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-            // Testnet Polis script addresses start with '8' or '9'
+            // Testnet AceD script addresses start with '8' or '9'
             base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
             // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
             base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-            // Testnet Polis BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+            // Testnet AceD BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
             base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-            // Testnet Polis BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+            // Testnet AceD BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
             base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-            // Testnet Polis BIP44 coin type is '1' (All coin's testnet default)
+            // Testnet AceD BIP44 coin type is '1' (All coin's testnet default)
             nExtCoinType = 1;
 
             fMiningRequiresPeers = true;
@@ -589,8 +589,8 @@ public:
             consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
             consensus.DIP0001Height = 2000;
             consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-            consensus.nPowTargetTimespan = 24 * 60 * 60; // polis: 1 day
-            consensus.nPowTargetSpacing = 120; // polis: 2.5 minutes
+            consensus.nPowTargetTimespan = 24 * 60 * 60; // aced: 1 day
+            consensus.nPowTargetSpacing = 120; // aced: 2.5 minutes
             consensus.fPowAllowMinDifficultyBlocks = true;
             consensus.fPowNoRetargeting = true;
             consensus.nPowKGWHeight = 15200; // same as mainnet
@@ -666,16 +666,16 @@ public:
             };
 
             base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-            // Regtest polis script addresses start with '8' or '9'
+            // Regtest aced script addresses start with '8' or '9'
             base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
             // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
             base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-            // Regtest polis BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+            // Regtest aced BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
             base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-            // Regtest polis BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+            // Regtest aced BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
             base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-            // Regtest polis BIP44 coin type is '1' (All coin's testnet default)
+            // Regtest aced BIP44 coin type is '1' (All coin's testnet default)
             nExtCoinType = 1;
     }
 

@@ -10,10 +10,10 @@
 
 /**
  * Name of client reported in the 'version' message. Report the same name
- * for both polisd and polis-qt, to make it harder for attackers to
+ * for both acedd and aced-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Polis Core");
+const std::string CLIENT_NAME("AceD Core");
 
 /**
  * Client version number

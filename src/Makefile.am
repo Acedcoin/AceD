@@ -1,6 +1,6 @@
 # Copyright (c) 2013-2017 The Bitcoin Core developers
 # Copyright (c) 2014-2018 The Dash Core developers
-# Copyright (c) 2018-2019 The Polis Core developers
+# Copyright (c) 2018-2019 The AceD Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,23 +26,23 @@ BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAG
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
-LIBBITCOIN_SERVER=libpolis_server.a
-LIBBITCOIN_COMMON=libpolis_common.a
-LIBBITCOIN_CONSENSUS=libpolis_consensus.a
-LIBBITCOIN_CLI=libpolis_cli.a
-LIBBITCOIN_UTIL=libpolis_util.a
-LIBBITCOIN_CRYPTO=crypto/libpolis_crypto.a
-LIBBITCOINQT=qt/libpolisqt.a
+LIBBITCOIN_SERVER=libaced_server.a
+LIBBITCOIN_COMMON=libaced_common.a
+LIBBITCOIN_CONSENSUS=libaced_consensus.a
+LIBBITCOIN_CLI=libaced_cli.a
+LIBBITCOIN_UTIL=libaced_util.a
+LIBBITCOIN_CRYPTO=crypto/libaced_crypto.a
+LIBBITCOINQT=qt/libacedqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 if ENABLE_ZMQ
-LIBBITCOIN_ZMQ=libpolis_zmq.a
+LIBBITCOIN_ZMQ=libaced_zmq.a
 endif
 if BUILD_BITCOIN_LIBS
-LIBBITCOINCONSENSUS=libpolisconsensus.la
+LIBBITCOINCONSENSUS=libacedconsensus.la
 endif
 if ENABLE_WALLET
-LIBBITCOIN_WALLET=libpolis_wallet.a
+LIBBITCOIN_WALLET=libaced_wallet.a
 endif
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
@@ -67,15 +67,15 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += polisd
+  bin_PROGRAMS += acedd
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += polis-cli polis-tx
+  bin_PROGRAMS += aced-cli aced-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
-# polis core #
+# aced core #
 BITCOIN_CORE_H = \
   addrdb.h \
   activemasternode.h \
@@ -205,12 +205,12 @@ obj/build.h: FORCE
 	@$(MKDIR_P) $(builddir)/obj
 	@$(top_srcdir)/share/genbuild.sh $(abs_top_builddir)/src/obj/build.h \
 	  $(abs_top_srcdir)
-libpolis_util_a-clientversion.$(OBJEXT): obj/build.h
+libaced_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between polisd and polis-qt
-libpolis_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
-libpolis_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_server_a_SOURCES = \
+# server: shared between acedd and aced-qt
+libaced_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+libaced_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_server_a_SOURCES = \
   activemasternode.cpp \
   addrman.cpp \
   addrdb.cpp \
@@ -272,20 +272,20 @@ libpolis_server_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ
-libpolis_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
-libpolis_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_zmq_a_SOURCES = \
+libaced_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
+libaced_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
   zmq/zmqnotificationinterface.cpp \
   zmq/zmqpublishnotifier.cpp
 endif
 
 
-# wallet: shared between polisd and polis-qt, but only linked
+# wallet: shared between acedd and aced-qt, but only linked
 # when wallet enabled
-libpolis_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libpolis_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_wallet_a_SOURCES = \
+libaced_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libaced_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_wallet_a_SOURCES = \
   kernel.cpp \
   keepass.cpp \
   blocksigner.cpp \
@@ -302,9 +302,9 @@ libpolis_wallet_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
-crypto_libpolis_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
-crypto_libpolis_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
-crypto_libpolis_crypto_a_SOURCES = \
+crypto_libaced_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
+crypto_libaced_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
+crypto_libaced_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
   crypto/common.h \
@@ -323,7 +323,7 @@ crypto_libpolis_crypto_a_SOURCES = \
   crypto/sha512.h
 
 # x11
-crypto_libpolis_crypto_a_SOURCES += \
+crypto_libaced_crypto_a_SOURCES += \
   crypto/blake.c \
   crypto/bmw.c \
   crypto/cubehash.c \
@@ -349,9 +349,9 @@ crypto_libpolis_crypto_a_SOURCES += \
   crypto/sph_types.h
 
 # consensus: shared between all executables that validate any consensus rules.
-libpolis_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libpolis_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_consensus_a_SOURCES = \
+libaced_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libaced_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_consensus_a_SOURCES = \
   amount.h \
   arith_uint256.cpp \
   arith_uint256.h \
@@ -368,7 +368,7 @@ libpolis_consensus_a_SOURCES = \
   primitives/transaction.h \
   pubkey.cpp \
   pubkey.h \
-  script/polisconsensus.cpp \
+  script/acedconsensus.cpp \
   script/interpreter.cpp \
   script/interpreter.h \
   script/script.cpp \
@@ -383,10 +383,10 @@ libpolis_consensus_a_SOURCES = \
   utilstrencodings.h \
   version.h
 
-# common: shared between polisd, and polis-qt and non-server tools
-libpolis_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libpolis_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_common_a_SOURCES = \
+# common: shared between acedd, and aced-qt and non-server tools
+libaced_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libaced_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_common_a_SOURCES = \
   amount.cpp \
   base58.cpp \
   bip39.cpp \
@@ -410,9 +410,9 @@ libpolis_common_a_SOURCES = \
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libpolis_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libpolis_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_util_a_SOURCES = \
+libaced_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libaced_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_util_a_SOURCES = \
   support/lockedpool.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
@@ -431,31 +431,31 @@ libpolis_util_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 if GLIBC_BACK_COMPAT
-libpolis_util_a_SOURCES += compat/glibc_compat.cpp
+libaced_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
-# cli: shared between polis-cli and polis-qt
-libpolis_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libpolis_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpolis_cli_a_SOURCES = \
+# cli: shared between aced-cli and aced-qt
+libaced_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libaced_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libaced_cli_a_SOURCES = \
   rpc/client.cpp \
   $(BITCOIN_CORE_H)
 
-nodist_libpolis_util_a_SOURCES = $(srcdir)/obj/build.h
+nodist_libaced_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# polisd binary #
-polisd_SOURCES = polisd.cpp
-polisd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-polisd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-polisd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# acedd binary #
+acedd_SOURCES = acedd.cpp
+acedd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+acedd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+acedd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-polisd_SOURCES += polisd-res.rc
+acedd_SOURCES += acedd-res.rc
 endif
 
-polisd_LDADD = \
+acedd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -468,37 +468,37 @@ polisd_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-polisd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+acedd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
-# polis-cli binary #
-polis_cli_SOURCES = polis-cli.cpp
-polis_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-polis_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-polis_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# aced-cli binary #
+aced_cli_SOURCES = aced-cli.cpp
+aced_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+aced_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+aced_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-polis_cli_SOURCES += polis-cli-res.rc
+aced_cli_SOURCES += aced-cli-res.rc
 endif
 
-polis_cli_LDADD = \
+aced_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
-polis_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+aced_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# polis-tx binary #
-polis_tx_SOURCES = polis-tx.cpp
-polis_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-polis_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-polis_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# aced-tx binary #
+aced_tx_SOURCES = aced-tx.cpp
+aced_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+aced_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+aced_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-polis_tx_SOURCES += polis-tx-res.rc
+aced_tx_SOURCES += aced-tx-res.rc
 endif
 
-polis_tx_LDADD = \
+aced_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -506,22 +506,22 @@ polis_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-polis_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+aced_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
-# polisconsensus library #
+# acedconsensus library #
 if BUILD_BITCOIN_LIBS
-include_HEADERS = script/polisconsensus.h
-libpolisconsensus_la_SOURCES = $(crypto_libpolis_crypto_a_SOURCES) $(libpolis_consensus_a_SOURCES)
+include_HEADERS = script/acedconsensus.h
+libacedconsensus_la_SOURCES = $(crypto_libaced_crypto_a_SOURCES) $(libaced_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
-  libpolisconsensus_la_SOURCES += compat/glibc_compat.cpp
+  libacedconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libpolisconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libpolisconsensus_la_LIBADD = $(LIBSECP256K1)
-libpolisconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
-libpolisconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libacedconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+libacedconsensus_la_LIBADD = $(LIBSECP256K1)
+libacedconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libacedconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
 #
@@ -552,12 +552,12 @@ DISTCLEANFILES = obj/build.h
 EXTRA_DIST = $(CTAES_DIST)
 
 
-config/polis-config.h: config/stamp-h1
+config/aced-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-config/stamp-h1: $(top_srcdir)/$(subdir)/config/polis-config.h.in $(top_builddir)/config.status
+config/stamp-h1: $(top_srcdir)/$(subdir)/config/aced-config.h.in $(top_builddir)/config.status
 	$(AM_V_at)$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-$(top_srcdir)/$(subdir)/config/polis-config.h.in:  $(am__configure_deps)
-	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/polis-config.h.in
+$(top_srcdir)/$(subdir)/config/aced-config.h.in:  $(am__configure_deps)
+	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/aced-config.h.in
 
 clean-local:
 	-$(MAKE) -C secp256k1 clean

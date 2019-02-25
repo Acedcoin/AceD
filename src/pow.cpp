@@ -108,7 +108,7 @@ unsigned int static PoW2PoSRequired(const CBlockIndex* pindexLast, const Consens
 }
 
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params) {
-    /* current difficulty formula, polis - DarkGravity v3, written by Evan Duffield - evan@polispay.org */
+    /* current difficulty formula, aced - DarkGravity v3, written by Evan Duffield - evan@acedpay.org */
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
     int64_t nPastBlocks = 24;
 

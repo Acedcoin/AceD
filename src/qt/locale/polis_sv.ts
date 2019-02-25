@@ -58,12 +58,12 @@
         <translation>Mottagaradresser</translation>
     </message>
     <message>
-        <source>These are your Polis addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>De här är dina Polis-adresser för att skicka betalningar. Kontrollera alltid mängden och mottagaradressen innan du skickar mynt.</translation>
+        <source>These are your AceD addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>De här är dina AceD-adresser för att skicka betalningar. Kontrollera alltid mängden och mottagaradressen innan du skickar mynt.</translation>
     </message>
     <message>
-        <source>These are your Polis addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>De här är dina Polis-adresser för betalningsmottagningar. Det rekommenderas att använda en ny mottagaradress för varje transaktion.</translation>
+        <source>These are your AceD addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>De här är dina AceD-adresser för betalningsmottagningar. Det rekommenderas att använda en ny mottagaradress för varje transaktion.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -164,8 +164,8 @@
         <translation>Bekräfta plånbokskryptering</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR POLIS&lt;/b&gt;!</source>
-        <translation>Varning: Om du krypterar din plånbok och förlorar din lösenfras kommer du att &lt;b&gt;FÖRLORA ALLA DINA POLIS&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR ACED&lt;/b&gt;!</source>
+        <translation>Varning: Om du krypterar din plånbok och förlorar din lösenfras kommer du att &lt;b&gt;FÖRLORA ALLA DINA ACED&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -176,8 +176,8 @@
         <translation>Plånbok krypterad</translation>
     </message>
     <message>
-        <source>Polis will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your poliss from being stolen by malware infecting your computer.</source>
-        <translation>Polis kommer nu att färdigställa krypteringsprocessen. Kom ihåg att krypteringen av din plånbok inte kan skydda dig helt och hållet från att dina Polis stjäls av skadeprogram som har infekterat din dator.</translation>
+        <source>AceD will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your aceds from being stolen by malware infecting your computer.</source>
+        <translation>AceD kommer nu att färdigställa krypteringsprocessen. Kom ihåg att krypteringen av din plånbok inte kan skydda dig helt och hållet från att dina AceD stjäls av skadeprogram som har infekterat din dator.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -219,8 +219,8 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>Polis Core</source>
-        <translation>Polis Core
+        <source>AceD Core</source>
+        <translation>AceD Core
 </translation>
     </message>
     <message>
@@ -244,16 +244,16 @@
         <translation>&amp;Skicka</translation>
     </message>
     <message>
-        <source>Send coins to a Polis address</source>
-        <translation>Skicka mynt till en Polis-adress</translation>
+        <source>Send coins to a AceD address</source>
+        <translation>Skicka mynt till en AceD-adress</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Motta</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and polis: URIs)</source>
-        <translation>Begär betalningar (genererar QR-koder och Polis:-URI:s)</translation>
+        <source>Request payments (generates QR codes and aced: URIs)</source>
+        <translation>Begär betalningar (genererar QR-koder och AceD:-URI:s)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -272,8 +272,8 @@
         <translation>Avsluta applikationen</translation>
     </message>
     <message>
-        <source>&amp;About Polis Core</source>
-        <translation>&amp;Om Polis Core</translation>
+        <source>&amp;About AceD Core</source>
+        <translation>&amp;Om AceD Core</translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
@@ -288,8 +288,8 @@
         <translation>&amp;Alternativ...</translation>
     </message>
     <message>
-        <source>Modify configuration options for Polis</source>
-        <translation>Anpassa konfigurationsalternatv för Polis</translation>
+        <source>Modify configuration options for AceD</source>
+        <translation>Anpassa konfigurationsalternatv för AceD</translation>
     </message>
     <message>
         <source>&amp;Show / Hide</source>
@@ -340,16 +340,16 @@
         <translation>Signera &amp;meddelande...</translation>
     </message>
     <message>
-        <source>Sign messages with your Polis addresses to prove you own them</source>
-        <translation>Signera meddelanden med dina Polis-adresser för att bevisa att du äger dem</translation>
+        <source>Sign messages with your AceD addresses to prove you own them</source>
+        <translation>Signera meddelanden med dina AceD-adresser för att bevisa att du äger dem</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;Bekräfta meddelande...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Polis addresses</source>
-        <translation>Bekräfta meddelanden för att garantera att de signerades med de angivna Polis-adresserna</translation>
+        <source>Verify messages to ensure they were signed with specified AceD addresses</source>
+        <translation>Bekräfta meddelanden för att garantera att de signerades med de angivna AceD-adresserna</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -404,16 +404,16 @@
         <translation>Öppna &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a polis: URI or payment request</source>
-        <translation>Öppna en Polis-URI eller betalningsbegäran</translation>
+        <source>Open a aced: URI or payment request</source>
+        <translation>Öppna en AceD-URI eller betalningsbegäran</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Kommandoradalternativ</translation>
     </message>
     <message>
-        <source>Show the Polis Core help message to get a list with possible Polis command-line options</source>
-        <translation>Visa Polis Core-hjälpmeddelandet för att få en lista med möjliga Polis-kommandoradalternativ</translation>
+        <source>Show the AceD Core help message to get a list with possible AceD command-line options</source>
+        <translation>Visa AceD Core-hjälpmeddelandet för att få en lista med möjliga AceD-kommandoradalternativ</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -758,28 +758,28 @@ Adress: %4
         <translation>Vänligen välj en integritetsnivå.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 1000 POLIS</source>
-        <translation>Använd 2 enskilda masternoder för att mixa medel upp till 1000 POLIS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000 ACED</source>
+        <translation>Använd 2 enskilda masternoder för att mixa medel upp till 1000 ACED</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 1000 POLIS</source>
-        <translation>Använd 8 enskilda masternoder för att mixa medel upp till 1000 POLIS.</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000 ACED</source>
+        <translation>Använd 8 enskilda masternoder för att mixa medel upp till 1000 ACED.</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Använd 16 enskilda masternoder</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 POLIS to anonymize 1000 POLIS</source>
-        <translation>Detta alternativ är det snabbaste och kommer att kosta omkring ~0,025 POLIS för att anonymisera 1000 POLIS</translation>
+        <source>This option is the quickest and will cost about ~0.025 ACED to anonymize 1000 ACED</source>
+        <translation>Detta alternativ är det snabbaste och kommer att kosta omkring ~0,025 ACED för att anonymisera 1000 ACED</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 POLIS to anonymize 1000 POLIS</source>
-        <translation>Detta alternativ är relativt snabbt och kommer att kosta omkring 0,05 POLIS för att anonymisera 1000 POLIS</translation>
+        <source>This option is moderately fast and will cost about 0.05 ACED to anonymize 1000 ACED</source>
+        <translation>Detta alternativ är relativt snabbt och kommer att kosta omkring 0,05 ACED för att anonymisera 1000 ACED</translation>
     </message>
     <message>
-        <source>0.1 POLIS per 1000 POLIS you anonymize.</source>
-        <translation>0,1 POLIS per 1000 POLIS du anonymiserar.</translation>
+        <source>0.1 ACED per 1000 ACED you anonymize.</source>
+        <translation>0,1 ACED per 1000 ACED du anonymiserar.</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
@@ -790,16 +790,16 @@ Adress: %4
         <translation>Darksend-konfiguration</translation>
     </message>
     <message>
-        <source>Darksend was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening Polis's configuration screen.</source>
-        <translation>Darksend ställdes framgångsrikt om till grundläggande (%1 och 2 omgångar). Du kan ändra detta när som helst genom att öppna Polis:s konfigurationsskärm.</translation>
+        <source>Darksend was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening AceD's configuration screen.</source>
+        <translation>Darksend ställdes framgångsrikt om till grundläggande (%1 och 2 omgångar). Du kan ändra detta när som helst genom att öppna AceD:s konfigurationsskärm.</translation>
     </message>
     <message>
-        <source>Darksend was successfully set to high (%1 and 8 rounds). You can change this at any time by opening Polis's configuration screen.</source>
-        <translation>Darksend ställdes framgångsrikt in på hög (%1 och 8 omgångar). Du kan ändra detta när som helst genom att öppna Polis:s konfigurationsskärm.</translation>
+        <source>Darksend was successfully set to high (%1 and 8 rounds). You can change this at any time by opening AceD's configuration screen.</source>
+        <translation>Darksend ställdes framgångsrikt in på hög (%1 och 8 omgångar). Du kan ändra detta när som helst genom att öppna AceD:s konfigurationsskärm.</translation>
     </message>
     <message>
-        <source>Darksend was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening Polis's configuration screen.</source>
-        <translation>Darksend ställdes framgångsrikt in på maximal (%1 och 16 omgångar). Du kan ändra detta när som helst genom att öppna Polis:s konfigurationsskärm</translation>
+        <source>Darksend was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening AceD's configuration screen.</source>
+        <translation>Darksend ställdes framgångsrikt in på maximal (%1 och 16 omgångar). Du kan ändra detta när som helst genom att öppna AceD:s konfigurationsskärm</translation>
     </message>
 </context>
 <context>
@@ -841,8 +841,8 @@ Adress: %4
         <translation>Redigera avsändaradress</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Polis address.</source>
-        <translation>Den angivna adressen "%1" är inte en giltig Polis-adress.</translation>
+        <source>The entered address "%1" is not a valid AceD address.</source>
+        <translation>Den angivna adressen "%1" är inte en giltig AceD-adress.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -883,8 +883,8 @@ Adress: %4
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>Polis Core</source>
-        <translation>Polis Core
+        <source>AceD Core</source>
+        <translation>AceD Core
 </translation>
     </message>
     <message>
@@ -931,16 +931,16 @@ Adress: %4
         <translation>Välkommen</translation>
     </message>
     <message>
-        <source>Welcome to Polis Core.</source>
-        <translation>Välkommen till Polis Core.</translation>
+        <source>Welcome to AceD Core.</source>
+        <translation>Välkommen till AceD Core.</translation>
     </message>
     <message>
-        <source>As this is the first time the program is launched, you can choose where Polis Core will store its data.</source>
-        <translation>Då detta är första gången programmet startas kan du välja var Polis Core ska lagra sin data.</translation>
+        <source>As this is the first time the program is launched, you can choose where AceD Core will store its data.</source>
+        <translation>Då detta är första gången programmet startas kan du välja var AceD Core ska lagra sin data.</translation>
     </message>
     <message>
-        <source>Polis Core will download and store a copy of the Polis block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>Polis Core kommer att laddas ned och lagra en kopia av Polis:s blockkedja. Minst %1 GB data kommer att lagras i denna katalog och den kommer att växa med tiden. Plånboken kommer också att lagras i denna katalog.</translation>
+        <source>AceD Core will download and store a copy of the AceD block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>AceD Core kommer att laddas ned och lagra en kopia av AceD:s blockkedja. Minst %1 GB data kommer att lagras i denna katalog och den kommer att växa med tiden. Plånboken kommer också att lagras i denna katalog.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -989,12 +989,12 @@ Adress: %4
         <translation>&amp;Huvud</translation>
     </message>
     <message>
-        <source>Automatically start Polis after logging in to the system.</source>
-        <translation>Starta Polis automatiskt efter systeminloggning.</translation>
+        <source>Automatically start AceD after logging in to the system.</source>
+        <translation>Starta AceD automatiskt efter systeminloggning.</translation>
     </message>
     <message>
-        <source>&amp;Start Polis on system login</source>
-        <translation>&amp;Starta Polis vid systeminloggning</translation>
+        <source>&amp;Start AceD on system login</source>
+        <translation>&amp;Starta AceD vid systeminloggning</translation>
     </message>
     <message>
         <source>Size of &amp;database cache</source>
@@ -1021,8 +1021,8 @@ Adress: %4
         <translation>Denna mängd fungerar som en tröskel att stänga av Darksend då det har uppnåtts.</translation>
     </message>
     <message>
-        <source>Amount of Polis to keep anonymized</source>
-        <translation>Mängd Polis att bibehålla anonymiserade</translation>
+        <source>Amount of AceD to keep anonymized</source>
+        <translation>Mängd AceD att bibehålla anonymiserade</translation>
     </message>
     <message>
         <source>W&amp;allet</source>
@@ -1049,8 +1049,8 @@ Adress: %4
         <translation>&amp;Nätverk</translation>
     </message>
     <message>
-        <source>Automatically open the Polis client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Öppna Polis:s klientport automatiskt på routern. Detta fungerar bara om din router stöder UPnP och är aktiverad.</translation>
+        <source>Automatically open the AceD client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Öppna AceD:s klientport automatiskt på routern. Detta fungerar bara om din router stöder UPnP och är aktiverad.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1101,14 +1101,14 @@ Adress: %4
         <translation>Användargränssnitt&amp;språk: </translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting Polis.</source>
-        <translation>Användargränssnittspråket kan ställas in här. Denna inställning träder i kraft efter att Polis startats om.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting AceD.</source>
+        <translation>Användargränssnittspråket kan ställas in här. Denna inställning träder i kraft efter att AceD startats om.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/polis/</source>
+https://www.transifex.com/projects/p/aced/</source>
         <translation>Fattas språk eller är det en ofullständig översättning? Hjälp till att bidra med översättningar här:
-https://www.transifex.com/projects/p/polis/</translation>
+https://www.transifex.com/projects/p/aced/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1182,8 +1182,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Formulär</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Polis network after a connection is established, but this process has not completed yet.</source>
-        <translation>Den visade informationen kan vara utdaterad. Din plånbok synkroniseras automatiskt med Polis-nätverket efter att en anslutning har etablerats men denna process har ännu inte slutförts.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the AceD network after a connection is established, but this process has not completed yet.</source>
+        <translation>Den visade informationen kan vara utdaterad. Din plånbok synkroniseras automatiskt med AceD-nätverket efter att en anslutning har etablerats men denna process har ännu inte slutförts.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1238,8 +1238,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Mängd och omgångar:</translation>
     </message>
     <message>
-        <source>0 POLIS / 0 Rounds</source>
-        <translation>0 POLIS/0 omgångar</translation>
+        <source>0 ACED / 0 Rounds</source>
+        <translation>0 ACED/0 omgångar</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1335,8 +1335,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Fel vid betalningsbegäran</translation>
     </message>
     <message>
-        <source>Cannot start polis: click-to-pay handler</source>
-        <translation>Kan inte starta polis: klicka-för-att-betala hanterare</translation>
+        <source>Cannot start aced: click-to-pay handler</source>
+        <translation>Kan inte starta aced: klicka-för-att-betala hanterare</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -1435,8 +1435,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Antal anslutningar</translation>
     </message>
     <message>
-        <source>Open the Polis debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Öppna Poliss avsökningsloggfil från den nuvarande datakatalogen. Detta kan ta ett par sekunder för stora loggfiler.</translation>
+        <source>Open the AceD debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Öppna AceDs avsökningsloggfil från den nuvarande datakatalogen. Detta kan ta ett par sekunder för stora loggfiler.</translation>
     </message>
     <message>
         <source>&amp;Open</source>
@@ -1507,8 +1507,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Ut:</translation>
     </message>
     <message>
-        <source>Welcome to the Polis RPC console.</source>
-        <translation>Välkommen till Poliss RPC-konsol.</translation>
+        <source>Welcome to the AceD RPC console.</source>
+        <translation>Välkommen till AceDs RPC-konsol.</translation>
     </message>
     <message>
         <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
@@ -1542,8 +1542,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Åt&amp;eranvänd en befintlig mottagaradress (rekommenderas inte)</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Polis network.</source>
-        <translation>Ett valfritt meddelande att bifoga betalningsbegärandet vilket kommer att visas när begärandet öppnas. Observera: Meddelandet kommer inte att skickas med betalningen över Polis-nätverket.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the AceD network.</source>
+        <translation>Ett valfritt meddelande att bifoga betalningsbegärandet vilket kommer att visas när begärandet öppnas. Observera: Meddelandet kommer inte att skickas med betalningen över AceD-nätverket.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -1899,8 +1899,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Fel: Plånboken låstes upp enbart för att anonymisera mynt.</translation>
     </message>
     <message>
-        <source>Warning: Invalid Polis address</source>
-        <translation>Varning: Ogiltig Polis-adress</translation>
+        <source>Warning: Invalid AceD address</source>
+        <translation>Varning: Ogiltig AceD-adress</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -1958,8 +1958,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Meddelande:</translation>
     </message>
     <message>
-        <source>A message that was attached to the polis: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Polis network.</source>
-        <translation>Ett meddelande som bifogades till Polis: URI vilket kommer att lagras med transaktionen så att du vet. Observera: Meddelandet kommer inte att skickas över Polis-nätverket.</translation>
+        <source>A message that was attached to the aced: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the AceD network.</source>
+        <translation>Ett meddelande som bifogades till AceD: URI vilket kommer att lagras med transaktionen så att du vet. Observera: Meddelandet kommer inte att skickas över AceD-nätverket.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>
@@ -1985,8 +1985,8 @@ https://www.transifex.com/projects/p/polis/</translation>
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>Polis Core is shutting down...</source>
-        <translation>Polis Core stängs ned...</translation>
+        <source>AceD Core is shutting down...</source>
+        <translation>AceD Core stängs ned...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -2036,8 +2036,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Kopiera den nuvarande valda signaturen till systemurklippet</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Polis address</source>
-        <translation>Signera meddelandet för att bevisa att du äger denna Polis-adress</translation>
+        <source>Sign the message to prove you own this AceD address</source>
+        <translation>Signera meddelandet för att bevisa att du äger denna AceD-adress</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2060,8 +2060,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Skriv in signeringsadressen, meddelandet, (försäkra dig om att du kopierar linjeavbrott, mellanslag, flikar med mera) och signera nedtill för att verifiera meddelandet. Var försiktig med att inte läsa in mer i signaturen än vad som finns i det signerade meddelandet för att undvika att bli lurad av en mellanhandattack.</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Polis address</source>
-        <translation>Bekräfta meddelandet för att försäkra dig om att den signerades med den angivna Polis-adressen</translation>
+        <source>Verify the message to ensure it was signed with the specified AceD address</source>
+        <translation>Bekräfta meddelandet för att försäkra dig om att den signerades med den angivna AceD-adressen</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -2127,8 +2127,8 @@ https://www.transifex.com/projects/p/polis/</translation>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>Polis Core</source>
-        <translation>Polis Core
+        <source>AceD Core</source>
+        <translation>AceD Core
 </translation>
     </message>
     <message>
@@ -2140,8 +2140,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Bitcoin Core-utvecklarna</translation>
     </message>
     <message>
-        <source>The Polis Core developers</source>
-        <translation>Polis Core-utvecklarna</translation>
+        <source>The AceD Core developers</source>
+        <translation>AceD Core-utvecklarna</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -2656,14 +2656,14 @@ https://www.transifex.com/projects/p/polis/</translation>
     </message>
 </context>
 <context>
-    <name>polis-core</name>
+    <name>aced-core</name>
     <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
         <translation>Sammanbind till fastställd adress och avlyssna alltid den. Använd [host]:port-notation för IPv6</translation>
     </message>
     <message>
-        <source>Cannot obtain a lock on data directory %s. Polis Core is probably already running.</source>
-        <translation>Kan inte erhålla ett lås på datakatalog %s. Polis Core körs förmodligen redan.</translation>
+        <source>Cannot obtain a lock on data directory %s. AceD Core is probably already running.</source>
+        <translation>Kan inte erhålla ett lås på datakatalog %s. AceD Core körs förmodligen redan.</translation>
     </message>
     <message>
         <source>Darksend uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.</source>
@@ -2718,16 +2718,16 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Detta är en förhandsutgiven testkompilering - använd på egen risk - använd inte för utvinning eller handlarapplikationer.</translation>
     </message>
     <message>
-        <source>Unable to bind to %s on this computer. Polis Core is probably already running.</source>
-        <translation>Det går inte att binda till %s till denna dator. Polis Core körs förmodligen redan.</translation>
+        <source>Unable to bind to %s on this computer. AceD Core is probably already running.</source>
+        <translation>Det går inte att binda till %s till denna dator. AceD Core körs förmodligen redan.</translation>
     </message>
     <message>
         <source>Unable to locate enough Darksend denominated funds for this transaction.</source>
         <translation>Kunde inte hitta tillräckliga Darksend-denominationsmedel för denna transaktion.</translation>
     </message>
     <message>
-        <source>Unable to locate enough Darksend non-denominated funds for this transaction that are not equal 1000 POLIS.</source>
-        <translation>Kunde inte hitta tillräckliga Darksend-icke-denominationsmedel för denna transaktion som inte är likvärdiga 1000 POLIS.</translation>
+        <source>Unable to locate enough Darksend non-denominated funds for this transaction that are not equal 1000 ACED.</source>
+        <translation>Kunde inte hitta tillräckliga Darksend-icke-denominationsmedel för denna transaktion som inte är likvärdiga 1000 ACED.</translation>
     </message>
     <message>
         <source>Warning: -paytxfee is set very high! This is the transaction fee you will pay if you send a transaction.</source>
@@ -2942,8 +2942,8 @@ https://www.transifex.com/projects/p/polis/</translation>
         <translation>Information</translation>
     </message>
     <message>
-        <source>Initialization sanity check failed. Polis Core is shutting down.</source>
-        <translation>Initialiseringstillståndkontroll misslyckades. Polis Core stängs ned.</translation>
+        <source>Initialization sanity check failed. AceD Core is shutting down.</source>
+        <translation>Initialiseringstillståndkontroll misslyckades. AceD Core stängs ned.</translation>
     </message>
     <message>
         <source>Input is not valid.</source>

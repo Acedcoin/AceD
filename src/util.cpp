@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Polis Core developers
+// Copyright (c) 2014-2017 The AceD Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/polis-config.h"
+#include "config/aced-config.h"
 #endif
 
 #include "util.h"
@@ -108,7 +108,7 @@ namespace boost {
 
 
 
-//Polis only features
+//AceD only features
 bool fMasternodeMode = false;
 bool fLiteMode = false;
 /**
@@ -120,8 +120,8 @@ bool fLiteMode = false;
 */
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "polis.conf";
-const char * const BITCOIN_PID_FILENAME = "polisd.pid";
+const char * const BITCOIN_CONF_FILENAME = "aced.conf";
+const char * const BITCOIN_PID_FILENAME = "acedd.pid";
 
 CCriticalSection cs_args;
 std::map<std::string, std::string> mapArgs;
@@ -277,8 +277,8 @@ bool LogAcceptCategory(const char* category)
                 const std::vector<std::string>& categories = mapMultiArgs.at("-debug");
                 ptrCategory.reset(new std::set<std::string>(categories.begin(), categories.end()));
                 // thread_specific_ptr automatically deletes the set when the thread ends.
-                // "polis" is a composite category enabling all Polis-related debug output
-                if(ptrCategory->count(std::string("polis"))) {
+                // "aced" is a composite category enabling all AceD-related debug output
+                if(ptrCategory->count(std::string("aced"))) {
                     ptrCategory->insert(std::string("privatesend"));
                     ptrCategory->insert(std::string("instantsend"));
                     ptrCategory->insert(std::string("masternode"));
@@ -535,7 +535,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "polis";
+    const char* pszModule = "aced";
 #endif
     if (pex)
         return strprintf(
@@ -555,13 +555,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\PolisCore
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\PolisCore
-    // Mac: ~/Library/Application Support/PolisCore
-    // Unix: ~/.poliscore
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\AceDCore
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\AceDCore
+    // Mac: ~/Library/Application Support/AceDCore
+    // Unix: ~/.acedcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "PolisCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "AceDCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -571,10 +571,10 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/PolisCore";
+    return pathRet / "Library/Application Support/AceDCore";
 #else
     // Unix
-    return pathRet / ".poliscore";
+    return pathRet / ".acedcore";
 #endif
 #endif
 }
@@ -652,7 +652,7 @@ void ReadConfigFile(const std::string& confPath)
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile(confPath));
     if (!streamConfig.good()){
-        // Create empty polis.conf if it does not excist
+        // Create empty aced.conf if it does not excist
         FILE* configFile = fopen(GetConfigFile(confPath).string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);
@@ -666,7 +666,7 @@ void ReadConfigFile(const std::string& confPath)
 
         for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
         {
-            // Don't overwrite existing settings so command line settings override polis.conf
+            // Don't overwrite existing settings so command line settings override aced.conf
             std::string strKey = std::string("-") + it->string_key;
             std::string strValue = it->value[0];
             InterpretNegativeSetting(strKey, strValue);
@@ -977,7 +977,7 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
     if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Bitcoin Core") == std::string::npos) {
         strCopyrightHolders += strPrefix + strprintf(" %u-%u ", 2009, 2017) + "The Bitcoin Core developers";
         strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2014, 2018) + "The Dash Core developers";
-        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2017, 2019) + "The Polis Core developers \n";
+        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2017, 2019) + "The AceD Core developers \n";
     }
 
 

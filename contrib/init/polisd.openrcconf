@@ -1,25 +1,25 @@
-# /etc/conf.d/polisd: config file for /etc/init.d/polisd
+# /etc/conf.d/acedd: config file for /etc/init.d/acedd
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/poliscore/polis.conf"
+#BITCOIND_CONFIGFILE="/etc/acedcore/aced.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/polisd"
+#BITCOIND_PIDDIR="/var/run/acedd"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/polisd.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/acedd.pid"
 
-# Where to write polisd data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/polisd"
+# Where to write acedd data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/acedd"
 
-# User and group to own polisd process
-#BITCOIND_USER="poliscore"
-#BITCOIND_GROUP="poliscore"
+# User and group to own acedd process
+#BITCOIND_USER="acedcore"
+#BITCOIND_GROUP="acedcore"
 
-# Path to polisd executable
-#BITCOIND_BIN="/usr/bin/polisd"
+# Path to acedd executable
+#BITCOIND_BIN="/usr/bin/acedd"
 
-# Nice value to run polisd under
+# Nice value to run acedd under
 #BITCOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)

@@ -1,2 +1,2 @@
-contrib/polisd.bash-completion	polisd
-contrib/polis-cli.bash-completion    polis-cli
+contrib/acedd.bash-completion	acedd
+contrib/aced-cli.bash-completion    aced-cli

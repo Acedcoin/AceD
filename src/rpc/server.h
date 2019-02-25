@@ -143,7 +143,7 @@ public:
 };
 
 /**
- * Polis RPC command dispatcher.
+ * AceD RPC command dispatcher.
  */
 class CRPCTable
 {
