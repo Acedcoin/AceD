@@ -114,7 +114,7 @@ public:
         tableWidgetMyMasternodes->setObjectName(QStringLiteral("tableWidgetMyMasternodes"));
         tableWidgetMyMasternodes->setMinimumSize(QSize(695, 0));
         tableWidgetMyMasternodes->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        tableWidgetMyMasternodes->setAlternatingRowColors(true);
+        tableWidgetMyMasternodes->setAlternatingRowColors(false);
         tableWidgetMyMasternodes->setSelectionMode(QAbstractItemView::SingleSelection);
         tableWidgetMyMasternodes->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableWidgetMyMasternodes->setSortingEnabled(true);
@@ -192,7 +192,7 @@ public:
         tableWidgetMasternodes->setHorizontalHeaderItem(5, __qtablewidgetitem12);
         tableWidgetMasternodes->setObjectName(QStringLiteral("tableWidgetMasternodes"));
         tableWidgetMasternodes->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        tableWidgetMasternodes->setAlternatingRowColors(true);
+        tableWidgetMasternodes->setAlternatingRowColors(false);
         tableWidgetMasternodes->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableWidgetMasternodes->setSelectionMode(QAbstractItemView::NoSelection);
         tableWidgetMasternodes->setSortingEnabled(true);
