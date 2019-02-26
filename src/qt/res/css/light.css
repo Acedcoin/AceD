@@ -1,6 +1,6 @@
 /****************************************************************************************/
 
-/*************** [COLOR CODES] GREEN:#071970 LIGHT GREEN:#1c4e8c *****************/
+/*************** [COLOR CODES] GREEN:#1c4e8c LIGHT GREEN:#1c4e8c *****************/
 
 /****************************************************************************************/
 
@@ -83,7 +83,7 @@ QToolBar > QToolButton:checked {
 	background-color: transparent;
 	color: #FFFFFF;
 	/* font-weight:bold; */
-	border-right: 3px solid #00d188;
+	border-right: 3px solid #1c4e8c;
 	opacity: 1;
 }
 QMessageBox {
@@ -138,7 +138,7 @@ QTabBar::tab {
     border-right-color:transparent;
 }
 QTabBar::tab:selected {
-    border-bottom: 3px solid #00d188;
+    border-bottom: 3px solid #1c4e8c;
     background-color:transparent;
 }
 QTabBar::tab:pressed {
@@ -235,7 +235,7 @@ QLineEdit:focus, BitcoinAmountField:focus {
 
 QPushButton {
 	/* Global Button Style */
-	background-color: #00d188;
+	background-color: #1c4e8c;
 	padding: 0.85em 2em;
 	font-family: "Montserrat";
 	letter-spacing: 1px;
@@ -285,7 +285,7 @@ QComboBox:checked {
 	border:2px solid #384980;
 }
 QComboBox:editable {
-	background: #071970;
+	background: #1c4e8c;
 	color: #616161;
 	border: 0px solid transparent;
 }
@@ -316,7 +316,7 @@ QComboBox::item:alternate {
 QComboBox::item:selected {
 	border: 0px solid transparent;
 	background: #313d4b;
-	color: #FFFFFF;
+	color: green;
 }
 QComboBox::indicator {
 	background-color: transparent;
@@ -852,7 +852,7 @@ QWidget#PrivacyDialog QProgressBar#obfuscationProgress {
 }
 
 QWidget#PrivacyDialog QProgressBar#obfuscationProgress::chunk {
-	background-color: #071970;
+	background-color: #1c4e8c;
 	width: 1px;
 }
 /**************************** SETTINGS MENU *********************************************/
@@ -996,7 +996,7 @@ QWidget .QFrame#frame .QLabel#label_5 {
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	min-width: 160px;
 	background-color: transparent;
-	color: #071970;
+	color: #1c4e8c;
 	font-weight: bold;
 	font-size: 14px;
 	margin-right: 5px;
@@ -1122,7 +1122,7 @@ QWidget .QFrame#frame_4 .QLabel#label_5z_3 {
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	min-width: 160px;
 	background-color: transparent;
-	color: #071970;
+	color: #1c4e8c;
 	font-weight: bold;
 	font-size: 14px;
 	margin-right: 5px;
@@ -1213,7 +1213,7 @@ QWidget .QFrame#frame_3 .QLabel#label_5z {
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
 	min-width: 160px;
 	background-color: transparent;
-	color: #071970;
+	color: #1c4e8c;
 	font-weight: bold;
 	font-size: 14px;
 	margin-right: 5px;
@@ -1329,13 +1329,17 @@ QWidget .QFrame#frame_2 {
 	margin-right: 20px;
 	margin-left: 0;
 	margin-top: 0;
-	background-image: url(':/images/light/drkblue_phore_logo_horizontal');
+/*	zoom: 120%;*/
+	background-image: url(':/images/light/aced_logo_horizontal');
 	background-repeat: none;
+/*        background-position: center; 
+	background-size: 120%;*/
+
 }
 QWidget .QFrame#frame_2 .QLabel#label_4 {
 	/* Recent Transactions Label */
 	min-width: 180px;
-	color: #071970;
+	color: #1c4e8c;
 	margin-left: 67px;
 	margin-top: 83px;
 	margin-right: 5px;
@@ -1377,7 +1381,7 @@ QDialog#SendCoinsDialog .QFrame#frameCoinControl > .QLabel {
 
 QDialog#SendCoinsDialog .QFrame#frameCoinControl .QLabel#labelCoinControlFeatures {
 	/* Coin Control Header */
-	color: #071970;
+	color: #1c4e8c;
 	font-weight: bold;
 	font-size: 14px;
 }
@@ -1815,11 +1819,12 @@ QWidget#PrivacyDialog .QPushButton {
 QWidget#MasternodeList .QFrame#frameList {
 	background-color: transparent;
 }
-QWidget .QFrame#frame .QLabel#labelMnList { /* Masternode List Sync Status */
+/*
+QWidget .QFrame#frame .QLabel#labelMnList { 
     qproperty-alignment: 'AlignVCenter | AlignLeft';
     margin-left:3px;
 }
-QWidget .QFrame#frame .QLabel#labelMnListText { /* Masternode List Label */
+QWidget .QFrame#frame .QLabel#labelMnListText {
     qproperty-alignment: 'AlignVCenter | AlignCenter';
     min-width:160px;
     font-size:12px;
@@ -1827,7 +1832,7 @@ QWidget .QFrame#frame .QLabel#labelMnListText { /* Masternode List Label */
     margin-right:5px;
     padding-right:5px;
     color: white;
-}
+}*/
 
 /********************************* CALENDAR WIDGET **************************************/
 

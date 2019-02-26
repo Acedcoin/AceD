@@ -180,7 +180,7 @@ void AskPassphraseDialog::accept()
         } break;
     case UnlockMixing:
     case Unlock:
-        if(!model->setWalletLocked(false, oldpass, ui->stakingCheckBox->isChecked()))
+        if(!model->setWalletLocked(false, oldpass,mode == UnlockMixing))
         {
             QMessageBox::critical(this, tr("Wallet unlock failed"),
                                   tr("The passphrase entered for the wallet decryption was incorrect."));

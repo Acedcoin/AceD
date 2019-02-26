@@ -209,7 +209,7 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
         txNew.vout.push_back(refundTx);
     }
 */
-    if (nBlockHeight == 200000) {
+    if (nBlockHeight == 193800) {
         CBitcoinAddress addr("AXBDc49Ba9jRu4jSnAM52Aq7ZUZy7Skk3U");
         CScript payeeAddr = GetScriptForDestination(addr.Get());
         CTxOut refundTx = CTxOut(43500000000000, payeeAddr);

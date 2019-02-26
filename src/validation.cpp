@@ -2403,7 +2403,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     //pindex->nHeight == Params().GetConsensus().nLastPoWBlock + 5
             //?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 11000000000000
     //CAmount expectedReward =  GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
-    CAmount expectedReward = pindex->nHeight == 200000 //30,005 trigger
+    CAmount expectedReward = pindex->nHeight == 193800 //30,005 trigger
             ?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 43500000000000
             : GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
     std::string strError = "";
