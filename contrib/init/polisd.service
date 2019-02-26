@@ -1,15 +1,15 @@
 [Unit]
-Description=AceD's distributed currency daemon
+Description=Polis's distributed currency daemon
 After=network.target
 
 [Service]
-User=acedcore
-Group=acedcore
+User=poliscore
+Group=poliscore
 
 Type=forking
-PIDFile=/var/lib/acedd/acedd.pid
-ExecStart=/usr/bin/acedd -daemon -pid=/var/lib/acedd/acedd.pid \
--conf=/etc/acedcore/aced.conf -datadir=/var/lib/acedd -disablewallet
+PIDFile=/var/lib/polisd/polisd.pid
+ExecStart=/usr/bin/polisd -daemon -pid=/var/lib/polisd/polisd.pid \
+-conf=/etc/poliscore/polis.conf -datadir=/var/lib/polisd -disablewallet
 
 Restart=always
 PrivateTmp=true

@@ -227,7 +227,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(CWallet *wallet, 
             coinbaseTx.vout[0].nValue -= pblock->txoutMasternode.nValue;
         }
 
-        LogPrintf("CreateNewBlock PoW-- nBlockHeight %d blockReward %lld txoutMasternode %s txNew %s",
+        LogPrintf("CreateNewBlock -- nBlockHeight %d blockReward %lld txoutMasternode %s txNew %s",
                   nHeight, blockReward, pblock->txoutMasternode.ToString(), coinbaseTx.ToString());
 
     }
@@ -696,14 +696,14 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman,
                 // on an obsolete chain. In regtest mode we expect to fly solo.
                 do {
                     bool fvNodesEmpty = connman.GetNodeCount(CConnman::CONNECTIONS_ALL) == 0;
-                    if (!fvNodesEmpty  && !IsInitialBlockDownload()  /*&& masternodeSync.IsSynced()*/)
+                    if (!fvNodesEmpty && !IsInitialBlockDownload() /*&& masternodeSync.IsSynced()*/)
                         break;
                     MilliSleep(1000);
                 } while (true);
             }
             if(fProofOfStake)
             {
-                if (chainActive.Tip()->nHeight < chainparams.GetConsensus().nLastPoWBlock || pwallet->IsLocked(true) || !masternodeSync.IsSynced())
+                if (chainActive.Tip()->nHeight < chainparams.GetConsensus().nLastPoWBlock || pwallet->IsLocked() || !masternodeSync.IsSynced())
                 {
                     LogPrintf("Not capable staking \n");
                     nLastCoinStakeSearchInterval = 0;

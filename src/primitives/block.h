@@ -43,9 +43,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
-
     }
-
 
     void SetNull()
     {
@@ -55,7 +53,6 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
-
     }
 
     bool IsNull() const
@@ -65,13 +62,10 @@ public:
 
     uint256 GetHash() const;
 
-
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
     }
-
-
 };
 
 
@@ -115,7 +109,6 @@ public:
         fChecked = false;
     }
 
-
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
@@ -127,15 +120,8 @@ public:
         block.nNonce         = nNonce;
         return block;
     }
-    bool IsProofOfStake() const
-    {
-        return (vtx.size() > 1 && vtx[1]->IsCoinStake());
-    }
-
-    bool IsProofOfWork() const
-    {
-        return !IsProofOfStake();
-    }
+    bool IsProofOfStake() const;
+    bool IsProofOfWork() const;
 
     std::string ToString() const;
 };

@@ -22,7 +22,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "authhelper.h"
 
 #include <univalue.h>
 
@@ -79,7 +78,12 @@ UniValue importprivkey(const JSONRPCRequest& request)
 {
     if (!EnsureWalletIsAvailable(request.fHelp))
         return NullUniValue;
-
+    if (fWalletUnlockStakingOnly)
+    {
+        std::string strError = _("Error: Wallet unlocked for staking only, unable to create transaction.");
+        throw JSONRPCError(RPC_WALLET_ERROR, strError);
+    }
+    
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
         throw std::runtime_error(
             "importprivkey \"acedprivkey\" ( \"label\" ) ( rescan )\n"
@@ -191,7 +195,7 @@ UniValue importaddress(const JSONRPCRequest& request)
 {
     if (!EnsureWalletIsAvailable(request.fHelp))
         return NullUniValue;
-
+    
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 4)
         throw std::runtime_error(
             "importaddress \"address\" ( \"label\" rescan p2sh )\n"
@@ -412,7 +416,7 @@ UniValue importwallet(const JSONRPCRequest& request)
 {
     if (!EnsureWalletIsAvailable(request.fHelp))
         return NullUniValue;
-
+    
     if (request.fHelp || request.params.size() != 1)
         throw std::runtime_error(
             "importwallet \"filename\"\n"
@@ -645,12 +649,12 @@ UniValue importelectrumwallet(const JSONRPCRequest& request)
     return NullUniValue;
 }
 
-UniValue dumpprivkey(const UniValue& params, bool fHelp)
+UniValue dumpprivkey(const JSONRPCRequest& request)
 {
-    if (!EnsureWalletIsAvailable(fHelp))
+    if (!EnsureWalletIsAvailable(request.fHelp))
         return NullUniValue;
-
-    if (fHelp || params.size() != 1)
+    
+    if (request.fHelp || request.params.size() != 1)
         throw std::runtime_error(
             "dumpprivkey \"address\"\n"
             "\nReveals the private key corresponding to 'address'.\n"
@@ -669,7 +673,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    std::string strAddress = params[0].get_str();
+    std::string strAddress = request.params[0].get_str();
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid AceD address");
@@ -680,50 +684,6 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     if (!pwalletMain->GetKey(keyID, vchSecret))
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
     return CBitcoinSecret(vchSecret).ToString();
-}
-
-UniValue dumpprivkey_aced(const JSONRPCRequest& request)
-{
-    if (request.fHelp || request.params.empty() || request.params.size() > 2)
-        throw std::runtime_error(
-                "dumpprivkey \"address\"\n"
-                "\nReveals the private key corresponding to 'address'.\n"
-                "Then the importprivkey can be used with this output\n"
-                "\nArguments:\n"
-                "1. \"address\"   (string, required) The bitcoin address for the private key\n"
-                "2. \"one-time-auth-code\"   (string, optional) A one time authorization code received from a previous call of dumpprivkey"
-                "\nResult:\n"
-                "\"key\"                (string) The private key\n"
-                "\nExamples:\n"
-                + HelpExampleCli("dumpprivkey", "\"myaddress\"")
-                + HelpExampleCli("dumpprivkey", "\"myaddress\" \"12aB\"")
-                + HelpExampleRpc("dumpprivkey", "\"myaddress\"")
-                + HelpExampleRpc("dumpprivkey", "\"myaddress\",\"12aB\"")
-                + HelpExampleCli("importprivkey", "\"mykey\"")
-        );
-
-    if(request.params.size() == 1 || !AuthorizationHelper::inst().authorize(__FUNCTION__ + request.params[0].get_str(), request.params[1].get_str()))
-    {
-        std::string warning =
-                "WARNING! Your one time authorization code is: " + AuthorizationHelper::inst().generateAuthorizationCode(__FUNCTION__ + request.params[0].get_str()) + "\n"
-                                                                                                                                                               "This command exports your wallet private key. Anyone with this key has complete control over your funds. \n"
-                                                                                                                                                               "If someone asked you to type in this command, chances are they want to steal your coins. \n"
-                                                                                                                                                               "AceD team members will never ask for this command's output and it is not needed for masternode setup or diagnosis!\n"
-                                                                                                                                                               "\n"
-                                                                                                                                                               " Please seek help on one of our public channels. \n"
-                                                                                                                                                               " Telegram: https://t.me/AceDPayOfficial\n"
-                                                                                                                                                               " Discord: https://discord.gg/FgfC53V\n"
-                                                                                                                                                               " Reddit: https://www.reddit.com/r/AceDBlockChain/\n"
-                                                                                                                                                               "\n"
-        ;
-        throw std::runtime_error(warning);
-    }
-
-    UniValue dumpParams;
-    dumpParams.setArray();
-    dumpParams.push_back(request.params[0]);
-
-    return dumpprivkey(dumpParams, false);
 }
 
 UniValue dumphdinfo(const JSONRPCRequest& request)
@@ -769,12 +729,17 @@ UniValue dumphdinfo(const JSONRPCRequest& request)
     return obj;
 }
 
-UniValue dumpwallet(const UniValue& params, bool fHelp)
+UniValue dumpwallet(const JSONRPCRequest& request)
 {
-    if (!EnsureWalletIsAvailable(fHelp))
+    if (fWalletUnlockStakingOnly)
+    {
+        std::string strError = _("Error: Wallet unlocked for staking only, unable to create transaction.");
+        throw JSONRPCError(RPC_WALLET_ERROR, strError);
+    }
+    if (!EnsureWalletIsAvailable(request.fHelp))
         return NullUniValue;
-
-    if (fHelp || params.size() != 1)
+    
+    if (request.fHelp || request.params.size() != 1)
         throw std::runtime_error(
             "dumpwallet \"filename\"\n"
             "\nDumps all wallet keys in a human-readable format.\n"
@@ -790,7 +755,7 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     std::ofstream file;
-    file.open(params[0].get_str().c_str());
+    file.open(request.params[0].get_str().c_str());
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
 
@@ -881,46 +846,6 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     file << "# End of dump\n";
     file.close();
     return NullUniValue;
-}
-
-UniValue dumpwallet_aced(const JSONRPCRequest& request)
-{
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
-        throw std::runtime_error(
-                "dumpwallet \"filename\"\n"
-                "\nDumps all wallet keys in a human-readable format.\n"
-                "\nArguments:\n"
-                "1. \"filename\"             (string, required) The filename\n"
-                "2. \"one-time-auth-code\"   (string, optional) A one time authorization code received from a previous call of dumpwallet"
-                "\nExamples:\n"
-                + HelpExampleCli("dumpwallet", "\"test\"")
-                + HelpExampleCli("dumpwallet", "\"test\" \"12aB\"")
-                + HelpExampleRpc("dumpwallet", "\"test\"")
-                + HelpExampleRpc("dumpwallet", "\"test\",\"12aB\"")
-        );
-
-    if(request.params.size() == 1 || !AuthorizationHelper::inst().authorize(__FUNCTION__ + request.params[0].get_str(), request.params[1].get_str()))
-    {
-        std::string warning =
-                "WARNING! Your one time authorization code is: " + AuthorizationHelper::inst().generateAuthorizationCode(__FUNCTION__ + request.params[0].get_str()) + "\n"
-                                                                                                                                                               "This command exports your wallet private key. Anyone with this key has complete control over your funds. \n"
-                                                                                                                                                               "If someone asked you to type in this command, chances are they want to steal your coins. \n"
-                                                                                                                                                               "AceD team members will never ask for this command's output and it is not needed for masternode setup or diagnosis!\n"
-                                                                                                                                                               "\n"
-                                                                                                                                                               " Please seek help on one of our public channels. \n"
-                                                                                                                                                               " Telegram: https://t.me/AceDPayOfficial\n"
-                                                                                                                                                               " Discord: https://discord.gg/FgfC53V\n"
-                                                                                                                                                               " Reddit: https://www.reddit.com/r/AceDBlockChain/\n"
-                                                                                                                                                               "\n"
-        ;
-        throw std::runtime_error(warning);
-    }
-
-    UniValue dumpParams;
-    dumpParams.setArray();
-    dumpParams.push_back(request.params[0]);
-
-    return dumpwallet(dumpParams, false);
 }
 
 

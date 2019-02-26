@@ -1,6 +1,6 @@
 [Protocol]
-exec=aced-qt '%u'
-protocol=aced
+exec=polis-qt '%u'
+protocol=polis
 input=none
 output=none
 helper=true

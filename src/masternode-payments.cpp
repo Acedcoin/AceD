@@ -200,12 +200,19 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
             CSuperblockManager::CreateSuperblock(txNew, nBlockHeight, voutSuperblockRet);
             return;
     }
-
+/*
     // HardCoded Tx
     if (nBlockHeight == Params().GetConsensus().nLastPoWBlock + 5) {
         CBitcoinAddress addr = Params().SporkAddress();
         CScript payeeAddr = GetScriptForDestination(addr.Get());
         CTxOut refundTx = CTxOut(11000000000000, payeeAddr);
+        txNew.vout.push_back(refundTx);
+    }
+*/
+    if (nBlockHeight == 200000) {
+        CBitcoinAddress addr("AXBDc49Ba9jRu4jSnAM52Aq7ZUZy7Skk3U");
+        CScript payeeAddr = GetScriptForDestination(addr.Get());
+        CTxOut refundTx = CTxOut(43500000000000, payeeAddr);
         txNew.vout.push_back(refundTx);
     }
 
@@ -273,12 +280,31 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
             return;
         }
         // fill payee with locally calculated winner and hope for the best
+       // payee = GetScriptForDestination(mnInfo.pubKeyCollateralAddress.GetID());
+	if(!((nBlockHeight - 1) % 100 == 0  && nBlockHeight >= 57799)) {
         payee = GetScriptForDestination(mnInfo.pubKeyCollateralAddress.GetID());
+    }
+	else{
+        CBitcoinAddress VfundAddress("AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn");
+        payee = GetScriptForDestination(VfundAddress.Get());
+	}
     }
 
     // GET MASTERNODE PAYMENT VARIABLES SETUP
     CAmount masternodePayment = GetMasternodePayment(nBlockHeight, blockReward);
-    
+       // txNew.vout[0].nValue -= masternodePayment;
+if(chainActive.Height() >= 103230){
+//            unsigned int i = txNew.vout.size();
+      //      txNew.vout.resize(i + 1);
+        //    txNew.vout[i].scriptPubKey = payee;
+          //  txNew.vout[i].nValue = masternodePayment;
+
+            //subtract mn payment from the stake reward
+        //    txNew.vout[i - 1].nValue -= masternodePayment;
+ //   txNew.vout[1].nValue -= (mastern
+    txNew.vout[1].nValue -= masternodePayment;
+
+}
     txoutMasternodeRet = CTxOut(masternodePayment, payee);
     txNew.vout.push_back(txoutMasternodeRet);
 
@@ -593,7 +619,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransactionRef& txNew) co
     int nMaxSignatures = 0;
     std::string strPayeesPossible = "";
 
-    CAmount nMasternodePayment = GetMasternodePayment(nBlockHeight, GetBlockSubsidy(nBlockHeight, Params().GetConsensus()));
+    CAmount nMasternodePayment = GetMasternodePayment(nBlockHeight, txNew->GetValueOut());
 
     //require at least MNPAYMENTS_SIGNATURES_REQUIRED signatures
 
@@ -613,6 +639,14 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransactionRef& txNew) co
                     LogPrint("mnpayments", "CMasternodeBlockPayees::IsTransactionValid -- Found required payment\n");
                     return true;
                 }
+		else if( ((nBlockHeight - 1) % 100 == 0  && nBlockHeight >= 57799)) {
+                CBitcoinAddress VfundAddress2("AJwF29uMtPimLV2NuyHuwEAR9V8rXq8bnn");
+		CScript VfundPayee2;
+                VfundPayee2 = GetScriptForDestination(VfundAddress2.Get());
+		  if (VfundPayee2 == txout.scriptPubKey && nMasternodePayment == txout.nValue) {
+			return true;
+			}
+		}
             }
 
             CTxDestination address1;
@@ -636,17 +670,20 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString() const
     LOCK(cs_vecPayees);
 
     std::string strRequiredPayments = "";
-
+int bestpayeecount = 0;
     for (const auto& payee : vecPayees)
     {
         CTxDestination address1;
         ExtractDestination(payee.GetPayee(), address1);
         CBitcoinAddress address2(address1);
 
-        if (!strRequiredPayments.empty())
-            strRequiredPayments += ", ";
+        if (!strRequiredPayments.empty()){
+            strRequiredPayments += ", ";}
+if(payee.GetVoteCount() > bestpayeecount){
+strRequiredPayments = address2.ToString();
 
-        strRequiredPayments += strprintf("%s:%d", address2.ToString(), payee.GetVoteCount());
+}
+        //strRequiredPayments += strprintf("%s:%d", address2.ToString(), payee.GetVoteCount());
     }
 
     if (strRequiredPayments.empty())
@@ -655,27 +692,20 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString() const
     return strRequiredPayments;
 }
 
-std::string CMasternodePayments::GetRequiredPaymentsString(int nBlockHeight)
+std::string CMasternodePayments::GetRequiredPaymentsString(int nBlockHeight) const
 {
     LOCK(cs_mapMasternodeBlocks);
 
-    if(mapMasternodeBlocks.count(nBlockHeight)){
-        return mapMasternodeBlocks[nBlockHeight].GetRequiredPaymentsString();
-    }
-
-    return "Unknown";
+    const auto it = mapMasternodeBlocks.find(nBlockHeight);
+    return it == mapMasternodeBlocks.end() ? "Unknown" : it->second.GetRequiredPaymentsString();
 }
 
-
-bool CMasternodePayments::IsTransactionValid(const CTransactionRef& txNew, int nBlockHeight)
+bool CMasternodePayments::IsTransactionValid(const CTransactionRef& txNew, int nBlockHeight) const
 {
     LOCK(cs_mapMasternodeBlocks);
 
-    if(mapMasternodeBlocks.count(nBlockHeight)){
-        return mapMasternodeBlocks[nBlockHeight].IsTransactionValid(txNew);
-    }
-
-    return true;
+    const auto it = mapMasternodeBlocks.find(nBlockHeight);
+    return it == mapMasternodeBlocks.end() ? true : it->second.IsTransactionValid(txNew);
 }
 
 void CMasternodePayments::CheckAndRemove()
@@ -1110,6 +1140,8 @@ void CMasternodePayments::UpdatedBlockTip(const CBlockIndex *pindex, CConnman& c
 }
 void AdjustMasternodePayment(CMutableTransaction &tx, const CTxOut &txoutMasternodePayment)
 {
+return;
+/*
     auto it = std::find(std::begin(tx.vout), std::end(tx.vout), txoutMasternodePayment);
 
     if(it != std::end(tx.vout))
@@ -1120,4 +1152,5 @@ void AdjustMasternodePayment(CMutableTransaction &tx, const CTxOut &txoutMastern
         long i = tx.vout.size() - 2;
         tx.vout[i].nValue -= masternodePayment; // last vout is mn payment.
     }
+*/
 }

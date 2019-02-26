@@ -262,14 +262,20 @@ public:
     {
         SetNull();
 
-        nVersion            = block.nVersion;
-        hashMerkleRoot      = block.hashMerkleRoot;
-        nTime               = block.nTime;
-        nBits               = block.nBits;
-        nNonce              = block.nNonce;
-        nMoneySupply        = 0;
-        nStakeModifier      = 0;
-        hashProofOfStake    = uint256();
+        nVersion       = block.nVersion;
+        hashMerkleRoot = block.hashMerkleRoot;
+        nTime          = block.nTime;
+        nBits          = block.nBits;
+        nNonce         = block.nNonce;
+
+        //Proof of Stake
+        bnChainTrust = uint256();
+        nMint = 0;
+        nMoneySupply = 0;
+        nFlags = 0;
+        nStakeModifier = 0;
+        nStakeModifierChecksum = 0;
+        hashProofOfStake = uint256();
         if (block.IsProofOfStake()) {
             SetProofOfStake();
             prevoutStake = block.vtx[1]->vin[0].prevout;
@@ -445,7 +451,6 @@ public:
             READWRITE(VARINT(nDataPos));
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
-
         READWRITE(nMint);
         READWRITE(nMoneySupply);
         READWRITE(nFlags);

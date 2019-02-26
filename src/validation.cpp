@@ -42,6 +42,7 @@
 #include "instantx.h"
 #include "masternodeman.h"
 #include "masternode-payments.h"
+#include "base58.h"
 
 #include <atomic>
 #include <sstream>
@@ -992,7 +993,11 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
                               FormatMoney(::incrementalRelayFee.GetFee(nSize))));
             }
         }
-
+       if (chainActive.Height() >= HF_ACTIVATION_BLOCK){
+	if (!HF_CheckTX(tx)) {
+            return false;
+	}
+	}
         // If we aren't going to actually accept it but just were verifying it, we are fine already
         if(fDryRun) return true;
 
@@ -1140,13 +1145,16 @@ bool GetAddressUnspent(uint160 addressHash, int type,
 bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus::Params& consensusParams, uint256 &hashBlock, bool fAllowSlow)
 {
     CBlockIndex *pindexSlow = NULL;
+
     LOCK(cs_main);
+
     CTransactionRef ptx = mempool.get(hash);
     if (ptx)
     {
         txOut = ptx;
         return true;
     }
+
     if (fTxIndex) {
         CDiskTxPos postx;
         if (pblocktree->ReadTxIndex(hash, postx)) {
@@ -1166,6 +1174,7 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
                 return error("%s: txid mismatch", __func__);
             return true;
         }
+
         // transaction not found in index, nothing more can be done
         return false;
     }
@@ -1191,30 +1200,7 @@ bool GetTransaction(const uint256 &hash, CTransactionRef &txOut, const Consensus
     return false;
 }
 
-bool CheckHeaderProof(const CBlockHeader& block, const Consensus::Params& consensusParams) {
 
-    if (block.nTime >= 1540526903 ) {
-        return CheckHeaderProofOfStake(block, consensusParams);
-    } else {
-        return CheckHeaderProofOfWork(block, consensusParams);
-    }
-
-}
-
-bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams)
-{
-    // Get the hash of the proof
-    // After validating the PoS block the computed hash proof is saved in the block index, which is used to check the index
-    bool IsPosBlock = block.nTime >= 1540526903;
-    uint256 hashProof = IsPosBlock ? block.GetBlockHash() : block.hashProofOfStake;
-    // Check for proof after the hash proof is computed
-    if (IsPosBlock ) {
-        //blocks are loaded out of order, so checking PoS kernels here is not practical
-        return true;
-    } else {
-        return CheckProofOfWork(hashProof, block.nBits, consensusParams);
-    }
-}
 
 
 
@@ -1263,7 +1249,7 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if (!CheckHeaderProof(block, consensusParams))
+    if (block.IsProofOfWork() && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -1271,7 +1257,6 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
 
 bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
 {
-
     if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
         return false;
     if (block.GetHash() != pindex->GetBlockHash())
@@ -1305,15 +1290,17 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
         might be a good idea to change this to use prev bits
         but current height to avoid confusion.
 */
-CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
-{
-    CAmount nSubsidyBase = 10;
+
+//CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+//{
+  //  CAmount nSubsidyBase = 10;
     /*
     NOTE:   unlike bitcoin we are using PREVIOUS block height here,
             might be a good idea to change this to use prev bits
             but current height to avoid confusion.
     */
     // Old Block reward
+/*
     if(nPrevHeight <= 4) {nSubsidyBase = 50000;}
     if(nPrevHeight == 9) {nSubsidyBase = 1;}
     if(nPrevHeight == 19) {nSubsidyBase = 1;}
@@ -1336,30 +1323,100 @@ CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParam
     if(nPrevHeight == 141119) {nSubsidyBase = 5000;}
     if(nPrevHeight == 161279) {nSubsidyBase = 5000;}
     if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
-    if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
-    if(nPrevHeight == 201599) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 181439) {nSubsidyBase = 5000;}*/
 
     // New Block Reward
-    if(nPrevHeight > 201599) {nSubsidyBase = 20;}
+    //if(nPrevHeight > 188328) {nSubsidyBase = 20;}
 
     // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
-    CAmount nSubsidy = nSubsidyBase * COIN;
+    //CAmount nSubsidy = nSubsidyBase * COIN;
 
     // yearly decline of production by ~20% per year, projected ~25M coins max by year 2043+.
-    for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
-        nSubsidy -= nSubsidy/5;
-    }
+    //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+      //  nSubsidy -= nSubsidy/5;
+    //}
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+    //CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
 
-    return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
-}
+    //return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
+//}
+//CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
+//{
+  //  CAmount ret = blockValue/4; // start at 20%
+   // if(nHeight > 7000) ret = blockValue / 1.25;
+    //return ret;
+//}
+//CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+   {
+       double dDiff;
+        CAmount nSubsidyBase = 10;
+  /*
+  NOTE:   unlike bitcoin we are using PREVIOUS block height here,
+          might be a good idea to change this to use prev bits
+          but current height to avoid confusion.
+  */
+    if(nPrevHeight <= 4) {nSubsidyBase = 300000;}
+    if(nPrevHeight == 9) {nSubsidyBase = 1;}
+    if(nPrevHeight == 19) {nSubsidyBase = 1;}
+    if(nPrevHeight == 719) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 1439) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 2159) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 2879) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 3599) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 4319) {nSubsidyBase = 1000;}
+    if(nPrevHeight == 5039) {nSubsidyBase = 1000;}
+    if(nPrevHeight > 6000) {nSubsidyBase = 20;}
+    if(nPrevHeight == 10079) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 15119) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 17170) {nSubsidyBase = 19;}
+    if(nPrevHeight == 17171) {nSubsidyBase = 21;}
+    if(nPrevHeight >= 32801) {nSubsidyBase = 18;}
+    if(nPrevHeight > 1314000) {nSubsidyBase = 2;}
+    if(nPrevHeight > 2628000) {nSubsidyBase = 0.1;}
+   /* if(nPrevHeight == 20159) {nSubsidyBase = 2000;}
+    if(nPrevHeight == 40319) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 60479) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 80639) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 100799) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 120959) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 141119) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 161279) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 181439) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 201599) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 221759) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 241919) {nSubsidyBase = 5000;}
+    if(nPrevHeight == 483839) {nSubsidyBase = 10000;}
+    if(nPrevHeight == 725759) {nSubsidyBase = 10000;}
+    if(nPrevHeight == 967679) {nSubsidyBase = 10000;}
+    if(nPrevHeight == 1209599) {nSubsidyBase = 10000;}
+		*/
+        // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
+       CAmount nSubsidy = nSubsidyBase * COIN;
+
+      // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
+      //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+        //  nSubsidy -= nSubsidy/14;
+      //}
+
+      // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
+     // CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+   if(((nPrevHeight) % 100 == 0) && nPrevHeight >= 57798) {
+        nSubsidy = (((nSubsidy/0.9) * .1) * 100)+(nSubsidy*.2);
+	}
+
+       return nSubsidy;
+   }
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
-{
-    return blockValue * 0.8 ;
-}
-
+    {
+       CAmount ret = blockValue/4; // start at 20%
+       if(nHeight > 7000) ret = blockValue / 1.25;
+    if ((nHeight-1) % 100 == 0 && nHeight >= 57799){
+	return blockValue * .982318;
+	}
+       return ret;
+   }
 bool IsInitialBlockDownload()
 {
     // Once this function has returned false, it must remain false.
@@ -2343,17 +2400,20 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
     // TODO: resync data (both ways?) and try to reprocess this block later.
-    CAmount expectedReward = pindex->nHeight == Params().GetConsensus().nLastPoWBlock + 5
-            ?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 11000000000000
+    //pindex->nHeight == Params().GetConsensus().nLastPoWBlock + 5
+            //?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 11000000000000
+    //CAmount expectedReward =  GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
+    CAmount expectedReward = pindex->nHeight == 200000 //30,005 trigger
+            ?  GetBlockSubsidy(pindex->pprev->nHeight, chainparams.GetConsensus()) + 43500000000000
             : GetBlockSubsidy(pindex->pprev->nHeight,chainparams.GetConsensus());
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, expectedReward, pindex->nMint, strError)) {
         return state.DoS(0, error("ConnectBlock(ACED): %s", strError), REJECT_INVALID, "bad-cb-amount");
     }
-    const auto& coinbaseTransaction = (pindex->nHeight >= Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
+    const auto& coinbaseTransaction = (pindex->nHeight > Params().GetConsensus().nLastPoWBlock ? block.vtx[1] : block.vtx[0]);
 
     if (!IsBlockPayeeValid(coinbaseTransaction, pindex->nHeight, expectedReward, pindex->nMint)) {
-        //        mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
+        mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
         return state.DoS(0, error("ConnectBlock(ACED): couldn't find masternode or superblock payments"),
                          REJECT_INVALID, "bad-cb-payee");
     }
@@ -2423,6 +2483,85 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     int64_t nTime6 = GetTimeMicros(); nTimeCallbacks += nTime6 - nTime5;
     LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n", 0.001 * (nTime6 - nTime5), nTimeCallbacks * 0.000001);
 
+    return true;
+}
+bool HF_IsBlocked(const CScript& scriptPubKey) {
+    CTxDestination dest;
+    ExtractDestination(scriptPubKey, dest);
+    CBitcoinAddress txAddr(dest);
+    std::string txAddrStr = txAddr.ToString();
+if (chainActive.Height() >= 103230) {
+    BOOST_FOREACH(const std::string addr, HF_blAddrs_fork) {
+        if (txAddrStr == addr) {
+        LogPrintf("debug my ass\n");
+            return true;
+        }
+}
+} else {
+    BOOST_FOREACH(const std::string addr, HF_blAddrs) {
+        if (txAddrStr == addr) {
+	LogPrintf("debug my ass\n");
+            return true;
+    	}
+}
+}
+    return false;
+}
+
+bool HF_CheckTX(const CTransaction& tx) {
+    if (tx.IsCoinBase()) {
+        // skip
+        return true; 
+    }
+
+          BOOST_FOREACH(const CTxIn &txin, tx.vin) {
+	CTransactionRef wtxPrev2;
+        uint256 prevTxBlockHash;
+	//GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction 
+	GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true);
+	CTxDestination source;
+	const CTransaction* wtxPrev = wtxPrev2.get();
+	ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[n]
+	CBitcoinAddress addressSource(source);                // convert this to an address
+	CScript blocker = GetScriptForDestination(addressSource.Get());
+
+            if (HF_IsBlocked(blocker)) {
+                //LogPrintf("CheckDevFundPayment -- Found required payment: %s\n", txNew.ToString().c_str());
+                //fFound = true;
+              //  break;
+		LogPrintf("nonpointer works\n");
+		return false;
+            }
+        }
+    return true;
+}
+bool HF_CheckTXpointer(const CTransactionRef& tx2) {
+    const CTransaction* tx  = tx2.get();
+    if (tx->IsCoinBase()) {
+        // skip
+        return true;
+    }
+
+          BOOST_FOREACH(const CTxIn &txin, tx->vin) {
+        CTransactionRef wtxPrev2;
+        uint256 prevTxBlockHash;
+        //GetTransaction(vin.prevout.hash, wtxPrev)){    // get the vin's previous transaction
+        if(GetTransaction(txin.prevout.hash, wtxPrev2, Params().GetConsensus(), prevTxBlockHash, true)){
+        CTxDestination source;
+        const CTransaction* wtxPrev = wtxPrev2.get();
+        ExtractDestination(wtxPrev->vout[txin.prevout.n].scriptPubKey, source);  // extract the destination of the previous transaction's vout[$
+        CBitcoinAddress addressSource(source);                // convert this to an address
+        CScript blocker = GetScriptForDestination(addressSource.Get());
+
+            if (HF_IsBlocked(blocker)) {
+                //LogPrintf("CheckDevFundPayment -- Found required payment: %s\n", txNew.ToString().c_str());
+                //fFound = true;
+              //  break;
+		LogPrintf("pointer code works\n");
+                return false;
+            }
+        }
+	}
     return true;
 }
 
@@ -3148,7 +3287,7 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     if(!pindexNew)
         return;
 
-    if (block.IsProofOfStake()) {
+    if (block.IsProofOfStake() && (5==6)) {
         pindexNew->SetProofOfStake();
         pindexNew->prevoutStake = block.vtx[1]->vin[0].prevout;
         pindexNew->nStakeTime = block.nTime;
@@ -3177,15 +3316,17 @@ static void AcceptProofOfStakeBlock(const CBlock &block, CBlockIndex *pindexNew)
     }
 
     // ppcoin: compute stake modifier
-    uint64_t nStakeModifier = 0;
-    bool fGeneratedStakeModifier = false;
-    if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
-        LogPrintf("AcceptProofOfStakeBlock() : ComputeNextStakeModifier() failed \n");
-    pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
-    pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-    if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-        LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+    if (pindexNew->IsProofOfStake() && (5==6)) {
 
+        uint64_t nStakeModifier = 0;
+        bool fGeneratedStakeModifier = false;
+        if (!ComputeNextStakeModifier(pindexNew, nStakeModifier, fGeneratedStakeModifier))
+            LogPrintf("AcceptProofOfStakeBlock() : ComputeNextStakeModifier() failed \n");
+        pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
+        pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
+        if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
+            LogPrintf("AcceptProofOfStakeBlock() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+    }
 
     setDirtyBlockIndex.insert(pindexNew);
 
@@ -3360,71 +3501,12 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
     return true;
 }
 
-bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams)
+bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW)
 {
-    // Check for proof of work block header
-    return CheckProofOfWork(block.GetHash(), block.nBits, consensusParams);
-}
-
-bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams)
-{
-    // Check for proof of stake block header
-    // Get prev block index
-    BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
-    if (mi == mapBlockIndex.end()) {
-        LogPrintf("CheckHeaderProofOfStake(): Unable to find block on mapBlockIndex");
-        return false;
-    }
-
-    // Check the kernel hash
-    CBlockIndex* pindexPrev = (*mi).second;
-    return CheckKernel(pindexPrev, block.nBits, block.nTime, /*block.prevoutStake,  */ *pcoinsTip);
-}
-
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, /*const COutPoint& prevout ,*/ CCoinsViewCache& view)
-{
-    uint256 hashProofOfStake, targetProofOfStake;
-
-    // not found in cache (shouldn't happen during staking, only during verification which does not use cache)
-    Coin coinPrev;
-/*    if(!view.GetCoin(prevout, coinPrev)){
-        LogPrintf("CheckKernel(): null GetCoinCache \n");
-        return false;
-    }*/
-
-    if(pindexPrev->nHeight + 1 - coinPrev.nHeight < COINBASE_MATURITY){
-        LogPrintf("CheckKernel(): Failed non-mature spent \n");
-        return false;
-    }
-
-    CBlockIndex* blockFrom = pindexPrev->GetAncestor(coinPrev.nHeight);
-/*    if(!blockFrom) {
-        LogPrintf("CheckKernel(): Failed null blockFrom \n");
-        return false;
-    }*/
-
-/*    if(coinPrev.IsSpent()){
-        LogPrintf("CheckKernel(): coinPrev is spent \n");
-        return false;
-    }*/
-
-    return true;
-    //return CheckStakeKernelHash(nBits, blockFrom, sizeof(blockFrom), prevout, nTimeBlock, hashProofOfStake, false, true);
-}
-
-bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS)
-{
-
     // Check proof of work matches claimed amount
     if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
-
-    if (fCheckPOS && !IsInitialBlockDownload()){
-        // Check PoS
-       // if(!CheckHeaderProofOfStake(block, consensusParams))
-       //     return state.DoS(50, false, REJECT_INVALID, "kernel-hash", false, "CheckBlockHeader(): Check proof of stake failed");
-    }
-
+        return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
+                         REJECT_INVALID, "high-hash");
     // Check timestamp
     if (block.GetBlockTime() > GetAdjustedTime() + 2 * 60 * 60)
         return state.Invalid(error("CheckBlockHeader(): block timestamp too far in the future"),
@@ -3448,12 +3530,10 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (block.fChecked)
         return true;
 
-    bool IsProofOfStake = block.vtx.size() > 1 && block.vtx[1]->IsCoinStake();
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if (!CheckBlockHeader(block, state, consensusParams, !IsProofOfStake, IsProofOfStake))
+    if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW && block.IsProofOfWork()))
         return false;
-
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -3512,7 +3592,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     }
 
 
-    if (block.IsProofOfStake()) {
+    if (block.IsProofOfStake() && (5==6)) {
         // Second transaction must be coinstake, the rest must not be
         if (block.vtx.empty() || !block.vtx[1]->IsCoinStake())
             return state.DoS(100, error("CheckBlock() : second tx is not coinstake"));
@@ -3673,9 +3753,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
     BlockMap::iterator miSelf = mapBlockIndex.find(hash);
     CBlockIndex *pindex = NULL;
 
-
     // TODO : ENABLE BLOCK CACHE IN SPECIFIC CASES
-
     if (hash != chainparams.GetConsensus().hashGenesisBlock) {
 
         if (miSelf != mapBlockIndex.end()) {
@@ -3683,19 +3761,13 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
             pindex = miSelf->second;
             if (ppindex)
                 *ppindex = pindex;
-            if (pindex->nHeight <= chainparams.GetConsensus().nLastPoWBlock) {
-                if (pindex->nStatus & BLOCK_FAILED_MASK)
-                    return state.Invalid(error("%s: block %s is marked invalid", __func__, hash.ToString()), 0, "duplicate");
-            }
-
+            if (pindex->nStatus & BLOCK_FAILED_MASK)
+                return state.Invalid(error("%s: block %s is marked invalid", __func__, hash.ToString()), 0, "duplicate");
             return true;
         }
 
-
-        bool IsProofOfStake = block.nTime >= 1540526903;
-        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), !IsProofOfStake, IsProofOfStake))
+        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), false))
             return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
-
 
         // Get prev block index
         CBlockIndex* pindexPrev = NULL;
@@ -3703,10 +3775,8 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
         if (mi == mapBlockIndex.end())
             return state.DoS(10, error("%s: prev block not found", __func__), 0, "bad-prevblk");
         pindexPrev = (*mi).second;
-        if (pindexPrev->nHeight <= chainparams.GetConsensus().nLastPoWBlock) {
-            if (pindexPrev->nStatus & BLOCK_FAILED_MASK)
-                return state.DoS(100, error("%s: prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
-        }
+        if (pindexPrev->nStatus & BLOCK_FAILED_MASK)
+            return state.DoS(100, error("%s: prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
 
         assert(pindexPrev);
         if (fCheckpointsEnabled && !CheckIndexAgainstCheckpoint(pindexPrev, state, chainparams, hash))
@@ -3800,12 +3870,22 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
 
     AcceptProofOfStakeBlock(block, pindex);
 
+
     // Header is valid/has work, merkle tree is good...RELAY NOW
     // (but if it does not build on our best tip, let the SendMessages loop relay it)
     if (!IsInitialBlockDownload() && chainActive.Tip() == pindex->pprev)
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
     int nHeight = pindex->nHeight;
+    if (nHeight >= HF_ACTIVATION_BLOCK) {
+       // BOOST_FOREACH(const CTransaction&tx, block.vtx) {
+        for (const auto& tx : block.vtx) {
+            if (!HF_CheckTXpointer(tx)) {
+                return false;
+            }
+        }
+    }
+    AcceptProofOfStakeBlock(block, pindex);
 
     // Write block to history file
     try {
@@ -4262,10 +4342,6 @@ bool CVerifyDB::VerifyDB(const CChainParams& chainparams, CCoinsView *coinsview,
         // check level 0: read from disk
         if (!ReadBlockFromDisk(block, pindex, chainparams.GetConsensus()))
             return error("VerifyDB(): *** ReadBlockFromDisk failed at %d, hash=%s", pindex->nHeight, pindex->GetBlockHash().ToString());
-        // Verify correct stakeModifier calculations
-        if (pindex->nStakeModifier == 0) {
-            return error("VerifyDB(): *** Check StakeModifier failed at %d, hash=%s", pindex->nHeight, pindex->GetBlockHash().ToString());
-        }
         // check level 1: verify block validity
         if (nCheckLevel >= 1 && !CheckBlock(block, state, chainparams.GetConsensus()))
             return error("%s: *** found bad block at %d, hash=%s (%s)\n", __func__,
@@ -4367,7 +4443,6 @@ static bool AddGenesisBlock(const CChainParams& chainparams, const CBlock& block
     if (!WriteBlockToDisk(block, blockPos, chainparams.MessageStart()))
         return error("%s: writing genesis block to disk failed", __func__);
     CBlockIndex *pindex = AddToBlockIndex(block);
-    AcceptProofOfStakeBlock(block, pindex);
     if (!ReceivedBlockTransactions(block, state, pindex, blockPos))
         return error("%s: genesis block not accepted", __func__);
     return true;

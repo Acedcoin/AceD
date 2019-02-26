@@ -13,10 +13,6 @@ define $(package)_config_cmds
   $($(package)_autoconf)
 endef
 
-define $(package)_preprocess_cmds
-  cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub use
-endef
-
 define $(package)_build_cmds
   $(MAKE)
 endef

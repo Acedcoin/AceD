@@ -369,9 +369,9 @@ void BitcoinGUI::createActions()
 #else
         governanceAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
 #endif
-        tabGroup->addAction(governanceAction);
-        connect(governanceAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-        connect(governanceAction, SIGNAL(triggered()), this, SLOT(gotoGovernancePage()));
+//        tabGroup->addAction(governanceAction);
+  //      connect(governanceAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    //    connect(governanceAction, SIGNAL(triggered()), this, SLOT(gotoGovernancePage()));
     }
 
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
@@ -914,7 +914,7 @@ void BitcoinGUI::gotoMasternodePage()
         if (walletFrame) walletFrame->gotoMasternodePage();
     }
 }
-
+/*
 void BitcoinGUI::gotoGovernancePage()
 {
     QSettings settings;
@@ -922,7 +922,7 @@ void BitcoinGUI::gotoGovernancePage()
         governanceAction->setChecked(true);
         if (walletFrame) walletFrame->gotoGovernancePage();
     }
-}
+}*/
 
 void BitcoinGUI::gotoReceiveCoinsPage()
 {

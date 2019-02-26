@@ -223,7 +223,7 @@ private Q_SLOTS:
     /** Switch to masternode page */
     void gotoMasternodePage();
     /** Switch to masternode page */
-    void gotoGovernancePage();
+    //void gotoGovernancePage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

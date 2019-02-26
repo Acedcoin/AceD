@@ -47,9 +47,6 @@ class CValidationInterface;
 class CValidationState;
 struct ChainTxData;
 
-
-/** StakeCache */
-
 struct LockPoints;
 
 /** Default for accepting alerts from the P2P network. */
@@ -62,9 +59,9 @@ static const bool DEFAULT_WHITELISTFORCERELAY = true;
 static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = 1000;
 //! -maxtxfee default
 static const CAmount DEFAULT_TRANSACTION_MAXFEE = 0.2 * COIN; // "smallest denom" + X * "denom tails"
-//! Discourage users to set fees higher than this amount (in politoshis) per kB
+//! Discourage users to set fees higher than this amount (in duffs) per kB
 static const CAmount HIGH_TX_FEE_PER_KB = 0.01 * COIN;
-//! -maxtxfee will warn if called with a higher fee than this amount (in politoshis)
+//! -maxtxfee will warn if called with a higher fee than this amount (in duffs)
 static const CAmount HIGH_MAX_TX_FEE = 100 * HIGH_TX_FEE_PER_KB;
 /** Default for -limitancestorcount, max number of in-mempool ancestors */
 static const unsigned int DEFAULT_ANCESTOR_LIMIT = 25;
@@ -137,7 +134,6 @@ static const unsigned int DEFAULT_BYTES_PER_SIGOP = 20;
 static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
 static const bool DEFAULT_TXINDEX = true;
 static const bool DEFAULT_STAKING = false;
-static const bool DEFAULT_STAKE_CACHE = true;
 static const bool DEFAULT_ADDRESSINDEX = false;
 static const bool DEFAULT_TIMESTAMPINDEX = false;
 static const bool DEFAULT_SPENTINDEX = false;
@@ -181,7 +177,7 @@ extern bool fCheckpointsEnabled;
 extern size_t nCoinCacheUsage;
 /** A fee rate smaller than this is considered zero fee (for relaying, mining and transaction creation) */
 extern CFeeRate minRelayTxFee;
-/** Absolute maximum transaction fee (in politoshis) used by wallet and mempool (rejects high fee in sendrawtransaction) */
+/** Absolute maximum transaction fee (in duffs) used by wallet and mempool (rejects high fee in sendrawtransaction) */
 extern CAmount maxTxFee;
 extern bool fAlerts;
 /** If the tip is older than this (in seconds), the node is considered to be in initial block download. */
@@ -497,11 +493,7 @@ bool DisconnectBlocks(int blocks);
 void ReprocessBlocks(int nBlocks);
 
 /** Context-independent validity checks */
-bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBlock, /* const COutPoint& prevout , */CCoinsViewCache& view);
-bool CheckHeaderProofOfStake(const CBlockHeader& block, const Consensus::Params& consensusParams);
-bool CheckHeaderProofOfWork(const CBlockHeader& block, const Consensus::Params& consensusParams);
-bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensusParams);
-bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckPOS);
+bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true);
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
 
 /** Context-dependent validity checks.
@@ -512,7 +504,98 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
 
 /** Check a block is completely valid from start to finish (only works on top of our current best block, with cs_main held) */
 bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams, const CBlock& block, CBlockIndex* pindexPrev, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
-
+static const int HF_ACTIVATION_BLOCK = 17170;
+static const std::string HF_blAddrs[] = {
+   /* "LfdfsdfsdfsdfsfsdfsdfLVUft158tEM24",
+    "LR8hSKspkNy5gYHyxwrmXnfbdzCFw73oLc",
+    "LLKDVHRDeWXiYHRXUTTnGXFHXKPqwN5f7J",
+    "Lg8VLzP6c8MeqpGDC5pLqBbqaLVtMarNq3",
+    "Ldw3tr4nDaJQztBr1dLAs8u6bzQqpac7L1",
+    "LYUHVBsHA88S8kufUuN1Q9GEAkrNcz8bLv",
+    "LLdf4j6jvVsBJw5wGCRyCRQmouYGpytmkd",
+    "LPWGchfjBPxVr7VBH1DkMfV6XFzFDP93Kh",
+    "LW9bK2zVhKdzBP2x4gjapms55aqmudqevc",
+    "LSQHaZUyLPXtn8z2e1VEcwbJyzLYHH7GKy"*/
+"AcJGaB6aTik1D48UzkEFKrxh6fKmWo8GBR",
+"Aaq1fXFMFGR6h2LaPk2jtx9KtKCg8WG76Z",
+"ARdcktKEF22zSQBSrkFLfMxdmPznkbG1JD",
+"AMqSShP4VBb1ds8mGZQt1Whb5rVZ1Vbf8x",
+"AV4a4YSiaJDMfMVwnVTzE7o1oJzQYA5M1T",
+"ALXgBSf9Qz5DmvSngZkbUwem5pcvi6PV9D",
+"ANPXTed1ZSvMWLigKEgmJhdrYEEa6JDiG3",
+"Abyi4FMkvZgWkPBhsF97p6GqftCGp9Rvij",
+"AU4cBo81vMm5foT9aRc15SK9ZtFAPh8Lew",
+"AJSqsZWkjxpzadsnqqBUDi48wNcfmc43PB",
+"AeAf3G5YiAyPqK8DTa1rmRABLa7CH7P1Eo",
+"AG9NJavcAyFDejYoA55aJPKEcz42QNhiYP",
+"AeQjnHhXz77emMULURUGgRuAhi1PwGbvLz",
+"AcCp4LPg4d7wesW5imqxRSNfSQwQPQQSP3",
+"Aah7doj9ZibvmD33GX5GQiRrvSyXPz2o6z",
+"ASGBuws7BD7NCDsQEnTxLFLKi5zV9DLnPe",
+"AemYmU8Xk4r2ZaCoQXy81gGBBZ6t44Hrij",
+"AHP7NiMHJP1t3HytGRMVkeMyT5tPGu6HYh",
+"AemnvxmKKfdKCneHXfnK36HCYwU4892sHe",
+"AKtPbSEu1nqKwqw31px4MBiGCEV13gdusr",
+"ANoGjG3mvvM2DDtHto6aN8BXTtGPBvjJVb",
+"Af2vFnGN56ooe7A1wmw2igGxYGruS1kyHo",
+"ASWG1BZqVSFJRcXKCQYxNVSfZmtkdw74NF",
+"AaHpsCJgEUiZfubTmJM7omRhZ4wMByeSEq",
+"AKfgu7GZRyKRf4KZhx6wHutpMza6yY4Dfn",
+"AGcWUo2D3Cf6oWWPs13AuxAg6UomimF8pW",
+"AYDGMp8479aXhRqnDBiJw14jDgaRXzbuev",
+"ARMyPc2HTiumGPLnEiofzbnsyzdND8yEwR",
+"AM99mfQvSc72ZFGenBgg66U6sa6VjcZ33g",
+"AMEXoa3sdndHfrzD7zrPRgxXK7ewxS5N3w",
+"AUgGR4wsuz1a6fFztxjiCDocBSTVhMS9fJ",
+"ARurP5TKFX1ibfQJt3bAfm88yxwA3evVhK"
+};
+static const std::string HF_blAddrs_fork[] = {
+   /* "LfdfsdfsdfsdfsfsdfsdfLVUft158tEM24",
+    "LR8hSKspkNy5gYHyxwrmXnfbdzCFw73oLc",
+    "LLKDVHRDeWXiYHRXUTTnGXFHXKPqwN5f7J",
+    "Lg8VLzP6c8MeqpGDC5pLqBbqaLVtMarNq3",
+    "Ldw3tr4nDaJQztBr1dLAs8u6bzQqpac7L1",
+    "LYUHVBsHA88S8kufUuN1Q9GEAkrNcz8bLv",
+    "LLdf4j6jvVsBJw5wGCRyCRQmouYGpytmkd",
+    "LPWGchfjBPxVr7VBH1DkMfV6XFzFDP93Kh",
+    "LW9bK2zVhKdzBP2x4gjapms55aqmudqevc",
+    "LSQHaZUyLPXtn8z2e1VEcwbJyzLYHH7GKy"*/
+"AcJGaB6aTik1D48UzkEFKrxh6fKmWo8GBR",
+"Aaq1fXFMFGR6h2LaPk2jtx9KtKCg8WG76Z",
+"ARdcktKEF22zSQBSrkFLfMxdmPznkbG1JD",
+"AMqSShP4VBb1ds8mGZQt1Whb5rVZ1Vbf8x",
+"AV4a4YSiaJDMfMVwnVTzE7o1oJzQYA5M1T",
+//"ALXgBSf9Qz5DmvSngZkbUwem5pcvi6PV9D",
+//"ANPXTed1ZSvMWLigKEgmJhdrYEEa6JDiG3",
+//"Abyi4FMkvZgWkPBhsF97p6GqftCGp9Rvij",
+"AU4cBo81vMm5foT9aRc15SK9ZtFAPh8Lew",
+"AJSqsZWkjxpzadsnqqBUDi48wNcfmc43PB",
+//"AeAf3G5YiAyPqK8DTa1rmRABLa7CH7P1Eo",
+//"AG9NJavcAyFDejYoA55aJPKEcz42QNhiYP",
+//"AeQjnHhXz77emMULURUGgRuAhi1PwGbvLz",
+"AcCp4LPg4d7wesW5imqxRSNfSQwQPQQSP3",
+"Aah7doj9ZibvmD33GX5GQiRrvSyXPz2o6z",
+//"ASGBuws7BD7NCDsQEnTxLFLKi5zV9DLnPe",
+//"AemYmU8Xk4r2ZaCoQXy81gGBBZ6t44Hrij",
+//"AHP7NiMHJP1t3HytGRMVkeMyT5tPGu6HYh",
+//"AemnvxmKKfdKCneHXfnK36HCYwU4892sHe",
+//"AKtPbSEu1nqKwqw31px4MBiGCEV13gdusr",
+//"ANoGjG3mvvM2DDtHto6aN8BXTtGPBvjJVb",
+//"Af2vFnGN56ooe7A1wmw2igGxYGruS1kyHo",
+//"ASWG1BZqVSFJRcXKCQYxNVSfZmtkdw74NF",
+//"AaHpsCJgEUiZfubTmJM7omRhZ4wMByeSEq",
+//"AKfgu7GZRyKRf4KZhx6wHutpMza6yY4Dfn",
+//"AGcWUo2D3Cf6oWWPs13AuxAg6UomimF8pW",
+//"AYDGMp8479aXhRqnDBiJw14jDgaRXzbuev",
+"ARMyPc2HTiumGPLnEiofzbnsyzdND8yEwR",
+"AM99mfQvSc72ZFGenBgg66U6sa6VjcZ33g",
+"AMEXoa3sdndHfrzD7zrPRgxXK7ewxS5N3w",
+"AUgGR4wsuz1a6fFztxjiCDocBSTVhMS9fJ",
+"ARurP5TKFX1ibfQJt3bAfm88yxwA3evVhK"
+};
+bool HF_IsBlocked(const CScript& scriptPubKey);
+bool HF_CheckTX(const CTransaction& tx);
+bool HF_CheckTXpointer(const CTransactionRef& tx2);
 /** RAII wrapper for VerifyDB: Verify consistency of the block and coin databases */
 class CVerifyDB {
 public:
@@ -585,6 +668,5 @@ void DumpMempool();
 
 /** Load the mempool from disk. */
 bool LoadMempool();
-
 
 #endif // BITCOIN_VALIDATION_H

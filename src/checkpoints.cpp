@@ -31,4 +31,3 @@ namespace Checkpoints {
     }
 
 } // namespace Checkpoints
-
