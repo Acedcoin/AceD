@@ -22,7 +22,7 @@ QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
     unitlist.append(ACED);
     unitlist.append(mACED);
     unitlist.append(uACED);
-    unitlist.append(politoshis);
+    unitlist.append(acedtoshis);
     return unitlist;
 }
 
@@ -33,7 +33,7 @@ bool BitcoinUnits::valid(int unit)
     case ACED:
     case mACED:
     case uACED:
-    case politoshis:
+    case acedtoshis:
         return true;
     default:
         return false;
@@ -49,7 +49,7 @@ QString BitcoinUnits::name(int unit)
             case ACED: return QString("ACED");
             case mACED: return QString("mACED");
             case uACED: return QString::fromUtf8("μACED");
-            case politoshis: return QString("politoshis");
+            case acedtoshis: return QString("acedtoshis");
             default: return QString("???");
         }
     }
@@ -60,7 +60,7 @@ QString BitcoinUnits::name(int unit)
             case ACED: return QString("tACED");
             case mACED: return QString("mtACED");
             case uACED: return QString::fromUtf8("μtACED");
-            case politoshis: return QString("tpolitoshis");
+            case acedtoshis: return QString("tacedtoshis");
             default: return QString("???");
         }
     }
@@ -75,7 +75,7 @@ QString BitcoinUnits::description(int unit)
             case ACED: return QString("AceD");
             case mACED: return QString("Milli-AceD (1 / 1" THIN_SP_UTF8 "000)");
             case uACED: return QString("Micro-AceD (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case politoshis: return QString("Ten Nano-AceD (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case acedtoshis: return QString("Ten Nano-AceD (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -86,7 +86,7 @@ QString BitcoinUnits::description(int unit)
             case ACED: return QString("TestAceDs");
             case mACED: return QString("Milli-TestAceD (1 / 1" THIN_SP_UTF8 "000)");
             case uACED: return QString("Micro-TestAceD (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case politoshis: return QString("Ten Nano-TestAceD (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case acedtoshis: return QString("Ten Nano-TestAceD (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -99,7 +99,7 @@ qint64 BitcoinUnits::factor(int unit)
     case ACED:  return 100000000;
     case mACED: return 100000;
     case uACED: return 100;
-    case politoshis: return 1;
+    case acedtoshis: return 1;
     default:   return 100000000;
     }
 }
@@ -111,7 +111,7 @@ int BitcoinUnits::decimals(int unit)
     case ACED: return 8;
     case mACED: return 5;
     case uACED: return 2;
-    case politoshis: return 0;
+    case acedtoshis: return 0;
     default: return 0;
     }
 }

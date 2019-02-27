@@ -60,7 +60,7 @@ public:
         ACED,
         mACED,
         uACED,
-        politoshis
+        acedtoshis
     };
 
     enum SeparatorStyle
