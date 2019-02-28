@@ -1376,6 +1376,7 @@ CAmount GetBlockSubsidy(int nPrevHeight, const Consensus::Params& consensusParam
     if(nPrevHeight > 1314000) {nSubsidyBase = 2;}
     if(nPrevHeight > 2628000) {nSubsidyBase = 0.1;}
 	if(nPrevHeight == 193799) {nSubsidyBase = 19;} //ensure old wallet cannot pass fork block ;)
+if(nPrevHeight == 193811) {nSubsidyBase = 16;}
    /* if(nPrevHeight == 20159) {nSubsidyBase = 2000;}
     if(nPrevHeight == 40319) {nSubsidyBase = 5000;}
     if(nPrevHeight == 60479) {nSubsidyBase = 5000;}
