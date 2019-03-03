@@ -44,6 +44,10 @@ QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)
 
         if (fOffline) {
             strTxStatus = tr("%1/offline").arg(nDepth);
+//	} else if (wtx.tx->IsCoinStake() && !wtx.InMempool() && !wtx.isAbandoned()) {
+	//one sec
+//	wallet->AbandonTransaction(wtx.GetHash());
+	//auto abandon failed coin-stakes
         } else if (nDepth == 0) {
             strTxStatus = tr("0/unconfirmed, %1").arg((wtx.InMempool() ? tr("in memory pool") : tr("not in memory pool"))) + (wtx.isAbandoned() ? ", "+tr("abandoned") : "");
         } else if (nDepth < 6) {
@@ -83,7 +87,10 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
     CAmount nCredit = wtx.GetCredit(ISMINE_ALL);
     CAmount nDebit = wtx.GetDebit(ISMINE_ALL);
     CAmount nNet = nCredit - nDebit;
-
+     if (wtx.tx->IsCoinStake() && !wtx.InMempool() && !wtx.isAbandoned()) {
+        //one sec
+      wallet->AbandonTransaction(wtx.GetHash());
+	}
     strHTML += "<b>" + tr("Status") + ":</b> " + FormatTxStatus(wtx);
     int nRequests = wtx.GetRequestCount();
     if (nRequests != -1)
