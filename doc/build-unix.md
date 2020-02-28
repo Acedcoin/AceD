@@ -67,6 +67,8 @@ Build requirements:
 
     sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
 
+For Ubuntu versions starting with Bionic (18.04), or Debian versions starting with Stretch, use libssl1.0-dev above instead of libssl-dev.
+
 Options when installing required Boost library files:
 
 1. On at least Ubuntu 14.04+ and Debian 7+ there are generic names for the
